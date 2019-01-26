@@ -1,0 +1,7 @@
+Task taken as is from teacher's file:
+Machine cycle RISC-V simulator
+1-2 students
+Language: C++
+Requirements:
+	1. RV32I command system execution
+	2. Additional - pipeline processes visualisation
