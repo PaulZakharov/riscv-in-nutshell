@@ -15,11 +15,11 @@ class Memory {
     public:
         Memory(const std::string& executable_filename);
 
-        Addr get_start_PC();
+        Addr get_start_PC() const;
 
-        uint8 load_byte(Addr address);
-        uint16 load_half(Addr address);
-        uint32 load_word(Addr address);
+        uint8 load_byte(Addr address) const;
+        uint16 load_half(Addr address) const;
+        uint32 load_word(Addr address) const;
 
         void store_byte(Addr address, uint8 stored_data);
         void store_half(Addr address, uint16 stored_data);

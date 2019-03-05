@@ -1,7 +1,9 @@
 #include "memory.h"
 #include "../infra/elf/elf.h"
 
-Memory::Memory(const std::string& executable_filename): start_PC(0), data(MAX_VAL32, 0)
+Memory::Memory(const std::string& executable_filename) :
+    start_PC(0),
+    data(MAX_VAL32, 0)
 {
     Elf_loader::Elf_loader elf_loader;
     elf_loader.Init(executable_filename);
@@ -9,11 +11,11 @@ Memory::Memory(const std::string& executable_filename): start_PC(0), data(MAX_VA
     elf_loader.End();
 }
 
-Addr Memory::get_start_PC() {
+Addr Memory::get_start_PC() const {
     return start_PC;
 }
 
-uint8 Memory::load_byte(Addr address) {
+uint8 Memory::load_byte(Addr address) const {
     if (address >= MAX_VAL32) {
         status = status | 1u; //out of range
         return NO_VAL8;
@@ -21,7 +23,7 @@ uint8 Memory::load_byte(Addr address) {
     return data[address];
 }
 
-uint16 Memory::load_half(Addr address) {
+uint16 Memory::load_half(Addr address) const {
     if (address+1 >= MAX_VAL32) {
         status = status | 1u; //out of range
         return NO_VAL16;
@@ -33,7 +35,7 @@ uint16 Memory::load_half(Addr address) {
     return data[address] | (data[address+1]<<8);
 }
 
-uint32 Memory::load_word(Addr address) {
+uint32 Memory::load_word(Addr address) const {
     if (address+3 >= MAX_VAL32) {
         status = status | 1u; //out of range
         return NO_VAL32;
