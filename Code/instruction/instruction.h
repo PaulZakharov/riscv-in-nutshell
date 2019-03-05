@@ -80,9 +80,9 @@ class Instruction {
         Instruction(uint32 bytes, Addr PC);
         const std::string& get_disasm() const { return disasm; }
 
-        RegNum get_src1_num() const { return src1; }
-        RegNum get_src2_num() const { return src2; }
-        RegNum get_dst_num()  const { return dst;  }
+        RegNum get_rs1 const { return rs1; }
+        RegNum get_rs2 const { return rs2; }
+        RegNum get_rd  const { return rd;  }
 
         bool is_jump() const;
         bool is_load() const;
@@ -91,13 +91,14 @@ class Instruction {
 
         void set_rs1_v(uint32 value);
         void set_rs2_v(uint32 value);
-        void set_dst_v(uint32 value);
-        uint32 get_v_src2() const;
+        void set_rd_v(uint32 value);
 
-        uint32 get_rd_v() const { return rd_v; }
+        uint32 get_rs1_v() const { return rs1_v;  }
+        uint32 get_rs2_v() const { return rs2_v;  }
+        uint32 get_rd_v()  const { return rd_v;   }
 
-        Addr get_new_PC() const { return new_PC; }
-        Addr get_PC() const { return PC; }
+        Addr get_new_PC()  const { return new_PC; }
+        Addr get_PC()      const { return PC;     }
 
         void execute();
 };
