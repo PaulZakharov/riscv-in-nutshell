@@ -2,27 +2,30 @@
 #define _MEMORY_H_
 
 #include <vector>
-#include <cstdint>
-#include <unistd.h>
-#include <stdio.h>
 
-#define MEMORYSIZE 2048
+#include "infra/elf/elf.h"
+#include "infra/types.h"
 
-class Memory{
+class Memory {
     private:
-        std::vector <uint8_t> data;
-        uint8_t status; // for control information such as out of range or misalign exception
-    public:
-        Memory(): data(MEMORYSIZE, static_cast<uint8_t>(0)), status(0) {};
-        void Load_byte(uint32_t address, uint32_t& reg, uint8_t reg_part);
-        void Load_half(uint32_t address, uint32_t& reg, uint8_t reg_part);
-        void Load_word(uint32_t address, uint32_t& reg);
-        void Store_byte(uint32_t address, uint32_t& reg, uint8_t reg_part);
-        void Store_half(uint32_t address, uint32_t& reg, uint8_t reg_part);
-        void Store_word(uint32_t address, uint32_t& reg);
-        int Elf_load(std::vector<uint8_t>& buf, uint32_t addr);
-        // void Reset();
-};
+        std::vector<uint8> data;
+        const Addr start_PC;
 
+        // control information such as
+        // out of range or misalign exception
+        uint8 status = NO_VAL8;
+    public:
+        Memory(const std::string& executable_filename);
+
+        Addr start_PC();
+
+        uint8 load_byte(Addr address);
+        uint16 load_half(Addr address);
+        uint32 load_word(Addr address);
+
+        void store_byte(Addr address, uint8 data);
+        void store_half(Addr address, uint16 data);
+        void store_word(Addr address, uint32 data);
+};
 
 #endif

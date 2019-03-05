@@ -18,7 +18,7 @@ using float64 = double;
 using Addr = uint32;
 using Cycles = uint64;
 
-static const uint8  NO_VAL8  = 0xBA;
+static const uint8  NO_VAL8  = 0xba;
 static const uint16 NO_VAL16 = 0xf00d;
 static const uint32 NO_VAL32 = 0xdeadbeeful;
 static const uint64 NO_VAL64 = 0xfeedfacecafebeafull;
