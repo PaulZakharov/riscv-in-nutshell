@@ -1,6 +1,6 @@
 #include "infra/config/config.h"
-//#include "func_sim/func_sim.h"
-//#include "perf_sim.h"
+#include "funcsim/funcsim.h"
+#include "perfsim/perfsim.h"
 
 namespace config {
     static RequiredValue<std::string> binary = {"binary,b", "input binary file"};
@@ -10,7 +10,7 @@ namespace config {
 
 int main(int argc, char** argv) {
     config::parse_args(argc, argv);
-//    PerfSim sim(config::disasm);
-//    sim.run(config::filename, config::n);
+    FuncSim simulator(config::binary);
+//    simulator.run(config::n);
     return 0;
 }
