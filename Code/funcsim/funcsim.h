@@ -9,6 +9,7 @@ class FuncSim {
     public:
         FuncSim(const std::string& executable_filename);
         void step();
+        void run(const uint32 n); 
 };
 
 #endif

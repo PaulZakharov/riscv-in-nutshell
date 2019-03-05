@@ -20,3 +20,8 @@ void FuncSim::step() {
     // PC update
     this->PC = instruction.get_new_PC();
 }
+
+void FuncSim::run(const uint32 n) {
+    for (uint32 i = 0; i < n; ++i)
+        this->step();
+}
