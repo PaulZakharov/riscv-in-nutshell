@@ -7,6 +7,8 @@
 #include <cstdlib>
 #include <stdio.h>
 #include "memory.h"
+#include <string>
+#include <vector>
 
 class Elf_loader{
     private:
@@ -18,8 +20,8 @@ class Elf_loader{
         size_t current_phdr;
     public:
         Elf_loader() : elf_inst(nullptr), fd(0), phdrnum(0), current_phdr(0) {}
-        void Init(const char* filename);
-        void Load_Memory (Memory& mem);
+        void Init(const std::string& filename);
+        void Load_Data (std::vector<uint8>& buf);
         void End();
         ~Elf_loader();
 };

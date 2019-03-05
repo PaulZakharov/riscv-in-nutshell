@@ -1,83 +1,73 @@
 #include "memory.h"
+#include "../infra/elf/elf.h"
 
-void Memory::Load_byte(uint32_t address, uint32_t& reg, uint8_t reg_part) {
-    if (address >= MEMORYSIZE) {
-        status = status | 1u; //out of range
-        return;
-    }
-    if (reg_part > 3) {
-        status = status | 4u; //wrong part of register
-        return;
-    }
-    uint32_t mask = ~(static_cast<uint32_t>(255) << (8*reg_part));
-    reg = reg & mask | data[address]<<(8*reg_part);
-    return;
+Memory::Memory(const std::string& executable_filename): start_PC(0), data(MAX_VAL32, 0)
+{
+    Elf_loader::Elf_loader elf_loader;
+    elf_loader.Init(executable_filename);
+    elf_loader.Load_Data(data);
+    elf_loader.End();
 }
 
-void Memory::Load_half(uint32_t address, uint32_t& reg, uint8_t reg_part) {
-    if (address >= MEMORYSIZE) {
+Addr Memory::get_start_PC() {
+    return start_PC;
+}
+
+uint8 Memory::load_byte(Addr address) {
+    if (address >= MAX_VAL32) {
         status = status | 1u; //out of range
-        return;
+        return NO_VAL8;
     }
-    if (reg_part > 1) {
-        status = status | 4u; //wrong part of register
-        return;
+    return data[address];
+}
+
+uint16 Memory::load_half(Addr address) {
+    if (address+1 >= MAX_VAL32) {
+        status = status | 1u; //out of range
+        return NO_VAL16;
     }
     if (address % 2 != 0) {
         status = status | 2u; //misaligned load
-        return;
+        return NO_VAL16;
     }
-    uint32_t mask = ~(static_cast<uint32_t>(0xffff) << (16*reg_part));
-    reg = reg & mask | (data[address]<<(16*reg_part)) | (data[address+1]<<(8+16*reg_part));
-    return;
+    return data[address] | (data[address+1]<<8);
 }
 
-void Memory::Load_word(uint32_t address, uint32_t& reg) {
-    if (address >= MEMORYSIZE) {
+uint32 Memory::load_word(Addr address) {
+    if (address+3 >= MAX_VAL32) {
         status = status | 1u; //out of range
-        return;
+        return NO_VAL32;
     }
     if (address % 4 != 0) {
         status = status | 2u; //misaligned load
-        return;
+        return NO_VAL32;
     }
-    for (int i=0; i < 4; i++) reg = reg | (data[address+i]<<(8*i));
-    return;
+    return data[address] | data[address+1]<<8 | data[address+2]<<16 | data[address+3]<<24;
 }
 
-void Memory::Store_byte(uint32_t address, uint32_t& reg, uint8_t reg_part){
-    if (address >= MEMORYSIZE) {
+void Memory::store_byte(Addr address, uint8 stored_data){
+    if (address >= MAX_VAL32) {
         status = status | 1u; //out of range
         return;
     }
-    if (reg_part > 3) {
-        status = status | 4u; //wrong part of register
-        return;
-    }
-    data[address] = (reg >> (reg_part*8)) & 0xff;
-    return;
+    data[address] = stored_data;
 }
 
-void Memory::Store_half(uint32_t address, uint32_t& reg, uint8_t reg_part) {
-    if (address >= MEMORYSIZE) {
+void Memory::store_half(Addr address, uint16 stored_data){
+    if (address >= MAX_VAL32) {
         status = status | 1u; //out of range
-        return;
-    }
-    if (reg_part > 1) {
-        status = status | 4u; //wrong part of register
         return;
     }
     if (address % 2 != 0) {
         status = status | 2u; //misaligned store
         return;
     }
-    data[address] = (reg >> reg_part*16) & 0xff;
-    data[address+1] = (reg >> (reg_part*16 + 8)) & 0xff;
-    return;
+    data[address] = stored_data & 0xff;
+    data[address+1] = stored_data>>8 & 0xff;
 }
 
-void Memory::Store_word(uint32_t address, uint32_t& reg) {
-    if (address >= MEMORYSIZE) {
+void Memory::store_word(Addr address, uint32 stored_data) {
+    if (address >= MAX_VAL32) {
         status = status | 1u; //out of range
         return;
     }
@@ -85,17 +75,6 @@ void Memory::Store_word(uint32_t address, uint32_t& reg) {
         status = status | 2u; //misaligned store
         return;
     }
-    for (int i=0; i < 4; i++) data[address+i] = (reg >> 8*i) & 0xff;
+    for (int i=0; i < 4; i++) data[address+i] = (stored_data >> 8*i) & 0xff;
     return;
-}
-
-int Memory::Elf_load(std::vector<uint8_t>& buf, uint32_t addr) {
-    if (addr + buf.size >= MEMORYSIZE) {
-        printf("Memory depleted while loading ELF\n");
-        return -1;
-        //exception?
-    }
-    for (int i=0; i<buf.size; i++) {
-        data[addr+i] = buf[i];
-    }
 }

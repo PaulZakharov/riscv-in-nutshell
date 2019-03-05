@@ -1,13 +1,14 @@
 #include "elf.h"
+#include "../types.h"
 
-void Elf_loader::Init(const char* filename) {
+void Elf_loader::Init(const std::string& filename) {
     if (elf_inst || fd)
         End();
     if (elf_version(EV_CURRENT) == EV_NONE) {
         printf("ELF library init failed\n");
         exit(0);
     }
-    if ((fd = open(filename, O_RDONLY, 0)) < 0) {
+    if ((fd = open(filename.data, O_RDONLY, 0)) < 0) {
         printf("File \"%s\" open failed", filename);
         exit(0);
     }
@@ -40,7 +41,7 @@ void Elf_loader::End() {
     fd = 0;
 }
 
-void Elf_loader::Load_Memory (Memory& mem) {
+void Elf_loader::Load_Data (std::vector<uint8>& buf) {
 	/*if (!mem) {
 		// exception?
 		printf("Memory not initialized\n");
@@ -50,7 +51,7 @@ void Elf_loader::Load_Memory (Memory& mem) {
 	GElf_Phdr* temp_phdr;
     long offset;
     ssize_t bytes_read;
-    uint32_t memory_ind = 0;
+    uint32 memory_ind = 0;
 	for (int i=0; i<phdrnum; i++) {
 		temp_phdr = gelf_getphdr(elf_inst, i, &phdr);
 		if (temp_phdr != &phdr) {
@@ -58,7 +59,7 @@ void Elf_loader::Load_Memory (Memory& mem) {
 			End();
 			// exception?
 		}
-        std::vector<uint8_t> buf(phdr.p_filesz);
+        std::vector<int8> temp_buf(phdr.p_filesz);
 		if (phdr.p_type == PT_LOAD) {
             offset = lseek(fd, phdr.p_offset, SEEK_SET);
             if (offset != phdr.p_offset) {
@@ -66,13 +67,15 @@ void Elf_loader::Load_Memory (Memory& mem) {
                 End();
                 //exception?
             }
-            bytes_read = read(fd, &buf[0], phdr.p_filesz);
+            bytes_read = read(fd, &temp_buf[0], phdr.p_filesz);
             if (bytes_read != static_cast<ssize_t>(phdr.p_filesz)){
                 printf("Read failed\n");
                 End();
                 //exception?
             }
-            mem.Elf_load(buf, memory_ind);
+            for (int i=0; i<phdr.p_filesz; i++) {
+                buf[i+memory_ind] = temp_buf[i];
+            }
             memory_ind += phdr.p_filesz;
         } else {
             continue;
