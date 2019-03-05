@@ -20,10 +20,10 @@ class Elf_loader{
         size_t current_phdr;
     public:
         Elf_loader() : elf_inst(nullptr), fd(0), phdrnum(0), current_phdr(0) {}
-        void Init(const std::string& filename);
-        void Load_Data (std::vector<uint8>& buf);
-        void End();
-        ~Elf_loader();
+        void init(const std::string& filename);
+        void load_Data (std::vector<uint8>& buf);
+        void end();
+        //~Elf_loader();
 };
 
 #endif

@@ -12,7 +12,7 @@ namespace config {
             name.c_str(),
             po::bool_switch(&value),
             desc.c_str());
-            std::cout << "Regsitered " << name << std::endl;
+            std::cout << "Registered " << name << std::endl;
     }
 
     template<>

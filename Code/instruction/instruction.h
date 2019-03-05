@@ -45,9 +45,9 @@ class Instruction {
         static const ISAEntry isa_table[];
 
         // registers
-        RegNum rs1 = RegNum::X0;
-        RegNum rs2 = RegNum::X0;
-        RegNum rd = RegNum::X0;
+        Register rs1 = Register::X0;
+        Register rs2 = Register::X0;
+        Register rd = Register::X0;
 
         // values
         uint32 imm_v = NO_VAL32;
@@ -80,9 +80,9 @@ class Instruction {
         Instruction(uint32 bytes, Addr PC);
         const std::string& get_disasm() const { return disasm; }
 
-        RegNum get_rs1 const { return rs1; }
-        RegNum get_rs2 const { return rs2; }
-        RegNum get_rd  const { return rd;  }
+        Register get_rs1 const { return rs1; }
+        Register get_rs2 const { return rs2; }
+        Register get_rd  const { return rd;  }
 
         bool is_jump() const;
         bool is_load() const;

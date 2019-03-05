@@ -1,14 +1,14 @@
 #include "elf.h"
 #include "../types.h"
 
-void Elf_loader::Init(const std::string& filename) {
+void Elf_loader::init(const std::string& filename) {
     if (elf_inst || fd)
-        End();
+        end();
     if (elf_version(EV_CURRENT) == EV_NONE) {
         printf("ELF library init failed\n");
         exit(0);
     }
-    if ((fd = open(filename.data, O_RDONLY, 0)) < 0) {
+    if ((fd = open(filename.c_str(), O_RDONLY, 0)) < 0) {
         printf("File \"%s\" open failed", filename);
         exit(0);
     }
@@ -32,22 +32,18 @@ void Elf_loader::Init(const std::string& filename) {
         printf("elf_getphdrnum failed\n");
         exit(0);
     }
+    return;
 }
 
-void Elf_loader::End() {
+void Elf_loader::end() {
     elf_end(elf_inst);
     elf_inst = nullptr;
     close(fd);
     fd = 0;
+    return;
 }
 
-void Elf_loader::Load_Data (std::vector<uint8>& buf) {
-	/*if (!mem) {
-		// exception?
-		printf("Memory not initialized\n");
-		End();
-		return;
-	}*/
+void Elf_loader::load_Data (std::vector<uint8>& buf) {
 	GElf_Phdr* temp_phdr;
     long offset;
     ssize_t bytes_read;
@@ -56,7 +52,7 @@ void Elf_loader::Load_Data (std::vector<uint8>& buf) {
 		temp_phdr = gelf_getphdr(elf_inst, i, &phdr);
 		if (temp_phdr != &phdr) {
 			printf("getphdr failed\n");
-			End();
+			end();
 			// exception?
 		}
         std::vector<int8> temp_buf(phdr.p_filesz);
@@ -64,13 +60,13 @@ void Elf_loader::Load_Data (std::vector<uint8>& buf) {
             offset = lseek(fd, phdr.p_offset, SEEK_SET);
             if (offset != phdr.p_offset) {
                 printf("lseek failed\n");
-                End();
+                end();
                 //exception?
             }
             bytes_read = read(fd, &temp_buf[0], phdr.p_filesz);
             if (bytes_read != static_cast<ssize_t>(phdr.p_filesz)){
                 printf("Read failed\n");
-                End();
+                end();
                 //exception?
             }
             for (int i=0; i<phdr.p_filesz; i++) {
@@ -81,8 +77,8 @@ void Elf_loader::Load_Data (std::vector<uint8>& buf) {
             continue;
         }	
     }
+    return;
 }
-
 
 
 

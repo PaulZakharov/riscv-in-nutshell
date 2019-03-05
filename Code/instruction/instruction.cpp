@@ -33,9 +33,9 @@ void Instruction::init_format() {
 
 void Instruction::init_R() {
     // TODO: implement, set disasm
-    this->rs1 = static_cast<RegNum>(instr.asR.rs1);
-    this->rs2 = static_cast<RegNum>(instr.asR.rs2);
-    this->rd  = static_cast<RegNum>(instr.asR.rd);
+    this->rs1 = static_cast<Register>(instr.asR.rs1);
+    this->rs2 = static_cast<Register>(instr.asR.rs2);
+    this->rd  = static_cast<Register>(instr.asR.rd);
     ...
 }
 

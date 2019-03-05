@@ -1,12 +1,12 @@
 #include "memory.h"
 #include "../infra/elf/elf.h"
 
-Memory::Memory(const std::string& executable_filename): start_PC(0), data(MAX_VAL32, 0)
+Memory::Memory(const std::string& executable_filename): start_PC(0), data(MAX_VAL8, 0)
 {
-    Elf_loader::Elf_loader elf_loader;
-    elf_loader.Init(executable_filename);
-    elf_loader.Load_Data(data);
-    elf_loader.End();
+    Elf_loader elf_loader;
+    elf_loader.init(executable_filename);
+    elf_loader.load_Data(data);
+    elf_loader.end();
 }
 
 Addr Memory::get_start_PC() {
@@ -14,7 +14,7 @@ Addr Memory::get_start_PC() {
 }
 
 uint8 Memory::load_byte(Addr address) {
-    if (address >= MAX_VAL32) {
+    if (address >= MAX_VAL8) {
         status = status | 1u; //out of range
         return NO_VAL8;
     }
@@ -22,7 +22,7 @@ uint8 Memory::load_byte(Addr address) {
 }
 
 uint16 Memory::load_half(Addr address) {
-    if (address+1 >= MAX_VAL32) {
+    if (address+1 >= MAX_VAL8) {
         status = status | 1u; //out of range
         return NO_VAL16;
     }
@@ -34,7 +34,7 @@ uint16 Memory::load_half(Addr address) {
 }
 
 uint32 Memory::load_word(Addr address) {
-    if (address+3 >= MAX_VAL32) {
+    if (address+3 >= MAX_VAL8) {
         status = status | 1u; //out of range
         return NO_VAL32;
     }
@@ -46,7 +46,7 @@ uint32 Memory::load_word(Addr address) {
 }
 
 void Memory::store_byte(Addr address, uint8 stored_data){
-    if (address >= MAX_VAL32) {
+    if (address >= MAX_VAL8) {
         status = status | 1u; //out of range
         return;
     }
@@ -54,7 +54,7 @@ void Memory::store_byte(Addr address, uint8 stored_data){
 }
 
 void Memory::store_half(Addr address, uint16 stored_data){
-    if (address >= MAX_VAL32) {
+    if (address >= MAX_VAL8) {
         status = status | 1u; //out of range
         return;
     }
@@ -67,7 +67,7 @@ void Memory::store_half(Addr address, uint16 stored_data){
 }
 
 void Memory::store_word(Addr address, uint32 stored_data) {
-    if (address >= MAX_VAL32) {
+    if (address >= MAX_VAL8) {
         status = status | 1u; //out of range
         return;
     }

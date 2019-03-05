@@ -2,7 +2,7 @@
 #define _MEMORY_H_
 
 #include <vector>
-#include "infra/types.h"
+#include "../infra/types.h"
 #include <string>
 
 class Memory {
