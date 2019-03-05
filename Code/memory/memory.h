@@ -2,8 +2,6 @@
 #define _MEMORY_H_
 
 #include <vector>
-
-#include "infra/elf/elf.h"
 #include "infra/types.h"
 
 class Memory {
