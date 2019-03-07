@@ -4,6 +4,15 @@
 #include "../infra/common.h"
 #include "../infra/types.h"
 
+
+// TODO: implement register names table
+// aka std::array<std::string, Register::MAX>
+//
+// One way to do it might be using more serious Register
+// class containing registers name table as a static member
+// and implemeting friend string stream << operator for
+// convenient printing
+
 enum class Register {
     zero,
     ra,
