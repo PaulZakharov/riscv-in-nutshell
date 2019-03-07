@@ -1,32 +1,46 @@
 #ifndef RF_H
 #define RF_H
+
 #include "../infra/common.h"
-enum class Register
-{
-    X0 = 0,
-    X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12,
-    MAX = 31
+#include "../infra/types.h"
+
+enum class Register {
+    zero,
+    ra,
+    sp,
+    gp,
+    tp,
+    t0,
+    t1, t2,
+    s0,
+    s1,
+    a0, a1,
+    a2, a3, a4, a5, a6, a7,
+    s2, s3, s4, s5, s6, s7, s8, s9, s10, s11,
+    t3, t4, t5, t6,
+    MAX
 };
 
 class RF {
 private:
-    
-public:
-    struct Reg {
+    uint32 read(Register num) const;
+    void write(Register num, uint32 value);
+
+    struct RegisterState {
         uint32 value = 0;
         bool is_valid = true; 
-    } array[static_cast<uint16>(Register::MAX)];
-    RF(){};
-    Reg& get(Register num);
-    const Reg& get_const(Register num) const;
-
+    };
+    
+    std::array<RegisterState, Register::MAX> register_table;
+    
     void invalidate(Register num);
-    void validate( Register num);
-    bool check( Register num) const;
-
-    uint32 read( Register num) const;
-    void write( Register num, uint32 val);
-
+    void validate(Register num);
+    bool is_valid(Register num) const;
+public:
+    RF() { };
+    
+    void read_sources(Instruction &instr) const;
+    void writeback(Instrcution &instr);
 };
 
 #endif
