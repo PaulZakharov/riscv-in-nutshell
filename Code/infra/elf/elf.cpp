@@ -1,5 +1,4 @@
 #include "elf.h"
-#include "../types.h"
 
 void Elf_loader::init(const std::string& filename) {
     if (elf_inst || fd)
@@ -9,7 +8,7 @@ void Elf_loader::init(const std::string& filename) {
         exit(0);
     }
     if ((fd = open(filename.c_str(), O_RDONLY, 0)) < 0) {
-        printf("File \"%s\" open failed", filename);
+        printf("File \"%s\" open failed", filename.c_str());
         exit(0);
     }
     if ((elf_inst = elf_begin(fd, ELF_C_READ, nullptr)) == nullptr) {
@@ -17,7 +16,7 @@ void Elf_loader::init(const std::string& filename) {
         exit(0);
     }
     if (elf_kind(elf_inst) != ELF_K_ELF) {
-        printf("File \"%s\" is not ELF\n", filename);
+        printf("File \"%s\" is not ELF\n", filename.c_str());
         exit(0);
     }
     if (!gelf_getehdr(elf_inst, &ehdr)) {

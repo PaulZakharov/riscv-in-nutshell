@@ -1,6 +1,6 @@
 #ifndef RF_H
 #define RF_H
-#include "../infra/types.h"
+#include "../infra/common.h"
 enum class Register
 {
     X0 = 0,

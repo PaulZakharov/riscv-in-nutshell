@@ -3,12 +3,8 @@
 
 #include <gelf.h>
 #include <fcntl.h>
-#include <unistd.h>
-#include <cstdlib>
-#include <stdio.h>
 #include "memory.h"
-#include <string>
-#include <vector>
+#include "../common.h"
 
 class Elf_loader{
     private:
@@ -23,7 +19,6 @@ class Elf_loader{
         void init(const std::string& filename);
         void load_Data (std::vector<uint8>& buf);
         void end();
-        //~Elf_loader();
 };
 
 #endif
