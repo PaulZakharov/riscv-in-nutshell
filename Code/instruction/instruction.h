@@ -78,6 +78,8 @@ class Instruction {
 
     public:
         Instruction(uint32 bytes, Addr PC);
+        Instruction(Instruction& instr);
+
         const std::string& get_disasm() const { return disasm; }
 
         Register get_rs1 const { return rs1; }
@@ -101,6 +103,8 @@ class Instruction {
         Addr get_PC()      const { return PC;     }
 
         void execute();
+
+        Instruction& operator = (const Instruction& other) {}
 };
 
 #endif
