@@ -1,35 +1,29 @@
 #include "rf.h"
 
-RF::Reg & RF::get(Register num) {
-    return (array[static_cast<uint16>(num)]);
+uint32 RF::read(Register num) const {
+    return (register_table[num]).value;
 }
 
-const RF::Reg & RF::get_const(Register num) const {
-    return const_cast<const RF::Reg &>(array[static_cast<uint32>(num)]);
+void RF::write(Register num, uint32 value) {
+    (register_table[num]).value = value;
+    (register_table[num]).is_valid = true;
+    return;
 }
 
 void RF::invalidate(Register num) {
-    get(num).is_valid = false;
+    (register_table[num]).is_valid = false;
     return;
 }
 
 void RF::validate(Register num) {
-    get(num).is_valid = true;
+    (register_table[num]).is_valid = true;
     return;
 }
 
-bool RF::check(Register num) const {
-    return get_const(num).is_valid;
-
+bool RF::is_valid(Register num) const {
+    return (register_table[num]).is_valid;
 }
 
-uint32 RF::read(Register num) const {
-    return get_const(num).value;
-}
+void read_sources(Instruction &instr) const;
 
-void RF::write (Register num, uint32 val) {
-    Reg& cur_reg = get(num);
-    cur_reg.value = val;
-    cur_reg.is_valid = true;
-    return;
-}
+void writeback(Instruction &instr);
