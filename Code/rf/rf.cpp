@@ -24,6 +24,24 @@ bool RF::is_valid(Register num) const {
     return (register_table[num]).is_valid;
 }
 
-void read_sources(Instruction &instr) const;
+void RF::read_sources(Instruction &instr) const {
+    Register rs1 = instr.get_rs1();
+    if (is_valid(rs1)) {
+        instr.set_rs1_v(read(rs1));
+    } else {
+        //trap?
+    }
+    Register rs2 = instr.get_rs2();
+    if (is_valid(rs2)) {
+        instr.set_rs2_v(read(rs2));
+    } else {
+        //trap?
+    }
+    return;
+}
 
-void writeback(Instruction &instr);
+void writeback(const Instruction &instr) {
+    Register rd = instr.get_rd();
+    write(rd, get_rd_v());
+    return;
+}

@@ -72,9 +72,9 @@ public:
 
     const std::string& get_disasm() const { return disasm; }
 
-    Register get_rs1 const { return rs1; }
-    Register get_rs2 const { return rs2; }
-    Register get_rd  const { return rd;  }
+    Register get_rs1() const { return rs1; }
+    Register get_rs2() const { return rs2; }
+    Register get_rd()  const { return rd;  }
 
     bool is_jump() const;
     bool is_load() const;

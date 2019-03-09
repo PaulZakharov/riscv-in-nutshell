@@ -43,6 +43,8 @@ void Instruction::init_format() {
             break;
         }
     }
+    
+    return;
 }
 
 
@@ -54,7 +56,7 @@ void Instruction::init_R() {
         std::to_string(rd) + ", " + \
         std::to_string(rs1) + ", " + \
         std::to_string(rs2);
-    //data from regfile
+    return;
 }
 
 void Instruction::init_I() {
@@ -68,7 +70,7 @@ void Instruction::init_I() {
         std::to_string(rd) + ", " + \
         std::to_string(rs1) + ", " + \
         std::to_string(imm_v);
-    //data from regfile
+    return;
 }
 
 void Instruction::init_S() {
@@ -79,7 +81,7 @@ void Instruction::init_S() {
         std::to_string(rs2) + ", " + \
         std::to_string(imm_v) + "(" + \
         std::to_string(rs1) + ")";
-    //get data from regfile 
+    return;
 }
 
 void Instruction::init_B() {
@@ -90,7 +92,7 @@ void Instruction::init_B() {
         std::to_string(rs1) + ", " + \
         std::to_string(rs2) + ", " + \
         std::to_string(imm_v);
-    //get data from regfile 
+    return;
 }
 
 void Instruction::init_U() {
@@ -99,7 +101,7 @@ void Instruction::init_U() {
     disasm = name + " " + \
         std::to_string(rd) + ", " + \
         std::to_string(imm_v);
-    //regfile
+    return;
 }
 
 void Instruction::init_J() {
@@ -108,12 +110,14 @@ void Instruction::init_J() {
     disasm = name + " " + \
         std::to_string(rd) + ", " + \
         std::to_string(imm_v);
-    //get data from regfile 
+    return;
 }
 
 
 void Instruction::init_UNKNOWN() {
-    // TODO: modify disasm
+    //this function doesn't have to do anything:
+    // default values are for UNKNOWN format!
+    return;
 }
 
 void Instruction::execute() {
@@ -123,9 +127,27 @@ void Instruction::execute() {
 }
 
 bool Instruction::check_match(const Instruction::ISAEntry& entry, uint32 raw) const  {
-    uint8 opcode = (raw & 0b00000000'00000000'00000000'01111111) >> 7;
+    uint8 opcode = (raw & 0b00000000'00000000'00000000'01111111);
     uint8 funct3 = (raw & 0b00000000'00000000'01110000'00000000) >> 12;
     uint8 funct7 = (raw & 0b11111110'00000000'00000000'00000000) >> 25;
     return (opcode == entry.opcode) && (funct3 == entry.funct3) && (funct7 == entry.funct7);
 }
 
+bool Instruction::is_jump() const{
+    uint8 opcode = instr_raw & 0b00000000'00000000'00000000'01111111;
+    return (opcode == 0b1101111) | (opcode == 0b1100111);
+}
+
+bool Instruction::is_load() const{
+    uint8 opcode = instr_raw & 0b00000000'00000000'00000000'01111111;
+    return opcode == 0b0000011;
+}
+
+bool Instruction::is_store() const{
+    uint8 opcode = instr_raw & 0b00000000'00000000'00000000'01111111;
+    return opcode == 0b0100011;
+}
+
+bool Instruction::is_nop() const{
+    return instr_raw == 0b00000000'00000000'00000000'00010011; //ADDI x0, x0, 0
+}

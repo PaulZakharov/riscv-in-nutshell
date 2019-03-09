@@ -49,7 +49,7 @@ public:
     RF() { };
     
     void read_sources(Instruction &instr) const;
-    void writeback(Instruction &instr);
+    void writeback(const Instruction &instr);
 };
 
 #endif
