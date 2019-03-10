@@ -11,18 +11,6 @@ private:
         UNKNOWN
     } format = Format::UNKNOWN;
 
-    struct ISAEntry
-        {
-            std::string name;
-            uint8 opcode;
-            uint8 funct3;
-            uint8 funct7;
-            Format format;
-            Instruction::Executor function;
-        };
-
-    static const ISAEntry isa_table[];
-
     // registers
     Register rs1 = Register::zero;
     Register rs2 = Register::zero;
@@ -37,22 +25,10 @@ private:
     // other fields
     bool complete = false;
     const Addr PC = NO_VAL32;
-    uint32 instr_raw = NO_VAL32; //instr itself
 
     std::string name = "INVALID";
     std::string disasm = "INVALID";
     
-    Decoder decoder;
-    //auxiliary methods
-    void init_format();
-    void init_R();
-    void init_I();
-    void init_S();
-    void init_B();
-    void init_U();
-    void init_J();
-    void init_UNKNOWN();
-    bool check_match(const Instruction::ISAEntry& entry, uint32 raw) const;
     // executors
     void execute_unknown() { assert(0) };
 
