@@ -49,27 +49,29 @@ public:
 
     const std::string& get_disasm() const { return disasm; }
 
-    Register get_rs1() const { return rs1; }
-    Register get_rs2() const { return rs2; }
-    Register get_rd()  const { return rd;  }
+    Register get_rs1 () const { return rs1; }
+    Register get_rs2 () const { return rs2; }
+    Register get_rd  () const { return rd;  }
 
-    bool is_jump() const;
-    bool is_load() const;
-    bool is_store() const;
-    bool is_nop() const;
+    bool is_jump  () const;
+    bool is_load  () const;
+    bool is_store () const;
+    bool is_nop   () const;
 
-    void set_rs1_v(uint32 value);
-    void set_rs2_v(uint32 value);
-    void set_rd_v(uint32 value);
+    void set_rs1_v (uint32 value);
+    void set_rs2_v (uint32 value);
+    void set_rd_v  (uint32 value);
 
-    uint32 get_rs1_v() const { return rs1_v; }
-    uint32 get_rs2_v() const { return rs2_v; }
-    uint32 get_rd_v()  const { return rd_v;  }
-    uint32 get_imm_v() const { return imm_v; }
+    uint32 get_rs1_v () const { return rs1_v;  }
+    uint32 get_rs2_v () const { return rs2_v;  }
+    uint32 get_rd_v  () const { return rd_v;   }
+    uint32 get_imm_v () const { return imm_v;  }
 
-    Addr get_PC()      const { return PC;    }
-    Addr get_new_PC()  const { return new_PC };
+    Addr get_PC      () const { return PC;     }
+    Addr get_new_PC  () const { return new_PC; }
 
+    Addr   get_memory_addr() const;
+    size_t get_memory_size() const;
     void execute();
 };
 
