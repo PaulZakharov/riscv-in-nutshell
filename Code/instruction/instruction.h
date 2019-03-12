@@ -40,7 +40,7 @@ private:
     std::string disasm = "INVALID";
     
     // executors
-    void execute_unknown() { assert(0) };
+    void execute_unknown();
 
 #define DECLARE_INSN(name, match, mask) \
 void execute_ ## name ();
