@@ -2,16 +2,8 @@
 #define RF_H
 
 #include "register.h"
+#include "instruction/instruction.h"
 #include "infra/common.h"
-
-
-// TODO: implement register names table
-// aka std::array<std::string, Register::MAX>
-//
-// One way to do it might be using more serious Register
-// class containing registers name table as a static member
-// and implemeting friend string stream << operator for
-// convenient printing
 
 
 class RF {
@@ -24,7 +16,7 @@ private:
         bool is_valid = true; 
     };
     
-    std::array<RegisterState, Register::MAX> register_table;
+    std::array<RegisterState, Register::MAX_NUMBER> register_table;
     
     void invalidate(Register num);
     void validate(Register num);

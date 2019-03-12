@@ -30,14 +30,14 @@ public:
     size_t id() const { return static_cast<size_t>(this->number); }
     static Register zero() { return Register(Number::zero); }
 
-private:
-    Number number = Number::zero;
     static constexpr const size_t MAX_NUMBER = static_cast<size_t>(Number::MAX);
     static_assert(MAX_NUMBER == 32u, "Wrong amount of registers");
 
+private:
+    Number number = Number::zero;
     static const std::array<std::string, MAX_NUMBER> names_table;
-    
     const std::string get_name() const { return this->names_table[this->id()]; }
+    operator size_t() const { return static_cast<size_t>(this->number); }
 };
 
 const std::array<std::string, Register::MAX_NUMBER> Register::names_table = {
