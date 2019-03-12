@@ -25,6 +25,7 @@ private:
     // other fields
     bool complete = false;
     const Addr PC = NO_VAL32;
+    Addr new_PC = NO_VAL32;
 
     std::string name = "INVALID";
     std::string disasm = "INVALID";
@@ -64,11 +65,12 @@ public:
     uint32 get_rs1_v() const { return rs1_v; }
     uint32 get_rs2_v() const { return rs2_v; }
     uint32 get_rd_v()  const { return rd_v;  }
+    uint32 get_imm_v() const { return imm_v; }
 
-    Addr get_PC()      const { return PC;     }
-    Addr get_new_PC()  const;  // TODO: need to define logic
+    Addr get_PC()      const { return PC;    }
+    Addr get_new_PC()  const { return new_PC };
 
-    void execute() { this->function() };
+    void execute();
 };
 
 #endif

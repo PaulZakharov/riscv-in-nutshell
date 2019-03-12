@@ -68,5 +68,5 @@ Instruction::Instruction(uint32 bytes, Addr PC) :
 
 void Instruction::execute() {
     (this->*function)();
-    complete = true;
+    this->complete = true;
 }
