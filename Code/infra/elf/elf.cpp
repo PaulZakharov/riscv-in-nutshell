@@ -1,85 +1,87 @@
 #include "elf.h"
+#include <fcntl.h>
+#include <stdio.h>
+#include <unistd.h>
 
-ElfLoader(std::string filename) :
+// TODO: replace std::cerr and exit()
+// with Exceptions / use C++ ELF library
+
+#define EM_RISCV 243
+
+ElfLoader::ElfLoader(std::string filename) :
     elf_inst(nullptr),
     fd(0),
-    phdrnum(0),
-    current_phdr(0)
+    phdrnum(0)
 {
-    if (elf_inst || fd)
-        end();
     if (elf_version(EV_CURRENT) == EV_NONE) {
-        printf("ELF library init failed\n");
+        std::cerr << "ELF: library init failed" << std::endl;
         exit(0);
     }
     if ((fd = open(filename.c_str(), O_RDONLY, 0)) < 0) {
-        printf("File \"%s\" open failed", filename.c_str());
+        std::cerr << "ELF: file " << filename << " open failed" << std::endl;
         exit(0);
     }
     if ((elf_inst = elf_begin(fd, ELF_C_READ, nullptr)) == nullptr) {
-        printf("Elf initialization failed\n");
+        std::cerr << "ELF: initialization failed" << std::endl;
         exit(0);
     }
     if (elf_kind(elf_inst) != ELF_K_ELF) {
-        printf("File \"%s\" is not ELF\n", filename.c_str());
+        std::cerr << "ELF: file " << filename << "is not elf" << std::endl;
         exit(0);
     }
     if (!gelf_getehdr(elf_inst, &ehdr)) {
-        printf("Elf header retrieval failed\n");
+        std::cerr << "ELF: header retrieval failed" << std::endl;
         exit(0);
     }
     if (ehdr.e_machine != EM_RISCV) {
-        printf("Wrong machine type\n");
+        std::cerr << "ELF: wrong machine type" << std::endl;
         exit(0);
     }
     if (elf_getphdrnum(elf_inst, &phdrnum)) {
-        printf("elf_getphdrnum failed\n");
+        std::cerr << "ELF: elf_getphdrnum failed" << std::endl;
         exit(0);
     }
-    return;
 }
 
 ElfLoader::~ElfLoader() {
     elf_end(elf_inst);
-    elf_inst = nullptr;
     close(fd);
-    fd = 0;
 }
 
-void ElfLoader::load_data (std::vector<uint8>& buf) {
-    GElf_Phdr* temp_phdr;
-    long offset;
-    ssize_t bytes_read;
+void ElfLoader::load_data(std::vector<uint8>& buf) {
+    GElf_Phdr* temp_phdr, phdr;
+    long int offset = 0;
+    size_t bytes_read = 0;
     uint32 memory_ind = 0;
-    for (int i=0; i<phdrnum; i++) {
+
+    for (int i = 0; i < phdrnum; i++) {
         temp_phdr = gelf_getphdr(elf_inst, i, &phdr);
         if (temp_phdr != &phdr) {
-            printf("getphdr failed\n");
-            end();
-            // exception?
+            std::cerr << "ELF: getphdr failed" << std::endl;
+            exit(0);
         }
+
         std::vector<int8> temp_buf(phdr.p_filesz);
+
         if (phdr.p_type == PT_LOAD) {
             offset = lseek(fd, phdr.p_offset, SEEK_SET);
             if (offset != phdr.p_offset) {
-                printf("lseek failed\n");
-                end();
-                //exception?
+                std::cerr << "ELF: lseek failed" << std::endl;
+                exit(0);
             }
+
             bytes_read = read(fd, &temp_buf[0], phdr.p_filesz);
             if (bytes_read != static_cast<ssize_t>(phdr.p_filesz)){
-                printf("Read failed\n");
-                end();
-                //exception?
+                std::cerr << "ELF: read failed" << std::endl;
+                exit(0);
             }
-            for (int i=0; i<phdr.p_filesz; i++) {
+
+            for (int i = 0; i < phdr.p_filesz; ++i) {
                 buf[i+memory_ind] = temp_buf[i];
             }
+
             memory_ind += phdr.p_filesz;
-        } else {
-            continue;
         }
     }
-    return;
 }
 
