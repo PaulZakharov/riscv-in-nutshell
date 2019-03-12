@@ -3,10 +3,9 @@
 
 #include <gelf.h>
 #include <fcntl.h>
-#include "memory.h"
-#include "../common.h"
+#include "infra/common.h"
 
-class Elf_loader{
+class ElfLoader {
     private:
         Elf* elf_inst;
         int fd;
@@ -15,10 +14,9 @@ class Elf_loader{
         size_t phdrnum;
         size_t current_phdr;
     public:
-        Elf_loader() : elf_inst(nullptr), fd(0), phdrnum(0), current_phdr(0) {}
-        void init(const std::string& filename);
-        void load_Data (std::vector<uint8>& buf);
-        void end();
+        ElfLoader(std::string filename);
+        ~ElfLoader();
+        void load_data(std::vector<uint8>& buf);
 };
 
 #endif

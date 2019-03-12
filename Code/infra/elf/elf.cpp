@@ -1,6 +1,11 @@
 #include "elf.h"
 
-void Elf_loader::init(const std::string& filename) {
+ElfLoader(std::string filename) :
+    elf_inst(nullptr),
+    fd(0),
+    phdrnum(0),
+    current_phdr(0)
+{
     if (elf_inst || fd)
         end();
     if (elf_version(EV_CURRENT) == EV_NONE) {
@@ -34,28 +39,27 @@ void Elf_loader::init(const std::string& filename) {
     return;
 }
 
-void Elf_loader::end() {
+ElfLoader::~ElfLoader() {
     elf_end(elf_inst);
     elf_inst = nullptr;
     close(fd);
     fd = 0;
-    return;
 }
 
-void Elf_loader::load_Data (std::vector<uint8>& buf) {
-	GElf_Phdr* temp_phdr;
+void ElfLoader::load_data (std::vector<uint8>& buf) {
+    GElf_Phdr* temp_phdr;
     long offset;
     ssize_t bytes_read;
     uint32 memory_ind = 0;
-	for (int i=0; i<phdrnum; i++) {
-		temp_phdr = gelf_getphdr(elf_inst, i, &phdr);
-		if (temp_phdr != &phdr) {
-			printf("getphdr failed\n");
-			end();
-			// exception?
-		}
+    for (int i=0; i<phdrnum; i++) {
+        temp_phdr = gelf_getphdr(elf_inst, i, &phdr);
+        if (temp_phdr != &phdr) {
+            printf("getphdr failed\n");
+            end();
+            // exception?
+        }
         std::vector<int8> temp_buf(phdr.p_filesz);
-		if (phdr.p_type == PT_LOAD) {
+        if (phdr.p_type == PT_LOAD) {
             offset = lseek(fd, phdr.p_offset, SEEK_SET);
             if (offset != phdr.p_offset) {
                 printf("lseek failed\n");
@@ -74,11 +78,8 @@ void Elf_loader::load_Data (std::vector<uint8>& buf) {
             memory_ind += phdr.p_filesz;
         } else {
             continue;
-        }	
+        }
     }
     return;
 }
-
-
-
 
