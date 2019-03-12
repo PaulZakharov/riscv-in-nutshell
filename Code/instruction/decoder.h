@@ -50,13 +50,20 @@ private:
             |  (J_imm20    << 20);
     }
 
-    uint32 get_immediate(Instruction::Format format) const {
+
+    uint32 apply_mask(uint32 bytes, uint32 mask) const {
+        // en.wikipedia.org/wiki/Find_first_set
+        return (bytes & mask) >> __builtin_ctz(mask);
+    }
+
+public:
+    int32 get_immediate(Instruction::Format format) const {
         switch(format) {
-            case Instruction::Format::I: return get_I_immediate();
-            case Instruction::Format::S: return get_S_immediate();
-            case Instruction::Format::B: return get_B_immediate();
-            case Instruction::Format::U: return get_U_immediate();
-            case Instruction::Format::J: return get_J_immediate();
+            case Instruction::Format::I: return sign_extend(12, get_I_immediate());
+            case Instruction::Format::S: return sign_extend(12, get_S_immediate());
+            case Instruction::Format::B: return sign_extend(12, get_B_immediate());
+            case Instruction::Format::U: return sign_extend(32, get_U_immediate());
+            case Instruction::Format::J: return sign_extend(20, get_J_immediate());
             default: assert(0);
         }
     }
@@ -71,11 +78,6 @@ private:
 
     Register get_rs2() const {
         return static_cast<Register> rs2;
-    }
-
-    uint32 apply_mask(uint32 bytes, uint32 mask) const {
-        // en.wikipedia.org/wiki/Find_first_set
-        return (bytes & mask) >> __builtin_ctz(mask);
     }
 
     Decoder(uint32 raw) : raw (raw)

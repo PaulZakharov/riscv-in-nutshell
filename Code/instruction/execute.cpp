@@ -15,12 +15,12 @@ void Instruction::execute_auipc() {
 
 void Instruction::execute_jal() {
     rd_v = PC + 4;
-    // How should I change PC?
+    new_PC = PC + imm_v;
 }
 
 void Instruction::execute_jalr() {
     rd_v = PC + 4;
-    // PC
+    new_PC = (imm_v + rs1_v) & ~1;
 }
 
 void Instruction::execute_beq() {

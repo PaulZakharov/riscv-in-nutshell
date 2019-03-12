@@ -27,7 +27,7 @@ private:
     uint32 rd_v  = NO_VAL32;
     
     // immediate
-    uint32 imm_v = NO_VAL32;
+    int32 imm_v = NO_VAL32;
 
     // for loads/stores
     uint32 memory_addr = NO_VAL32;
@@ -71,10 +71,10 @@ public:
     void set_rs2_v (uint32 value);
     void set_rd_v  (uint32 value);
 
-    uint32 get_rs1_v () const { return rs1_v;  }
-    uint32 get_rs2_v () const { return rs2_v;  }
-    uint32 get_rd_v  () const { return rd_v;   }
-    uint32 get_imm_v () const { return imm_v;  }
+    uint32 get_rs1_v () const { return rs1_v; }
+    uint32 get_rs2_v () const { return rs2_v; }
+    uint32 get_rd_v  () const { return rd_v;  }
+    int32  get_imm_v () const { return imm_v; }
 
     Addr get_PC      () const { return PC;     }
     Addr get_new_PC  () const { return new_PC; }
