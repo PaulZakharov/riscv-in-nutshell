@@ -9,6 +9,14 @@ private:
     size_t size;
     Addr start_PC;
 
+    uint8 read_byte(Addr addr) const {
+        return this->data[addr];
+    }
+
+    void write_byte(uint8 value, Addr addr) {
+        this->data[addr] = value;
+    }
+
     uint32 read(Addr addr, size_t num_bytes) const;
     void write(uint32 value, Addr addr, size_t num_bytes);
 
