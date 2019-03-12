@@ -15,7 +15,7 @@ public:
     ElfLoader(std::string filename);
     ~ElfLoader();
     void load_data(std::vector<uint8>& buf);
-    Addr get_start_PC { return entry_point; }
+    Addr get_start_PC() { return entry_point; }
 };
 
 #endif

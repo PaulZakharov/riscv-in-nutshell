@@ -31,8 +31,7 @@ using Format = Instruction::Format;
 
 static const std::vector<ISAEntry> ISA_table = {
    { I(lui),  Format::U, 0 },
-   { I(srai), Format::I, 0 }.
-   ...
+   { I(srai), Format::I, 0 }
 }
 
 

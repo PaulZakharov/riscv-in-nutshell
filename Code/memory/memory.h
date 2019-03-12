@@ -30,8 +30,9 @@ private:
     }   
     
 public:
-    Memory(const std::string& executable_filename);
+    Memory(std::string executable_filename);
     Addr get_start_PC() const { return start_PC; }
+    uint32 read_word(Addr addr) { return read(addr, 4); }
 
     void load_store(Instruction& instr) {
         if (instr.is_load())

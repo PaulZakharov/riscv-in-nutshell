@@ -41,6 +41,8 @@ ElfLoader::ElfLoader(std::string filename) :
         std::cerr << "ELF: elf_getphdrnum failed" << std::endl;
         exit(0);
     }
+
+    this->entry_point = ... // TODO
 }
 
 ElfLoader::~ElfLoader() {

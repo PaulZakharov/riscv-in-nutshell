@@ -1,14 +1,13 @@
 #include "memory.h"
 #include "../infra/elf/elf.h"
 
-Memory::Memory(const std::string& executable_filename):
+Memory::Memory(std::string executable_filename):
     size(MAX_VAL8),
     data(size, 0)
 {
     ElfLoader elf_loader(executable_filename);
-    elf_loader.load_data(data);
-
-    // TODO: set start_PC correctly
+    elf_loader.load_data(this->data);
+    this->start_PC = elf_loader.get_start_PC();
 }
 
 
@@ -40,3 +39,4 @@ void write(uint32 value, Addr addr, size_t num_bytes) {
         this->store_byte(byte, addr + i);
     }
 }
+
