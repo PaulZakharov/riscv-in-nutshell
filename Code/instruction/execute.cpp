@@ -20,7 +20,7 @@ void Instruction::execute_jal() {
 
 void Instruction::execute_jalr() {
     rd_v = PC + 4;
-    new_PC = (rs1_v + imm_v) & ~(0b00000000'00000000'00000000'00000001);
+    new_PC = (imm_v + rs1_v) & ~1;
 }
 
 void Instruction::execute_beq() {
