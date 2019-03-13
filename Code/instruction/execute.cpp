@@ -179,7 +179,7 @@ void Instruction::execute_sra() {
         (rs2_v & 0b00000000'00000000'00000000'00011111));
 }
 
-void Instruction::execute_srli() {
+void Instruction::execute_srl() {
     rd_v = rs1_v >> rs2_v & 0b00000000'00000000'00000000'00011111;
 }
 
