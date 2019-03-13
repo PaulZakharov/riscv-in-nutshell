@@ -15,27 +15,61 @@ void Instruction::execute_auipc() {
 
 void Instruction::execute_jal() {
     rd_v = PC + 4;
-    // How should I change PC?
+    new_PC = PC + imm_v;
 }
 
 void Instruction::execute_jalr() {
     rd_v = PC + 4;
-    // PC
+    new_PC = (rs1_v + imm_v) & ~(0b00000000'00000000'00000000'00000001);
 }
 
 void Instruction::execute_beq() {
-    // PC
+    if (rs1_v = rs2_v) {
+        new_PC = PC + imm_v;
+    } else {
+        new_PC = PC + 4;
+    }
 }
 
-void Instruction::execute_bne() {}
+void Instruction::execute_bne() {
+    if (rs1_v != rs2_v) {
+        new_PC = PC + imm_v;
+    } else {
+        new_PC = PC + 4;
+    }
+}
 
-void Instruction::execute_blt() {}
+void Instruction::execute_blt() {
+    if (static_cast<int32_t>(rs1_v) < static_cast<int32_t>(rs2_v)) {
+        new_PC = PC + imm_v;
+    } else {
+        new_PC = PC + 4;
+    }
+}
 
-void Instruction::execute_bge() {}
+void Instruction::execute_bge() {
+     if (static_cast<int32_t>(rs1_v) >= static_cast<int32_t>(rs2_v)) {
+        new_PC = PC + imm_v;
+    } else {
+        new_PC = PC + 4;
+    }
+}
 
-void Instruction::execute_bltu() {}
+void Instruction::execute_bltu() {
+    if (rs1_v < rs2_v) {
+        new_PC = PC + imm_v;
+    } else {
+        new_PC = PC + 4;
+    }
+}
 
-void Instruction::execute_bgeu() {}
+void Instruction::execute_bgeu() {
+    if (rs1_v >= rs2_v) {
+        new_PC = PC + imm_v;
+    } else {
+        new_PC = PC + 4;
+    }
+}
 
 void Instruction::execute_lb() {
     // memory access   
@@ -109,17 +143,48 @@ void Instruction::execute_srli() {
 
 
 void Instruction::execute_add() {
-    rd_v = rs1_v + rs2_v;
+    rd_v = static_cast<uint32>(static_cast<int32_t>(rs1_v) + \
+            static_cast<int32_t>(rs2_v));
 }
 
 void Instruction::execute_sub() {
-    
+    rd_v = static_cast<uint32>(static_cast<int32_t>(rs1_v) - \
+            static_cast<int32_t>(rs2_v));
 }
+
+void Instruction::execute_sll() {
+    rd_v = rs1_v << rs2_v & 0b00000000'00000000'00000000'00011111;
+}
+
+void Instruction::execute_slt() {
+    rd_v =  static_cast<uint32>(static_cast<int32_t>(rs1_v) < \
+                            static_cast<int32_t>(rs2_v));
+}
+
+void Instruction::execute_sltu() {
+    rd_v =  static_cast<uint32>(rs1_v < rs2_v);
+}
+
+void Instruction::execute_xor() {
+    rd_v = rs1_v ^ rs2_v;
+}
+
 void Instruction::execute_or() {
-    this->rd_v = ... // TODO
+    rd_v = rs1_v | rs2_v;
 }
 
+void Instruction::execute_and() {
+    rd_v = rs1_v & rs2_v;
+}
 
+void Instruction::execute_sra() {
+    rd_v = static_cast<uint32>(static_cast<int32_t>(rs1_v) >> \
+        (rs2_v & 0b00000000'00000000'00000000'00011111));
+}
+
+void Instruction::execute_srli() {
+    rd_v = rs1_v >> rs2_v & 0b00000000'00000000'00000000'00011111;
+}
 
 
 
