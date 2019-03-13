@@ -5,13 +5,8 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <boost/program_options.hpp>
 
-// include boost only in CPP file
-namespace boost {
-    namespace program_options {
-        class options_description;
-    }
-}
 
 namespace config {
     namespace po = boost::program_options;
@@ -20,9 +15,13 @@ namespace config {
     void parse_args(int argc, char** argv);
 
     class BaseValue {
+    private:
         friend void parse_args(int argc, char** argv);
     protected:
-        static BoostDescription boost_description;
+        static BoostDescription& bd() {
+            static BoostDescription desc("Allowed options");
+            return desc;
+        }
         const std::string name;
         const std::string description;
 
