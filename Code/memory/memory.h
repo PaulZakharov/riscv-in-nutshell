@@ -21,12 +21,12 @@ private:
     void write(uint32 value, Addr addr, size_t num_bytes);
 
     void load(Instruction& instr) const {
-        uint32 value = read(instr.get_memory_addr(), instr.get_memory_size());
+        uint32 value = this->read(instr.get_memory_addr(), instr.get_memory_size());
         instr.set_rd_v(value);
     }
 
     void store(const Instruction& instr) {
-        write(instr.get_rs2_v(), instr.get_memory_addr(), instr.get_memory_size());
+        this->write(instr.get_rs2_v(), instr.get_memory_addr(), instr.get_memory_size());
     }   
     
 public:

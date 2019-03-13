@@ -55,7 +55,7 @@ Instruction::Instruction(uint32 bytes, Addr PC) :
 {
     ISAEntry entry = find_entry(bytes);
 
-    this->name  = entry.entry.name;
+    this->name  = entry.generated_entry.name;
     this->format = entry.format;
     this->executor  = entry.generated_entry.function;
     this->memory_size = entry.memory_size;

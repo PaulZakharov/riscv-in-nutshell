@@ -42,7 +42,7 @@ ElfLoader::ElfLoader(std::string filename) :
         exit(0);
     }
 
-    this->entry_point = ... // TODO
+    this->entry_point = 0; // TODO
 }
 
 ElfLoader::~ElfLoader() {

@@ -1,5 +1,5 @@
 #include "funcsim.h"
-#include <iostream.h>
+#include <iostream>
 
 FuncSim::FuncSim(std::string executable_filename) :
     memory(executable_filename),
@@ -22,7 +22,7 @@ void FuncSim::step() {
     this->PC = instr.get_new_PC();
 
     // let's start with this and improve when needed
-    std::cout << instr->get_disasm << std::endl;
+    std::cout << instr->get_disasm() << std::endl;
 }
 
 void FuncSim::run(const uint32 n) {
