@@ -42,7 +42,7 @@ ElfLoader::ElfLoader(std::string filename) :
         exit(0);
     }
 
-    this->entry_point = 0; // TODO
+    this->entry_point = ehdr.e_entry;
 }
 
 ElfLoader::~ElfLoader() {
@@ -54,7 +54,6 @@ void ElfLoader::load_data(std::vector<uint8>& buf) {
     GElf_Phdr* temp_phdr, phdr;
     long int offset = 0;
     size_t bytes_read = 0;
-    uint32 memory_ind = 0;
 
     for (int i = 0; i < phdrnum; i++) {
         temp_phdr = gelf_getphdr(elf_inst, i, &phdr);
@@ -79,10 +78,8 @@ void ElfLoader::load_data(std::vector<uint8>& buf) {
             }
 
             for (int i = 0; i < phdr.p_filesz; ++i) {
-                buf[i+memory_ind] = temp_buf[i];
+                buf[i+phdr.p_vaddr] = temp_buf[i];
             }
-
-            memory_ind += phdr.p_filesz;
         }
     }
 }

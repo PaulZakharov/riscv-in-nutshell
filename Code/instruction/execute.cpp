@@ -72,48 +72,47 @@ void Instruction::execute_bgeu() {
 }
 
 void Instruction::execute_lb() {
-    // memory access   
+    memory_addr = rs1_v + imm_v;
 }
 
 void Instruction::execute_lh() {
-
+    memory_addr = rs1_v + imm_v;
 }
 
 void Instruction::execute_lw() {
-
+    memory_addr = rs1_v + imm_v;
 }
 
 void Instruction::execute_lbu() {
-
+    memory_addr = rs1_v + imm_v;
 }
 
 void Instruction::execute_lhu() {
-
+    memory_addr = rs1_v + imm_v;
 }
 
 void Instruction::execute_sb() {
-
+    memory_addr = rs1_v + imm_v;
 }
 
 void Instruction::execute_sh() {
-
+    memory_addr = rs1_v + imm_v;
 }
 
 void Instruction::execute_sw() {
-
+    memory_addr = rs1_v + imm_v;
 }
 
 void Instruction::execute_addi() {
-    rd_v = static_cast<uint32>(static_cast<int32_t>rs1_v + static_cast<int32_t>imm_v);
+    rd_v = rs1_v + imm_v;
 }
 
 void Instruction::execute_slti() {
-    rd_v =  static_cast<uint32>(static_cast<int32_t>(rs1_v) < \
-                            static_cast<int32_t>(imm_v));
+    rd_v =  static_cast<uint32>(static_cast<int32_t>(rs1_v) < imm_v);
 }
 
 void Instruction::execute_sltiu() {
-    rd_v = static_cast<uint32>(rs1_v < imm_v);
+    rd_v = static_cast<uint32>(rs1_v < static_cast<uint32>(imm_v));
 }
 
 void Instruction::execute_xori() {
@@ -143,13 +142,11 @@ void Instruction::execute_srli() {
 
 
 void Instruction::execute_add() {
-    rd_v = static_cast<uint32>(static_cast<int32_t>(rs1_v) + \
-            static_cast<int32_t>(rs2_v));
+    rd_v = rs1_v + rs2_v;
 }
 
 void Instruction::execute_sub() {
-    rd_v = static_cast<uint32>(static_cast<int32_t>(rs1_v) - \
-            static_cast<int32_t>(rs2_v));
+    rd_v = rs1_v - rs2_v;
 }
 
 void Instruction::execute_sll() {
