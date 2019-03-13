@@ -1,5 +1,4 @@
 #include "funcsim.h"
-#include <iostream>
 
 FuncSim::FuncSim(std::string executable_filename) :
     memory(executable_filename),
