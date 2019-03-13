@@ -1,16 +1,11 @@
 #ifndef INSTRUCTION_H
 #define INSTRUCTION_H
 
-#include "common.h"
-#include "decoder.h"
+#include "infra/common.h"
+#include "rf/register.h"
 
 class Instruction {
 private:
-    enum class Format {
-        R, I, S, B, U, J,
-        UNKNOWN
-    } format = Format::UNKNOWN;
-
     // main
     const Addr PC = NO_VAL32;
     bool complete = false;
@@ -53,6 +48,11 @@ void execute_ ## name ();
     Executor function = &Instruction::execute_unknown;
 
 public:
+    enum class Format {
+        R, I, S, B, U, J,
+        UNKNOWN
+    } format = Format::UNKNOWN;
+
     explicit Instruction(uint32 bytes, Addr PC);
     Instruction(Instruction& instr);
 

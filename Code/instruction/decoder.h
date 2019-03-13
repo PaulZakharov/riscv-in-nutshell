@@ -6,6 +6,9 @@
 
 class Decoder {
 private:
+    using Format == Format;
+    const Format format;
+
     const uint32 raw;
     const uint32 rd;
     const uint32 rs1;
@@ -57,30 +60,57 @@ private:
     }
 
 public:
-    int32 get_immediate(Instruction::Format format) const {
+    int32 get_immediate() const {
         switch(format) {
-            case Instruction::Format::I: return sign_extend(12, get_I_immediate());
-            case Instruction::Format::S: return sign_extend(12, get_S_immediate());
-            case Instruction::Format::B: return sign_extend(12, get_B_immediate());
-            case Instruction::Format::U: return sign_extend(32, get_U_immediate());
-            case Instruction::Format::J: return sign_extend(20, get_J_immediate());
-            default: assert(0);
+            case Format::R: return NO_VAL32;
+            case Format::I: return sign_extend(12, get_I_immediate());
+            case Format::S: return sign_extend(12, get_S_immediate());
+            case Format::B: return sign_extend(12, get_B_immediate());
+            case Format::U: return sign_extend(32, get_U_immediate());
+            case Format::J: return sign_extend(20, get_J_immediate());
+            default:        assert(0);
+        }
+    }
+
+    Register get_rs1() const {
+        switch(format) {
+            case Format::R: return Register(rs1);
+            case Format::I: return Register(rs1);
+            case Format::S: return Register(rs1);
+            case Format::B: return Register(rs1);
+            case Format::U: return Register::zero();
+            case Format::J: return Register::zero();
+            default:        assert(0);
+        }
+    }
+
+    Register get_rs2() const {
+        switch(format) {
+            case Format::R: return Register(rs2);
+            case Format::I: return Register::zero();
+            case Format::S: return Register(rs2);
+            case Format::B: return Register(rs2);
+            case Format::U: return Register::zero();
+            case Format::J: return Register::zero();
+            default:        assert(0);
         }
     }
 
     Register get_rd() const {
-        return static_cast<Register> rd;
+        switch(format) {
+            case Format::R: return Register(rd);
+            case Format::I: return Register(rd);
+            case Format::S: return Register::zero();
+            case Format::B: return Register::zero();
+            case Format::U: return Register(rd);
+            case Format::J: return Register(rd);
+            default:        assert(0);
+        }
     }
 
-    Register get_rs1() const {
-        return static_cast<Register> rs1;
-    }
+    Decoder(uint32 raw, Format format) :
+        raw (raw), format(format),
 
-    Register get_rs2() const {
-        return static_cast<Register> rs2;
-    }
-
-    Decoder(uint32 raw) : raw (raw)
         rd         (apply_mask(raw, 0b00000000'00000000'00001111'10000000)),
         rs1        (apply_mask(raw, 0b00000000'00001111'10000000'00000000)),
         rs2        (apply_mask(raw, 0b00000001'11110000'00000000'00000000)),
