@@ -3,40 +3,46 @@
 #include <boost/program_options.hpp>
 
 namespace config {
-    namespace po = boost::program_options;
-    Description BaseValue::description("Allowed options");
+    BoostDescription BaseValue::boost_description("Allowed options");
 
     template<>
-    void RequiredValue<bool>::reg() {
-        description.add_options()(
+    void RequiredValue<bool>::init() {
+        boost_description.add_options() (
             name.c_str(),
             po::bool_switch(&value),
-            desc.c_str());
-            std::cout << "Registered " << name << std::endl;
+            description.c_str()
+        );
+        std::cout << "Registered Required bool" << name << std::endl;
     }
 
     template<>
-    void Value<bool>::reg() {
-        description.add_options()(
+    void Value<bool>::init() {
+        boost_description.add_options() (
             name.c_str(),
             po::bool_switch(&value)->default_value(default_value),
-            desc.c_str());
+            description.c_str()
+        );
+        std::cout << "Registered bool" << name << std::endl;
     }
 
     template<typename T>
-    void RequiredValue<T>::reg() {
-        description.add_options()(
-            this->name.c_str(),
+    void RequiredValue<T>::init() {
+        boost_description.add_options() (
+            name.c_str(),
             po::value<T>(&value)->required(),
-            desc.c_str());
+            description.c_str()
+        );
+        std::cout << "Registered Required " << name << std::endl;
     }
 
     template<typename T>
-    void Value<T>::reg() {
-        this->description.add_options()(
-            this->name.c_str(),
-            po::value<T>(&this->value)->default_value(this->default_value),
-            this->desc.c_str());
+    void Value<T>::init() {
+        boost_description.add_options()(
+            name.c_str(),
+            po::value<T>(&value)->default_value(default_value),
+            description.c_str()
+        );
+        std::cout << "Registered " << name << std::endl;
     }
 
     template class RequiredValue<std::string>;
@@ -50,18 +56,21 @@ namespace config {
 
     void parse_args(int argc, char** argv) {
         po::variables_map vm;
-        std::cout << argc << std::endl;
+        std::cout << "Num arguments: " << argc << std::endl;
+
         try {
             po::store(
                 po::command_line_parser(argc, argv)
-                .options(BaseValue::description).run(),
+                .options(BaseValue::boost_description).run(),
                 vm
             );
+
+            std::cout << "Parsed options!" << std::endl;
 
             if (vm.count("help") != 0u) {
                 std::cout << "Usage:"
                           << std::endl << std::endl
-                          << BaseValue::description << std::endl;
+                          << BaseValue::boost_description << std::endl;
                 std::exit(EXIT_SUCCESS);
             }
 
@@ -70,7 +79,7 @@ namespace config {
         catch ( const std::exception& e) {
             std::cerr << argv[0] << ": " << e.what()
                       << std::endl << std::endl
-                      << BaseValue::description << std::endl;
+                      << BaseValue::boost_description << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }

@@ -14,58 +14,53 @@ namespace boost {
 }
 
 namespace config {
-    using Description = boost::program_options::options_description;
+    namespace po = boost::program_options;
+    using BoostDescription = po::options_description;
+
+    void parse_args(int argc, char** argv);
 
     class BaseValue {
         friend void parse_args(int argc, char** argv);
     protected:
-        static Description description;
+        static BoostDescription boost_description;
         const std::string name;
-        const std::string desc;
+        const std::string description;
 
-        BaseValue(const std::string name, const std::string desc) :
+        BaseValue(const std::string name, const std::string description) :
             name(name),
-            desc(desc)
-        
+            description(description)
         {}
     };
 
-
     template<typename T>
-    class RequiredValue : public BaseValue {
-    protected:
+    class RequiredValue final : public BaseValue {
+    private:
         T value;
-        RequiredValue<T>() = delete;
-        void reg();
+        void init();
     public:
         RequiredValue<T>(const std::string name,
-                         const std::string desc) :
-            BaseValue(name, desc)
-        {
-            this->reg();
-        }
+                         const std::string description) :
+            BaseValue(name, description)
+        { init(); }
         operator const T&() const { return value; }
     };
 
     template<typename T>
-    class Value : public RequiredValue<T> {
+    class Value final : public BaseValue {
+    private:
         const T default_value;
-        Value<T>() = delete;
-        void reg();
+        T value;
+        void init();
     public:
         Value<T>(const std::string name,
-                 const T& val,
-                 const std::string desc) :
-            RequiredValue<T>(name, desc),
-            default_value(val)
-        {
-            this->value = val;
-            this->reg();
-        }
+                 const std::string description,
+                 const T& default_value) :
+            BaseValue(name, description),
+            default_value(default_value),
+            value(default_value)
+        { init(); }
+        operator const T&() const { return value; }
     };
-
-    void parse_args(int argc, char** argv);
 }
 
 #endif
-
