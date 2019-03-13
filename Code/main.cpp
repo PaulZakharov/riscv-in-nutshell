@@ -1,10 +1,9 @@
 #include "infra/config/config.h"
 #include "funcsim/funcsim.h"
-#include "perfsim/perfsim.h"
 
 namespace config {
-    static RequiredValue<std::string> binary     = { "binary,b",              "input binary file"             };
-    static RequiredValue<uint64>      n          = { "nsteps,n",              "number of instructions to run" };
+    static RequiredValue<std::string> binary   = { "binary,b", "input binary file"             };
+    static RequiredValue<uint64>      n        = { "nsteps,n", "number of instructions to run" };
 }
 
 int main(int argc, char** argv) {
