@@ -5,11 +5,18 @@
 #include "rf/register.h"
 
 class Instruction {
+public:
+    enum class Format {
+        R, I, S, B, U, J,
+        UNKNOWN
+    };
+
 private:
     // main
     const Addr PC = NO_VAL32;
     bool complete = false;
     std::string name = "unknown";
+    Format format = Format::UNKNOWN;
 
     // registers
     Register rs1 = Register::zero();
@@ -33,26 +40,8 @@ private:
 
     // representation
     std::string disasm = "INVALID";
-    
-    // executors
-    void execute_unknown();
-
-#define DECLARE_INSN(name, match, mask) \
-void execute_ ## name ();
-
-#include "opcodes.gen.h"
-
-#undef DECLARE_INSN
-
-    using Executor = void (Instruction::*)(void);
-    Executor function = &Instruction::execute_unknown;
 
 public:
-    enum class Format {
-        R, I, S, B, U, J,
-        UNKNOWN
-    } format = Format::UNKNOWN;
-
     explicit Instruction(uint32 bytes, Addr PC);
     Instruction(Instruction& instr);
 
@@ -84,6 +73,17 @@ public:
     size_t get_memory_size() const { return memory_size; }
 
     void execute();
+
+    // executors
+    void execute_unknown();
+
+#define DECLARE_INSN(name, match, mask) \
+void execute_ ## name ();
+#include "opcodes.gen.h"
+#undef DECLARE_INSN
+
+    using Executor = void (Instruction::*)(void);
+    Executor function = &Instruction::execute_unknown;
 };
 
 #endif
