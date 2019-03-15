@@ -24,7 +24,7 @@ void Instruction::execute_jalr() {
 }
 
 void Instruction::execute_beq() {
-    if (rs1_v = rs2_v) {
+    if (rs1_v == rs2_v) {
         new_PC = PC + imm_v;
     } else {
         new_PC = PC + 4;
