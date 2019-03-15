@@ -2,11 +2,13 @@
 #define FUNCSIM_H
 
 #include "infra/common.h"
+#include "rf/rf.h"
+#include "memory/memory.h"
 
 class FuncSim {
     private:
-        RF rf;
         Memory memory;
+        RF rf;
         Addr PC = NO_VAL32;
     public:
         FuncSim(std::string executable_filename);
