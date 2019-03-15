@@ -40,6 +40,7 @@ private:
 
     // representation
     std::string disasm = "INVALID";
+    void generate_disasm();
 
 public:
     explicit Instruction(uint32 bytes, Addr PC);

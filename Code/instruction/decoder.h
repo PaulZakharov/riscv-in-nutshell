@@ -2,14 +2,14 @@
 #define DECODER_H
 
 #include "infra/common.h"
+#include "instruction.h"
 #include "rf/rf.h"
 
 class Decoder {
 private:
-    using Format == Format;
+    using Format = Instruction::Format;
     const Format format;
 
-    const uint32 raw;
     const uint32 rd;
     const uint32 rs1;
     const uint32 rs2;
@@ -20,7 +20,7 @@ private:
     const uint32 B_imm10_5;
     const uint32 B_imm11;
     const uint32 B_imm12;
-    const uint32 U_imm;
+    const uint32 U_imm31_12;
     const uint32 J_imm10_1;
     const uint32 J_imm11;
     const uint32 J_imm19_12;
@@ -108,9 +108,7 @@ public:
         }
     }
 
-    Decoder(uint32 raw, Format format) :
-        raw (raw), format(format),
-
+    Decoder(uint32 raw, Format format) : format(format),
         rd         (apply_mask(raw, 0b00000000'00000000'00001111'10000000)),
         rs1        (apply_mask(raw, 0b00000000'00001111'10000000'00000000)),
         rs2        (apply_mask(raw, 0b00000001'11110000'00000000'00000000)),
