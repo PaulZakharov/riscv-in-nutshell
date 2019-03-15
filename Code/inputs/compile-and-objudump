@@ -1,0 +1,3 @@
+#!/bin/bash
+riscv32-unknown-linux-gnu-gcc $1.c -o $1 -nostdlib
+riscv32-unknown-linux-gnu-objdump -d $1 > $1.objdump
