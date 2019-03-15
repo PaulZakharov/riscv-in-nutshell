@@ -52,10 +52,10 @@ ElfLoader::~ElfLoader() {
 
 void ElfLoader::load_data(std::vector<uint8>& buf) {
     GElf_Phdr* temp_phdr, phdr;
-    long int offset = 0;
-    size_t bytes_read = 0;
+    unsigned long offset = 0;
+    ssize_t bytes_read = 0;
 
-    for (int i = 0; i < phdrnum; i++) {
+    for (unsigned int i = 0; i < phdrnum; i++) {
         temp_phdr = gelf_getphdr(elf_inst, i, &phdr);
         if (temp_phdr != &phdr) {
             std::cerr << "ELF: getphdr failed" << std::endl;
@@ -77,7 +77,7 @@ void ElfLoader::load_data(std::vector<uint8>& buf) {
                 exit(0);
             }
 
-            for (int i = 0; i < phdr.p_filesz; ++i) {
+            for (unsigned int i = 0; i < phdr.p_filesz; ++i) {
                 buf[i+phdr.p_vaddr] = temp_buf[i];
             }
         }
