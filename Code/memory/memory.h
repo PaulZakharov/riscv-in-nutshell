@@ -1,12 +1,13 @@
 #ifndef _MEMORY_H_
 #define _MEMORY_H_
 
-#include "../infra/common.h"
+#include "infra/common.h"
+#include "instruction/instruction.h"
 
 class Memory {
 private:
-    std::vector<uint8> data;
     size_t size;
+    std::vector<uint8> data;
     Addr start_PC;
 
     uint8 read_byte(Addr addr) const {

@@ -12,9 +12,9 @@ private:
     std::string name = "unknown";
 
     // registers
-    Register rs1 = Register::zero;
-    Register rs2 = Register::zero;
-    Register rd  = Register::zero;
+    Register rs1 = Register::zero();
+    Register rs2 = Register::zero();
+    Register rd  = Register::zero();
 
     // registers values
     uint32 rs1_v = NO_VAL32;
