@@ -27,7 +27,7 @@ private:
     // for loads/stores
     uint32 memory_addr = NO_VAL32;
     size_t memory_size = 0;
-    bool sign_extend = true;
+    bool   memory_sign_extend = true;
 
     // for branches/jumps
     Addr new_PC   = NO_VAL32;
@@ -82,7 +82,6 @@ public:
 
     Addr   get_memory_addr() const { return memory_addr; }
     size_t get_memory_size() const { return memory_size; }
-    void sign_extend();
 
     void execute();
 };

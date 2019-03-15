@@ -38,5 +38,10 @@ void RF::read_sources(Instruction &instr) const {
 
 void writeback(const Instruction &instr) {
     Register rd = instr.get_rd();
-    this->write(rd, instr.get_rd_v());
+    uint32 value = instr.get_rd_v();
+
+    if (instr.is_load() && instr.memory_sign_extend)
+        value = static_cast<uint32>(sign_extend(8*instr.memory_size, value))
+
+    this->write(rd, value);
 }

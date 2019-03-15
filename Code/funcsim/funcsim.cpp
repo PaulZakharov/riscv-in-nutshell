@@ -17,7 +17,6 @@ void FuncSim::step() {
     // memory
     this->memory.load_store(instr);
     // writeback
-    instr.sign_extend();
     this->rf.writeback(instr);
     this->PC = instr.get_new_PC();
 

@@ -117,16 +117,6 @@ void Instruction::generate_disasm() {
     oss << this->imm_v;
 }
 
-void Instruction::sign_extend() {
-    int shift_num = 8*memory_size;
-    uint32 mask = static_cast<uint32>(-1) >> shift_num;
-    if (sign_extend) {
-        rd_v = static_cast<int32_t>((rd_v & mask) << (32 - shift_num))\
-            >> (32 - shift_num);
-    } else {
-        rd_v &= mask;
-    }
-}
 
 void Instruction::execute() {
     (this->*function)();
