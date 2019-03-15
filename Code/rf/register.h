@@ -1,3 +1,6 @@
+#ifndef REGISTER_H
+#define REGISTER_H
+
 #include <array>
 #include "infra/common.h"
 
@@ -29,6 +32,7 @@ public:
 
     size_t id() const { return static_cast<size_t>(this->number); }
     static Register zero() { return Register(Number::zero); }
+    operator size_t() const { return static_cast<size_t>(this->number); }
 
     static constexpr const size_t MAX_NUMBER = static_cast<size_t>(Number::MAX);
     static_assert(MAX_NUMBER == 32u, "Wrong amount of registers");
@@ -37,7 +41,6 @@ private:
     Number number = Number::zero;
     static const std::array<std::string, MAX_NUMBER> names_table;
     const std::string get_name() const { return this->names_table[this->id()]; }
-    operator size_t() const { return static_cast<size_t>(this->number); }
 };
 
 const std::array<std::string, Register::MAX_NUMBER> Register::names_table = {
@@ -55,3 +58,5 @@ const std::array<std::string, Register::MAX_NUMBER> Register::names_table = {
     "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9", "s10", "s11",
     "t3", "t4", "t5", "t6"
 };
+
+#endif

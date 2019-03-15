@@ -27,7 +27,6 @@ private:
     // for loads/stores
     uint32 memory_addr = NO_VAL32;
     size_t memory_size = 0;
-    bool   memory_sign_extend = true;
 
     // for branches/jumps
     Addr new_PC   = NO_VAL32;
@@ -65,6 +64,7 @@ public:
 
     bool is_jump  () const;
     bool is_load  () const;
+    bool is_load_sign_extended () const;
     bool is_store () const;
     bool is_nop   () const;
 
