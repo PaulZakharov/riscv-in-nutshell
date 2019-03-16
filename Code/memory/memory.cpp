@@ -13,7 +13,7 @@ Memory::Memory(std::string executable_filename):
 
 uint32 Memory::read(Addr addr, size_t num_bytes) const {
     assert(num_bytes <= 4);
-    assert(num_bytes >= 0);
+    //assert(num_bytes >= 0);
 
     uint32 value = 0;
     for (uint i = 0; i < num_bytes; ++i) {
@@ -27,7 +27,7 @@ uint32 Memory::read(Addr addr, size_t num_bytes) const {
 
 void Memory::write(uint32 value, Addr addr, size_t num_bytes) {
     assert(num_bytes <= 4);
-    assert(num_bytes >= 0);
+    //assert(num_bytes >= 0);
 
     for (uint i = 0; i < num_bytes; ++i) {
         uint8 byte = static_cast<uint8>(value >> 8*i); 

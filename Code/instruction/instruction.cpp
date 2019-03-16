@@ -42,7 +42,7 @@ static const std::vector<ISAEntry> ISA_table = {
    { I(lui),     F(U),   0        },
    { I(auipc),   F(U),   0        },
    { I(jal),     F(J),   0        },
-   { I(jalr),    F(J),   0        },
+   { I(jalr),    F(I),   0        },
    { I(beq),     F(B),   0        },
    { I(bne),     F(B),   0        },
    { I(blt),     F(B),   0        },
@@ -76,7 +76,7 @@ static const std::vector<ISAEntry> ISA_table = {
    { I(or),      F(R),   0        },
    { I(and),     F(R),   0        },
    { I(sra),     F(R),   0        },
-   { I(srl),     F(I),   0        }  // TODO: check this
+   { I(srl),     F(R),   0        }  // TODO: check this
 };
 
 
