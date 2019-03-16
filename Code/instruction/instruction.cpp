@@ -46,7 +46,7 @@ Instruction::Type::type
 
 // ISA table describing instructions
 static const std::vector<ISAEntry> ISA_table = {
-//   name       format  memsize.    type
+//   name       format  memsize     type
    { I(lui),     F(U),     0,    T(UNKNOWN) },
    { I(auipc),   F(U),     0,    T(UNKNOWN) },
    { I(jal),     F(J),     0,    T(UNKNOWN) },
