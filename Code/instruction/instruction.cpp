@@ -122,11 +122,31 @@ std::string Instruction::get_disasm() const {
     // for debug stage this is perfect
     std::ostringstream oss;
     oss << this->name  << " ";
-    oss << this->rs1   << " ";
-    oss << this->rs2   << " ";
-    oss << this->rd    << " ";
-    oss << this->imm_v;
-
+    switch(this->format) {
+        case Format::R:
+            oss << this->rs1   << ", ";
+            oss << this->rs2   << ", ";
+            oss << this->rd;
+            break;
+        case Format::I:
+            oss << this->rs1   << ", ";
+            oss << this->rd    << ", ";
+            oss << this->imm_v;
+            break;
+        case Format::S:
+        case Format::B:
+            oss << this->rs1   << ", ";
+            oss << this->rs2   << ", ";
+            oss << this->imm_v;
+            break;
+        case Format::U:
+        case Format::J:
+            oss << this->rd    << ", ";
+            oss << this->imm_v;
+            break;
+        default:
+            assert(0);
+    }
     return oss.str();
 }
 
