@@ -90,7 +90,8 @@ const ISAEntry find_entry(uint32 raw) {
 
 
 Instruction::Instruction(uint32 bytes, Addr PC) :
-    PC(PC)
+    PC(PC),
+    new_PC(PC + 4)
 {
     ISAEntry entry = find_entry(bytes);
 

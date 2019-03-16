@@ -11,8 +11,16 @@ public:
         UNKNOWN
     };
 
-private:
-    // main
+    enum class Type {
+        LOADU, LOAD, STORE,
+        ARITHM, NOP,
+        JUMP, BRANCH,
+        UNKNOWN
+    };
+
+    using Executor = void (Instruction::*)(void);
+
+public:
     const Addr PC = NO_VAL32;
     bool complete = false;
     std::string name = "unknown";
@@ -44,7 +52,7 @@ private:
 
 public:
     explicit Instruction(uint32 bytes, Addr PC);
-    Instruction(Instruction& instr);
+    Instruction() = delete;
 
     const std::string& get_disasm() const { return disasm; }
 
@@ -83,7 +91,6 @@ void execute_ ## name ();
 #include "opcodes.gen.h"
 #undef DECLARE_INSN
 
-    using Executor = void (Instruction::*)(void);
     Executor function = &Instruction::execute_unknown;
 };
 
