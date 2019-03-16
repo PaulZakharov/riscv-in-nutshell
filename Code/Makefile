@@ -9,7 +9,13 @@ OBJECTS  := $(wildcard $(addsuffix /*.cpp, $(OBJDIRS)))
 OBJECTS  := $(OBJECTS:.cpp=.o)
 
 all: $(OBJECTS)
-	$(CXX) -o sim $(OBJECTS) $(LDFLAGS)
+	$(CXX) -o $(TARGET) $(OBJECTS) $(LDFLAGS)
     
 %.o: %.cpp
 	$(CXX) -o $@ -c $< $(CXXFLAGS) $(addprefix -I,  $(INCLUDE))
+
+.PHONY: clean
+
+clean:
+	rm -f $(OBJECTS)
+	rm -f $(TARGET)

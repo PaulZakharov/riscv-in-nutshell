@@ -15,7 +15,7 @@ public:
     // internal types
     enum class Type {
         LOADU, LOAD, STORE,
-        ARITHM, NOP,
+        ARITHM,
         JUMP, BRANCH,
         UNKNOWN
     };
@@ -61,10 +61,10 @@ public:
     Register get_rs2 () const { return rs2; }
     Register get_rd  () const { return rd; }
 
-    bool is_load_sign_extended () const { return type == Type::LOAD; }
-    bool is_load_zero_extended () const { return type == Type::LOADU; }
+    bool is_sign_extended_load () const { return type == Type::LOAD; }
+    bool is_zero_extended_load () const { return type == Type::LOADU; }
+    bool is_load  () const { return is_sign_extended_load() || is_zero_extended_load(); }
     bool is_store () const { return type == Type::STORE; }
-    bool is_nop   () const { return type == Type::NOP; }
 
     void set_rs1_v (uint32 value) { rs1_v = value; }
     void set_rs2_v (uint32 value) { rs2_v = value; }

@@ -40,7 +40,7 @@ void RF::writeback(const Instruction &instr) {
     Register rd = instr.get_rd();
     uint32 value = instr.get_rd_v();
 
-    if (instr.is_load_sign_extended()) {
+    if (instr.is_sign_extended_load()) {
         auto bits = 8*instr.get_memory_size();
         int32 sign_extended_value = sign_extend(bits, value);
         value = static_cast<uint32>(sign_extended_value);

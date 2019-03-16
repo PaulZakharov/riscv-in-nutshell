@@ -1,5 +1,5 @@
-#ifndef _MEMORY_H_
-#define _MEMORY_H_
+#ifndef MEMORY_H
+#define MEMORY_H
 
 #include "infra/common.h"
 #include "instruction/instruction.h"

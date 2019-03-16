@@ -1,7 +1,7 @@
 #include "instruction.h"
 
 void Instruction::execute_unknown() {
-    std::cerr << "Incorrect instruction: " << this->disasm << std::endl;
+    std::cerr << "Incorrect instruction: " << this->get_disasm() << std::endl;
     exit(EXIT_FAILURE);
 }
 
