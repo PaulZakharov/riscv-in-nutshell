@@ -24,7 +24,7 @@ public:
     };
 
     friend std::ostream& operator<<(std::ostream& out, const Register& reg) {
-        return out << reg.get_name();
+        return out << '$' << reg.get_name();
     }
 
     Register(Number number) : number(number) { };
