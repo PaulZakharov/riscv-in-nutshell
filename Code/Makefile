@@ -22,6 +22,6 @@ $(TARGET): $(OBJECTS) main.o
 .PHONY: clean
 
 clean:
-	rm -f $(OBJECTS)
+	rm -f $(OBJECTS) main.o
 	rm -f $(TARGET)
-	rm -f $(DEPS)
+	rm -f $(DEPS) main.d
