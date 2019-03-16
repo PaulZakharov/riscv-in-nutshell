@@ -11,7 +11,7 @@ OBJDIRS  := memory infra infra/config infra/elf rf instruction funcsim
 OBJECTS  := $(wildcard $(addsuffix /*.cpp, $(OBJDIRS)))
 OBJECTS  := $(OBJECTS:.cpp=.o)
 DEPS     := $(OBJECTS:.o=.d)
-TESTS    := instruction
+TESTS    := common instruction
 TESTS    := $(addsuffix .run, $(addprefix tests/, $(TESTS)))
 
 all: $(TARGET)

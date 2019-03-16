@@ -93,7 +93,7 @@ const ISAEntry find_entry(uint32 raw) {
         if (x.match(raw))
             return x;
     }
-    assert(0);
+    throw std::invalid_argument("No entry found for given instruction");
 }
 
 
