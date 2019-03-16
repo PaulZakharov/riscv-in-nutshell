@@ -82,6 +82,7 @@ public:
     Size get_memory_size() const { return memory_size; }
 
     // representation
+    std::string get_name() const { return name; }
     std::string get_disasm() const;
 
     // executors
