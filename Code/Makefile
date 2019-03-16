@@ -1,6 +1,7 @@
 CXX      := -c++
 CXXFLAGS := -pedantic-errors -Wall -Wextra -Werror -std=c++17
 LDFLAGS  := -L /usr/local/lib -lboost_program_options -lelf
+ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 OBJ_DIR  := ./obj
 TARGET   := sim
 INCLUDE  := /usr/local/include/boost /usr/local/include/libelf ./
@@ -16,8 +17,13 @@ all: $(TARGET)
 $(TARGET): $(OBJECTS) main.o
 	$(CXX) -o $@ $^ $(LDFLAGS)
 
+%.test: $(OBJECTS) tests/%.o infra/test/test_main.o
+	$(CXX) -o $@ $^ $(LDFLAGS)
+
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -o $@ -c $< $(addprefix -I,  $(INCLUDE))
+
+
 
 .PHONY: clean
 
