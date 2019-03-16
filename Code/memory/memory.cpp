@@ -2,7 +2,7 @@
 #include "../infra/elf/elf.hpp"
 
 Memory::Memory(std::string executable_filename):
-    size(MAX_VAL8),
+    size(10000000),
     data(size, 0)
 {
     ElfLoader elf_loader(executable_filename);

@@ -5,22 +5,22 @@ simple:     file format elf32-littleriscv
 Disassembly of section .text:
 
 00010074 <main>:
-   10074:	1101                	addi	sp,sp,-32
-   10076:	ce22                	sw	s0,28(sp)
-   10078:	1000                	addi	s0,sp,32
-   1007a:	03800793          	li	a5,56
-   1007e:	fef42623          	sw	a5,-20(s0)
-   10082:	02a00793          	li	a5,42
-   10086:	fef42423          	sw	a5,-24(s0)
-   1008a:	fec42703          	lw	a4,-20(s0)
-   1008e:	fe842783          	lw	a5,-24(s0)
-   10092:	97ba                	add	a5,a5,a4
-   10094:	fef42223          	sw	a5,-28(s0)
-   10098:	fe442783          	lw	a5,-28(s0)
-   1009c:	078a                	slli	a5,a5,0x2
-   1009e:	fef42223          	sw	a5,-28(s0)
-   100a2:	4781                	li	a5,0
-   100a4:	853e                	mv	a0,a5
-   100a6:	4472                	lw	s0,28(sp)
-   100a8:	6105                	addi	sp,sp,32
-   100aa:	8082                	ret
+   10074:	fe010113          	addi	sp,sp,-32
+   10078:	00812e23          	sw	s0,28(sp)
+   1007c:	02010413          	addi	s0,sp,32
+   10080:	03800793          	li	a5,56
+   10084:	fef42623          	sw	a5,-20(s0)
+   10088:	02a00793          	li	a5,42
+   1008c:	fef42423          	sw	a5,-24(s0)
+   10090:	fec42703          	lw	a4,-20(s0)
+   10094:	fe842783          	lw	a5,-24(s0)
+   10098:	00f707b3          	add	a5,a4,a5
+   1009c:	fef42223          	sw	a5,-28(s0)
+   100a0:	fe442783          	lw	a5,-28(s0)
+   100a4:	00279793          	slli	a5,a5,0x2
+   100a8:	fef42223          	sw	a5,-28(s0)
+   100ac:	00000793          	li	a5,0
+   100b0:	00078513          	mv	a0,a5
+   100b4:	01c12403          	lw	s0,28(sp)
+   100b8:	02010113          	addi	sp,sp,32
+   100bc:	00008067          	ret
