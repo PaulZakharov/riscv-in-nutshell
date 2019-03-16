@@ -1,8 +1,8 @@
 #ifndef _PORT_H_
 #define _PORT_H_
 
-#include "common.h"
-#include "data_types.h"
+#include "common.hpp"
+#include "data_types.hpp"
 
 template <class Data>
 class Port {

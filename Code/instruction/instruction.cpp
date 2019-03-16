@@ -1,8 +1,8 @@
 #include <sstream>
 
-#include "instruction.h"
-#include "decoder.h"
-#include "../rf/rf.h"
+#include "instruction.hpp"
+#include "decoder.hpp"
+#include "../rf/rf.hpp"
 
 // simple macro aliases
 #define I(name) \
@@ -22,7 +22,7 @@ struct ISAEntryGenerated {
 #define DECLARE_INSN(name, match, mask) \
 static const ISAEntryGenerated I(name) = \
 { #name, match, mask, &Instruction::execute_ ## name};
-#include "opcodes.gen.h"
+#include "opcodes.gen.hpp"
 #undef DECLARE_INSN
 
 // contains fields which are defined in the table below

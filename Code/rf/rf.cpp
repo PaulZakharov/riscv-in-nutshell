@@ -1,4 +1,4 @@
-#include "rf.h"
+#include "rf.hpp"
 
 uint32 RF::read(Register num) const {
     return register_table[num].value;

@@ -1,8 +1,8 @@
 #ifndef _DATATYPES_H_
 #define _DATATYPES_H_
 
-#include "../infra/common.h"
-#include "../instruction/instruction.h"
+#include "../infra/common.hpp"
+#include "../instruction/instruction.hpp"
 
 //All classes will be extended for sure
 

@@ -1,4 +1,4 @@
-#include "funcsim.h"
+#include "funcsim.hpp"
 
 FuncSim::FuncSim(std::string executable_filename) :
     memory(executable_filename),

@@ -1,5 +1,5 @@
-#include "memory.h"
-#include "../infra/elf/elf.h"
+#include "memory.hpp"
+#include "../infra/elf/elf.hpp"
 
 Memory::Memory(std::string executable_filename):
     size(MAX_VAL8),

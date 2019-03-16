@@ -1,4 +1,4 @@
-#include "instruction.h"
+#include "instruction.hpp"
 
 void Instruction::execute_unknown() {
     std::cerr << "Incorrect instruction: " << this->get_disasm() << std::endl;

@@ -1,8 +1,8 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 
-#include "infra/common.h"
-#include "instruction/instruction.h"
+#include "infra/common.hpp"
+#include "instruction/instruction.hpp"
 
 class Memory {
 private:

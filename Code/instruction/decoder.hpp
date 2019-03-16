@@ -1,9 +1,9 @@
 #ifndef DECODER_H
 #define DECODER_H
 
-#include "infra/common.h"
-#include "instruction.h"
-#include "rf/rf.h"
+#include "infra/common.hpp"
+#include "instruction.hpp"
+#include "rf/rf.hpp"
 
 class Decoder {
 private:

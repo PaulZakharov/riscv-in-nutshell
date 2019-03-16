@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 
-#include "types.h"
+#include "types.hpp"
 
 int32 sign_extend(const int bits, uint32 x) {
     uint32 m = 1;

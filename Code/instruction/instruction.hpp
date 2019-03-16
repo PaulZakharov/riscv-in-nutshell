@@ -1,8 +1,8 @@
 #ifndef INSTRUCTION_H
 #define INSTRUCTION_H
 
-#include "infra/common.h"
-#include "rf/register.h"
+#include "infra/common.hpp"
+#include "rf/register.hpp"
 
 class Instruction {
 public:
@@ -90,7 +90,7 @@ public:
 
 #define DECLARE_INSN(name, match, mask) \
 void execute_ ## name ();
-#include "opcodes.gen.h"
+#include "opcodes.gen.hpp"
 #undef DECLARE_INSN
 
     Executor function = &Instruction::execute_unknown;

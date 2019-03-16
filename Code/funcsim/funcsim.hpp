@@ -1,9 +1,9 @@
 #ifndef FUNCSIM_H
 #define FUNCSIM_H
 
-#include "infra/common.h"
-#include "rf/rf.h"
-#include "memory/memory.h"
+#include "infra/common.hpp"
+#include "rf/rf.hpp"
+#include "memory/memory.hpp"
 
 class FuncSim {
     private:

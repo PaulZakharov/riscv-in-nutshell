@@ -1,5 +1,5 @@
-#include "infra/config/config.h"
-#include "funcsim/funcsim.h"
+#include "infra/config/config.hpp"
+#include "funcsim/funcsim.hpp"
 
 namespace config {
     static RequiredValue<std::string> binary   = { "binary,b", "input binary file"             };

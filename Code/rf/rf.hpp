@@ -1,9 +1,9 @@
 #ifndef RF_H
 #define RF_H
 
-#include "register.h"
-#include "instruction/instruction.h"
-#include "infra/common.h"
+#include "register.hpp"
+#include "instruction/instruction.hpp"
+#include "infra/common.hpp"
 
 
 class RF {

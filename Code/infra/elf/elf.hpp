@@ -2,7 +2,7 @@
 #define _ELF_H_
 
 #include <gelf.h>
-#include "infra/common.h"
+#include "infra/common.hpp"
 
 class ElfLoader {
 private:

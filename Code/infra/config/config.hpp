@@ -1,7 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include "../types.h"
+#include "../types.hpp"
 #include <iostream>
 #include <string>
 #include <map>

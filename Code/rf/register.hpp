@@ -2,7 +2,7 @@
 #define REGISTER_H
 
 #include <array>
-#include "infra/common.h"
+#include "infra/common.hpp"
 
 class Register {
 public:
