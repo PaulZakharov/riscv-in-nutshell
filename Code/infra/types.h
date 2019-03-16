@@ -17,6 +17,7 @@ using float64 = double;
 // semantics
 using Addr   = uint32;
 using Cycles = uint32;
+using Size   = uint32;
 
 static const uint8  NO_VAL8  = 0xba;
 static const uint16 NO_VAL16 = 0xf00d;

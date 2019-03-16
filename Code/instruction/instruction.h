@@ -6,11 +6,13 @@
 
 class Instruction {
 public:
+    // RISCV encoding format
     enum class Format {
         R, I, S, B, U, J,
         UNKNOWN
     };
 
+    // internal types
     enum class Type {
         LOADU, LOAD, STORE,
         ARITHM, NOP,
@@ -18,13 +20,19 @@ public:
         UNKNOWN
     };
 
+    // executor function type
     using Executor = void (Instruction::*)(void);
 
-public:
+private:
+    // PC
     const Addr PC = NO_VAL32;
+    Addr new_PC = NO_VAL32;
+
+    // main info
     bool complete = false;
     std::string name = "unknown";
     Format format = Format::UNKNOWN;
+    Type type = Type::UNKNOWN;
 
     // registers
     Register rs1 = Register::zero();
@@ -40,50 +48,44 @@ public:
     int32 imm_v = NO_VAL32;
 
     // for loads/stores
-    uint32 memory_addr = NO_VAL32;
-    size_t memory_size = 0;
-
-    // for branches/jumps
-    Addr new_PC   = NO_VAL32;
-
-    // representation
-    std::string disasm = "INVALID";
-    void generate_disasm();
+    Addr memory_addr = NO_VAL32;
+    Size memory_size = NO_VAL32;
 
 public:
+    // constructors
     explicit Instruction(uint32 bytes, Addr PC);
     Instruction() = delete;
 
-    const std::string& get_disasm() const { return disasm; }
-
+    // dummy getters
     Register get_rs1 () const { return rs1; }
     Register get_rs2 () const { return rs2; }
-    Register get_rd  () const { return rd;  }
+    Register get_rd  () const { return rd; }
 
-    bool is_jump  () const;
-    bool is_load  () const;
-    bool is_load_sign_extended () const;
-    bool is_store () const;
-    bool is_nop   () const;
+    bool is_load_sign_extended () const { return type == Type::LOAD; }
+    bool is_load_zero_extended () const { return type == Type::LOADU; }
+    bool is_store () const { return type == Type::STORE; }
+    bool is_nop   () const { return type == Type::NOP; }
 
-    void set_rs1_v (uint32 value);
-    void set_rs2_v (uint32 value);
-    void set_rd_v  (uint32 value);
+    void set_rs1_v (uint32 value) { rs1_v = value; }
+    void set_rs2_v (uint32 value) { rs2_v = value; }
+    void set_rd_v  (uint32 value) {  rd_v = value; }
 
     uint32 get_rs1_v () const { return rs1_v; }
     uint32 get_rs2_v () const { return rs2_v; }
-    uint32 get_rd_v  () const { return rd_v;  }
+    uint32 get_rd_v  () const { return  rd_v; }
     int32  get_imm_v () const { return imm_v; }
 
     Addr get_PC      () const { return PC;     }
     Addr get_new_PC  () const { return new_PC; }
 
-    Addr   get_memory_addr() const { return memory_addr; }
-    size_t get_memory_size() const { return memory_size; }
+    Addr get_memory_addr() const { return memory_addr; }
+    Size get_memory_size() const { return memory_size; }
 
-    void execute();
+    // representation
+    std::string get_disasm() const;
 
     // executors
+    void execute();
     void execute_unknown();
 
 #define DECLARE_INSN(name, match, mask) \

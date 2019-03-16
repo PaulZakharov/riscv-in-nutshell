@@ -105,12 +105,10 @@ Instruction::Instruction(uint32 bytes, Addr PC) :
     this->rs2   = decoder.get_rs2();
     this->rd    = decoder.get_rd();
     this->imm_v = decoder.get_immediate();
-
-    this->generate_disasm();
 }
 
 
-void Instruction::generate_disasm() {
+std::string Instruction::get_disasm() const {
     // might pretty-format in future but
     // for debug stage this is perfect
     std::ostringstream oss;
@@ -119,6 +117,8 @@ void Instruction::generate_disasm() {
     oss << this->rs2   << " ";
     oss << this->rd    << " ";
     oss << this->imm_v;
+
+    return oss.str();
 }
 
 
