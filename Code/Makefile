@@ -11,13 +11,20 @@ OBJDIRS  := memory infra infra/config infra/elf rf instruction funcsim
 OBJECTS  := $(wildcard $(addsuffix /*.cpp, $(OBJDIRS)))
 OBJECTS  := $(OBJECTS:.cpp=.o)
 DEPS     := $(OBJECTS:.o=.d)
+TESTS    := instruction
+TESTS    := $(addsuffix .run, $(addprefix tests/, $(TESTS)))
 
 all: $(TARGET)
+
+test: $(TESTS)
 
 $(TARGET): $(OBJECTS) main.o
 	$(CXX) -o $@ $^ $(LDFLAGS)
 
-%.test: $(OBJECTS) tests/%.o infra/test/test_main.o
+%.run: %.test
+	exec $^
+
+%.test: $(OBJECTS) %.o infra/test/test_main.o
 	$(CXX) -o $@ $^ $(LDFLAGS)
 
 %.o: %.cpp
