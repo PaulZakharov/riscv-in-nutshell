@@ -21,7 +21,7 @@ void FuncSim::step() {
     this->PC = instr.get_new_PC();
 
     // let's start with this and improve when needed
-    std::cout << instr.get_disasm() << std::endl;
+    std::cout << instr.get_disasm() << " pc" << std::hex << this->PC << std::endl;
     this->rf.dump();
 }
 
