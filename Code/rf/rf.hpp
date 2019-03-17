@@ -26,6 +26,7 @@ public:
     
     void read_sources(Instruction &instr) const;
     void writeback(const Instruction &instr);
+    void dump() const;
 };
 
 #endif

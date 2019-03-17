@@ -48,3 +48,11 @@ void RF::writeback(const Instruction &instr) {
 
     this->write(rd, value);
 }
+
+void RF::dump() const {
+    for(uint8 i = 0; i < (Register::MAX_NUMBER); i++) {
+        Register dumped(i);
+        std::cout << dumped << " = " << register_table[i].value << std::endl;
+    }
+    return;
+}

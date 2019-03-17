@@ -22,6 +22,7 @@ void FuncSim::step() {
 
     // let's start with this and improve when needed
     std::cout << instr.get_disasm() << std::endl;
+    this->rf.dump();
 }
 
 void FuncSim::run(const uint32 n) {
