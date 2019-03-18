@@ -5,11 +5,13 @@ uint32 RF::read(Register num) const {
 }
 
 void RF::write(Register num, uint32 value) {
+    if (num == 0) return;
     register_table[num].value = value;
     register_table[num].is_valid = true;
 }
 
 void RF::invalidate(Register num) {
+    if (num == 0) return;
     register_table[num].is_valid = false;
 }
 
@@ -45,14 +47,15 @@ void RF::writeback(const Instruction &instr) {
         int32 sign_extended_value = sign_extend(bits, value);
         value = static_cast<uint32>(sign_extended_value);
     }
+
     this->write(rd, value);
-    this->write(Register::Number::zero, 0);
 }
 
 void RF::dump() const {
-    for(uint8 i = 0; i < (Register::MAX_NUMBER); i++) {
-        Register dumped(i);
-        std::cout << dumped << " = " << register_table[i].value << std::endl;
+    for(uint8 i = 0; i < (Register::MAX_NUMBER); ++i) {
+        std::cout << Register(i) << " = "
+                  << register_table[i].value << std::endl;
     }
-    return;
+
+    std::cout << std::endl;
 }
