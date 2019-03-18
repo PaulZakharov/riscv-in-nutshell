@@ -22,13 +22,14 @@ void FuncSim::step() {
     this->memory.load_store(instr);
     // writeback
     this->rf.writeback(instr);
-    this->PC = instr.get_new_PC();
 
     // let's start with this and improve when needed
     std::cout << "0x" << std::hex << this->PC << ": "
               << instr.get_disasm() << " "
               << "(0x" << std::hex << raw_bytes << ")" << std::endl;
     this->rf.dump();
+
+    this->PC = instr.get_new_PC();
 }
 
 void FuncSim::run(const uint32 n) {
