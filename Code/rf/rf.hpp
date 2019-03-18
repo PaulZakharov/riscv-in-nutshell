@@ -5,8 +5,6 @@
 #include "instruction/instruction.hpp"
 #include "infra/common.hpp"
 
-extern uint32 MEMORY_SIZE;
-
 class RF {
 private:
     uint32 read(Register num) const;
@@ -14,21 +12,23 @@ private:
 
     struct RegisterState {
         uint32 value = 0;
-        bool is_valid = true; 
+        bool is_valid = false; 
     };
     
     std::array<RegisterState, Register::MAX_NUMBER> register_table;
     
     void invalidate(Register num);
-    void validate(Register num);
     bool is_valid(Register num) const;
 public:
     RF() {
-        register_table[2].value = MEMORY_SIZE-1;
-     };
+        register_table[Register::zero()].is_valid = true;
+    };
     
     void read_sources(Instruction &instr) const;
     void writeback(const Instruction &instr);
+    void set_stack_pointer(uint32 value);
+    void validate(Register num);
+
     void dump() const;
 };
 

@@ -24,8 +24,10 @@ public:
     };
 
     friend std::ostream& operator<<(std::ostream& out, const Register& reg) {
-        return out << '$' << reg.get_name();
+        return out << reg.get_name();
     }
+
+    const std::string get_name() const { return "$" + this->names_table[this->id()]; }
 
     Register(Number number) : number(number) { };
     Register(uint8 number) : number(static_cast<Number>(number)) { };
@@ -40,7 +42,6 @@ public:
 private:
     Number number = Number::zero;
     static const std::array<std::string, MAX_NUMBER> names_table;
-    const std::string get_name() const { return this->names_table[this->id()]; }
 };
 
 #endif

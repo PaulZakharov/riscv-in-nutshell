@@ -2,6 +2,7 @@
 #define COMMON_H
 
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <string>
 #include <assert.h>

@@ -1,12 +1,14 @@
 #include "funcsim.hpp"
 
-uint32 MEMORY_SIZE = 10000000;
-
 FuncSim::FuncSim(std::string executable_filename) :
     memory(executable_filename),
     rf(),
     PC(memory.get_start_PC())
-{ }
+{
+    // setup stack
+    rf.set_stack_pointer(memory.get_stack_pointer());
+    rf.validate(Register::Number::s0);
+}
 
 void FuncSim::step() {
     // fetch
@@ -23,7 +25,9 @@ void FuncSim::step() {
     this->PC = instr.get_new_PC();
 
     // let's start with this and improve when needed
-    std::cout << instr.get_disasm() << " pc" << std::hex << this->PC << std::endl;
+    std::cout << "0x" << std::hex << this->PC << ": "
+              << instr.get_disasm() << " "
+              << "(0x" << std::hex << raw_bytes << ")" << std::endl;
     this->rf.dump();
 }
 

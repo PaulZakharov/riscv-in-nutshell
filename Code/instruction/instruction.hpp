@@ -57,9 +57,9 @@ public:
     Instruction() = delete;
 
     // dummy getters
-    Register get_rs1 () const { return rs1; }
-    Register get_rs2 () const { return rs2; }
-    Register get_rd  () const { return rd; }
+    const Register get_rs1 () const { return rs1; }
+    const Register get_rs2 () const { return rs2; }
+    const Register get_rd  () const { return rd; }
 
     bool is_sign_extended_load () const { return type == Type::LOAD; }
     bool is_zero_extended_load () const { return type == Type::LOADU; }
@@ -82,8 +82,8 @@ public:
     Size get_memory_size() const { return memory_size; }
 
     // representation
-    std::string get_name() const { return name; }
-    std::string get_disasm() const;
+    const std::string get_name() const { return name; }
+    const std::string get_disasm() const;
 
     // executors
     void execute();

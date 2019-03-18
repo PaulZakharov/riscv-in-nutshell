@@ -114,11 +114,10 @@ Instruction::Instruction(uint32 bytes, Addr PC) :
     this->rs2   = decoder.get_rs2();
     this->rd    = decoder.get_rd();
     this->imm_v = decoder.get_immediate();
-    std::cout << "RAW: " << bytes << std::endl;
 }
 
 
-std::string Instruction::get_disasm() const {
+const std::string Instruction::get_disasm() const {
     // might pretty-format in future but
     // for debug stage this is perfect
     std::ostringstream oss;

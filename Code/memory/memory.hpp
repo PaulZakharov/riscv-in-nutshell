@@ -33,6 +33,7 @@ private:
 public:
     Memory(std::string executable_filename);
     Addr get_start_PC() const { return start_PC; }
+    Addr get_stack_pointer() const { return size - 1; }
     uint32 read_word(Addr addr) { return read(addr, 4); }
 
     void load_store(Instruction& instr) {

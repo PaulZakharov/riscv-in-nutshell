@@ -1,45 +1,37 @@
 #include "rf.hpp"
 
 uint32 RF::read(Register num) const {
-    return register_table[num].value;
+    if (this->is_valid(num))
+        return this->register_table[num].value;
+    
+    throw std::invalid_argument("Register " + num.get_name() + " is INVALID");
 }
 
 void RF::write(Register num, uint32 value) {
     if (num == 0) return;
-    register_table[num].value = value;
-    register_table[num].is_valid = true;
+    this->register_table[num].value = value;
+    this->validate(num);
 }
 
 void RF::invalidate(Register num) {
     if (num == 0) return;
-    register_table[num].is_valid = false;
+    this->register_table[num].is_valid = false;
 }
 
 void RF::validate(Register num) {
-    register_table[num].is_valid = true;
+    this->register_table[num].is_valid = true;
 }
 
 bool RF::is_valid(Register num) const {
-    return register_table[num].is_valid;
+    return this->register_table[num].is_valid;
 }
 
 void RF::read_sources(Instruction &instr) const {
-    Register rs1 = instr.get_rs1();
-    Register rs2 = instr.get_rs2();
-
-    if (is_valid(rs1))
-        instr.set_rs1_v(this->read(rs1));
-    else
-        assert(0); // TRAP
-
-    if (is_valid(rs2))
-        instr.set_rs2_v(this->read(rs2));
-    else
-        assert(0); // TRAP
+    instr.set_rs1_v(this->read(instr.get_rs1()));
+    instr.set_rs2_v(this->read(instr.get_rs2()));
 }
 
 void RF::writeback(const Instruction &instr) {
-    Register rd = instr.get_rd();
     uint32 value = instr.get_rd_v();
 
     if (instr.is_sign_extended_load()) {
@@ -48,13 +40,20 @@ void RF::writeback(const Instruction &instr) {
         value = static_cast<uint32>(sign_extended_value);
     }
 
-    this->write(rd, value);
+    this->write(instr.get_rd(), value);
+}
+
+void RF::set_stack_pointer(uint32 value) {
+    this->write(Register::Number::sp, value);
 }
 
 void RF::dump() const {
     for(uint8 i = 0; i < (Register::MAX_NUMBER); ++i) {
-        std::cout << Register(i) << " = "
-                  << register_table[i].value << std::endl;
+        if (!this->is_valid(i))
+            continue;
+
+        std::cout << '\t' << Register(i) << " = " << std::dec
+                  << this->register_table[i].value << std::endl;
     }
 
     std::cout << std::endl;
