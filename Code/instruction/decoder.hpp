@@ -65,7 +65,7 @@ public:
             case Format::R: return NO_VAL32;
             case Format::I: return sign_extend(12, get_I_immediate());
             case Format::S: return sign_extend(12, get_S_immediate());
-            case Format::B: return sign_extend(12, get_B_immediate());
+            case Format::B: return sign_extend(13, get_B_immediate());
             case Format::U: return sign_extend(32, get_U_immediate());
             case Format::J: return sign_extend(21, get_J_immediate());
             default:        assert(0);

@@ -5,6 +5,7 @@
 #include "instruction/instruction.hpp"
 #include "infra/common.hpp"
 
+extern uint32 MEMORY_SIZE;
 
 class RF {
 private:
@@ -22,7 +23,9 @@ private:
     void validate(Register num);
     bool is_valid(Register num) const;
 public:
-    RF() { };
+    RF() {
+        register_table[2].value = MEMORY_SIZE-1;
+     };
     
     void read_sources(Instruction &instr) const;
     void writeback(const Instruction &instr);

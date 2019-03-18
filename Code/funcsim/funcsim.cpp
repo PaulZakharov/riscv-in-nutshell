@@ -1,5 +1,7 @@
 #include "funcsim.hpp"
 
+uint32 MEMORY_SIZE = 10000000;
+
 FuncSim::FuncSim(std::string executable_filename) :
     memory(executable_filename),
     rf(),

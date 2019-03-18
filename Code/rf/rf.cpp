@@ -45,8 +45,8 @@ void RF::writeback(const Instruction &instr) {
         int32 sign_extended_value = sign_extend(bits, value);
         value = static_cast<uint32>(sign_extended_value);
     }
-
     this->write(rd, value);
+    this->write(Register::Number::zero, 0);
 }
 
 void RF::dump() const {

@@ -1,15 +1,16 @@
 #include "memory.hpp"
 #include "../infra/elf/elf.hpp"
 
+extern uint32 MEMORY_SIZE;
+
 Memory::Memory(std::string executable_filename):
-    size(10000000),
+    size(MEMORY_SIZE),
     data(size, 0)
 {
     ElfLoader elf_loader(executable_filename);
     elf_loader.load_data(this->data);
     this->start_PC = elf_loader.get_start_PC();
 }
-
 
 uint32 Memory::read(Addr addr, size_t num_bytes) const {
     assert(num_bytes <= 4);

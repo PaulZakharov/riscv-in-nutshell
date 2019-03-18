@@ -12,7 +12,7 @@ Disassembly of section .text:
    10084:	fe042623          	sw	zero,-20(s0)
    10088:	01c0006f          	j	100a4 <main+0x30>
    1008c:	fe842783          	lw	a5,-24(s0)
-   10090:	00178793          	addi	a5,a5,1
+   10090:	00278793          	addi	a5,a5,2
    10094:	fef42423          	sw	a5,-24(s0)
    10098:	fec42783          	lw	a5,-20(s0)
    1009c:	00178793          	addi	a5,a5,1
