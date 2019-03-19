@@ -3,7 +3,7 @@
 
 
 Memory::Memory(std::string executable_filename):
-    size(1000),
+    size(100000),
     data(size, 0)
 {
     ElfLoader elf_loader(executable_filename);

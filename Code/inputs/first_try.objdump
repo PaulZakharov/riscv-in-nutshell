@@ -1,0 +1,14 @@
+
+inputs/first_try:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00010054 <_start>:
+   10054:	00600493          	li	s1,6
+   10058:	00900913          	li	s2,9
+   1005c:	009909b3          	add	s3,s2,s1
+   10060:	fe010113          	addi	sp,sp,-32
+   10064:	01312c23          	sw	s3,24(sp)
+   10068:	01812a03          	lw	s4,24(sp)
+   1006c:	010a2493          	slti	s1,s4,16

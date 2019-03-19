@@ -1,0 +1,4 @@
+#!/bin/bash
+riscv32-unknown-linux-gnu-gcc -c inputs/$1.s -o inputs/$1.o -nostdlib -march=rv32im -mabi=ilp32
+riscv32-unknown-linux-gnu-gcc inputs/$1.o -o inputs/$1 -nostdlib -march=rv32im -mabi=ilp32
+riscv32-unknown-linux-gnu-objdump -d inputs/$1 > inputs/$1.objdump

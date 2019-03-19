@@ -8,6 +8,7 @@ FuncSim::FuncSim(std::string executable_filename) :
     // setup stack
     rf.set_stack_pointer(memory.get_stack_pointer());
     rf.validate(Register::Number::s0);
+    rf.validate(Register::Number::ra);
 }
 
 void FuncSim::step() {
