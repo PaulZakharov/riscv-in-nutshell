@@ -52,7 +52,7 @@ void RF::dump() const {
         if (!this->is_valid(i))
             continue;
 
-        std::cout << '\t' << Register(i) << " = " << std::dec
+        std::cout << '\t' << Register(i) << " = " << std::hex
                   << this->register_table[i].value << std::endl;
     }
 

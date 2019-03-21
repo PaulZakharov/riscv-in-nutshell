@@ -1,0 +1,53 @@
+
+inputs/branches:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00010054 <_start>:
+   10054:	fe010113          	addi	sp,sp,-32
+   10058:	2261e4b7          	lui	s1,0x2261e
+   1005c:	03148493          	addi	s1,s1,49 # 2261e031 <__global_pointer$+0x2260c75d>
+   10060:	00002917          	auipc	s2,0x2
+   10064:	00600913          	li	s2,6
+
+00010068 <loop1>:
+   10068:	00190913          	addi	s2,s2,1 # 12061 <__global_pointer$+0x78d>
+   1006c:	00900993          	li	s3,9
+   10070:	ff394ce3          	blt	s2,s3,10068 <loop1>
+   10074:	01390663          	beq	s2,s3,10080 <brnch1>
+   10078:	00000013          	nop
+   1007c:	00000013          	nop
+
+00010080 <brnch1>:
+   10080:	00b00913          	li	s2,11
+
+00010084 <loop2>:
+   10084:	fff90913          	addi	s2,s2,-1
+   10088:	ff395ee3          	bge	s2,s3,10084 <loop2>
+   1008c:	01391663          	bne	s2,s3,10098 <brnch2>
+   10090:	00000013          	nop
+   10094:	00000013          	nop
+
+00010098 <brnch2>:
+   10098:	fff00913          	li	s2,-1
+   1009c:	00200993          	li	s3,2
+   100a0:	0129e463          	bltu	s3,s2,100a8 <brnch3>
+   100a4:	00000013          	nop
+
+000100a8 <brnch3>:
+   100a8:	01397463          	bgeu	s2,s3,100b0 <brnch4>
+   100ac:	00000013          	nop
+
+000100b0 <brnch4>:
+   100b0:	02010113          	addi	sp,sp,32
+   100b4:	00c00913          	li	s2,12
+   100b8:	008004ef          	jal	s1,100c0 <jmp1>
+   100bc:	00e00913          	li	s2,14
+
+000100c0 <jmp1>:
+   100c0:	00000497          	auipc	s1,0x0
+   100c4:	00c48967          	jalr	s2,12(s1) # 100cc <jmp1+0xc>
+   100c8:	00000013          	nop
+   100cc:	00000013          	nop
+   100d0:	00200913          	li	s2,2

@@ -1,0 +1,36 @@
+
+inputs/arithm:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00010054 <_start>:
+   10054:	fe010113          	addi	sp,sp,-32
+   10058:	00500913          	li	s2,5
+   1005c:	00290493          	addi	s1,s2,2
+   10060:	fff92493          	slti	s1,s2,-1
+   10064:	fff93493          	sltiu	s1,s2,-1
+   10068:	f0010937          	lui	s2,0xf0010
+   1006c:	fff90913          	addi	s2,s2,-1 # f000ffff <__global_pointer$+0xefffe737>
+   10070:	aaa94493          	xori	s1,s2,-1366
+   10074:	aaa96493          	ori	s1,s2,-1366
+   10078:	aaa97493          	andi	s1,s2,-1366
+   1007c:	00491493          	slli	s1,s2,0x4
+   10080:	40495493          	srai	s1,s2,0x4
+   10084:	00495493          	srli	s1,s2,0x4
+   10088:	f0ff0937          	lui	s2,0xf0ff0
+   1008c:	00600993          	li	s3,6
+   10090:	013904b3          	add	s1,s2,s3
+   10094:	413904b3          	sub	s1,s2,s3
+   10098:	013914b3          	sll	s1,s2,s3
+   1009c:	413954b3          	sra	s1,s2,s3
+   100a0:	013954b3          	srl	s1,s2,s3
+   100a4:	013924b3          	slt	s1,s2,s3
+   100a8:	013934b3          	sltu	s1,s2,s3
+   100ac:	01000937          	lui	s2,0x1000
+   100b0:	f0090913          	addi	s2,s2,-256 # ffff00 <__global_pointer$+0xfee638>
+   100b4:	f0f0f9b7          	lui	s3,0xf0f0f
+   100b8:	0f098993          	addi	s3,s3,240 # f0f0f0f0 <__global_pointer$+0xf0efd828>
+   100bc:	013974b3          	and	s1,s2,s3
+   100c0:	013964b3          	or	s1,s2,s3
+   100c4:	013944b3          	xor	s1,s2,s3

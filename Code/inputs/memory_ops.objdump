@@ -1,0 +1,20 @@
+
+inputs/memory_ops:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00010054 <_start>:
+   10054:	fe010113          	addi	sp,sp,-32
+   10058:	f000f937          	lui	s2,0xf000f
+   1005c:	0f090913          	addi	s2,s2,240 # f000f0f0 <__global_pointer$+0xefffd868>
+   10060:	01212e23          	sw	s2,28(sp)
+   10064:	01211c23          	sh	s2,24(sp)
+   10068:	01210a23          	sb	s2,20(sp)
+   1006c:	01c12483          	lw	s1,28(sp)
+   10070:	01c11483          	lh	s1,28(sp)
+   10074:	01c10483          	lb	s1,28(sp)
+   10078:	01c15483          	lhu	s1,28(sp)
+   1007c:	01c14483          	lbu	s1,28(sp)
+   10080:	01812483          	lw	s1,24(sp)
+   10084:	01412483          	lw	s1,20(sp)

@@ -137,7 +137,7 @@ void Instruction::execute_srai() {
 }
 
 void Instruction::execute_srli() {
-    rd_v = rs1_v >> imm_v & 0b00000000'00000000'00000000'00011111;
+    rd_v = rs1_v >> (imm_v & 0b00000000'00000000'00000000'00011111);
 }
 
 
@@ -150,7 +150,7 @@ void Instruction::execute_sub() {
 }
 
 void Instruction::execute_sll() {
-    rd_v = rs1_v << rs2_v & 0b00000000'00000000'00000000'00011111;
+    rd_v = rs1_v << (rs2_v & 0b00000000'00000000'00000000'00011111);
 }
 
 void Instruction::execute_slt() {
@@ -180,7 +180,7 @@ void Instruction::execute_sra() {
 }
 
 void Instruction::execute_srl() {
-    rd_v = rs1_v >> rs2_v & 0b00000000'00000000'00000000'00011111;
+    rd_v = rs1_v >> (rs2_v & 0b00000000'00000000'00000000'00011111);
 }
 
 void Instruction::execute_ld() { assert(0); }
