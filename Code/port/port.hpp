@@ -7,18 +7,28 @@
 template <class Data>
 class Port {
     private:
-        Data data;
+        Data* data_in;
+        Data* data_out;
     public:
-        Port(): data_in(), data_out() {}; 
-        /* I pondered over a little bit and found out that I still don't see
-        the point of doing two distinct methods. */
-        void clock(const Data& input, bool stall_signal, Data& output) {
+        Port(){
+            data_in = new Data();
+            data_out = new Data();
+        }; 
+        void clock() {
             if (stall_signal) {
                 //output = stall_data;
             } else {
-                output = data;
-                data = input;
+                std::swap(data_in, data_out);
+                data_in->invalidate();
             }
-        };
+        }
+        void write(const Data& input) {
+            *data_in = input;
+            data_in->validate();
+        }
+        Data read() {
+            output = *data_out;
+            return output;
+        }
 };
 #endif

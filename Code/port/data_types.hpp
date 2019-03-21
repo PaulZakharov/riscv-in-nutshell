@@ -21,6 +21,12 @@ class PreF
         PreF ret(other.PC);
         return ret;        
     }
+    void invalidate() {
+      is_invalid = true;
+    }
+    void validate() {
+      is_invalid = false;
+    }
 };
 
 class FD
@@ -35,6 +41,12 @@ class FD
     FD operator = (const FD& other) {
         FD ret(other.instr);
         return ret;        
+    }
+    void invalidate() {
+      is_invalid = true;
+    }
+    void validate() {
+      is_invalid = false;
     }
 };
 
@@ -53,6 +65,12 @@ class DE
         DE ret(other.reg1, other.reg2, other.instr);
         return ret;        
     }
+    void invalidate() {
+      is_invalid = true;
+    }
+    void validate() {
+      is_invalid = false;
+    }
 };
 
 class EM
@@ -70,6 +88,12 @@ class EM
         EM ret(other.reg, other.alu_result, other.instr);
         return ret;        
     }
+    void invalidate() {
+      is_invalid = true;
+    }
+    void validate() {
+      is_invalid = false;
+    }
 };
 
 class MWB
@@ -85,6 +109,12 @@ class MWB
     MWB operator = (const MWB& other) {
         MWB ret(other.to_writeback, other.instr);
         return ret;        
+    }
+    void invalidate() {
+      is_invalid = true;
+    }
+    void validate() {
+      is_invalid = false;
     }
 };
 
