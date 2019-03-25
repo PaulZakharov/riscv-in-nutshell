@@ -4,6 +4,7 @@
 #include "common.hpp"
 #include "data_types.hpp"
 
+
 template <class Data>
 class Port {
     private:
@@ -15,10 +16,12 @@ class Port {
             data_out = new Data();
         }; 
         void clock() {
-            if (stall_signal) {
-                //output = stall_data;
-            } else {
+            if (!data_in.stall) {
                 std::swap(data_in, data_out);
+                data_in->invalidate();
+            } else if (data_in.flush) {
+                *data_out = Data(); //contains nop
+                data_out->validate();
                 data_in->invalidate();
             }
         }
