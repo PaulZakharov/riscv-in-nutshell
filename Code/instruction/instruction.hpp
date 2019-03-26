@@ -54,6 +54,7 @@ private:
 public:
     // constructors
     explicit Instruction(uint32 bytes, Addr PC);
+    Instruction(const Instruction& other);
     Instruction() = delete;
 
     // dummy getters

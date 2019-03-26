@@ -16,7 +16,7 @@ class Port {
             data_out = new Data();
         }; 
         void clock() {
-            if (!data_in.stall) {
+            if (!data_in.stall & !data_in.flush) {
                 std::swap(data_in, data_out);
                 data_in->invalidate();
             } else if (data_in.flush) {

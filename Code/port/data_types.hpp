@@ -7,115 +7,102 @@
 //All classes will be extended for sure
 #define NOP_BYTES 0x13;
 
-class PreF
+class Data_ {
+  private:
+    bool is_valid;
+    bool flush;
+    bool stall;
+  public:
+    Data_(): is_valid(false), flush(false), stall(false) {}
+    Data_(bool _valid): is_valid(_valid), flush(false), stall(false) {}
+    void validate() {
+        is_valid = true;
+    }
+    void invalidate() {
+        is_valid = false;
+    }
+    void set_flush(bool _flush) {
+        flush = _flush;
+    }
+    void set_stall(bool _stall) {
+        stall = _stall;
+    }
+    bool get_flush() { return flush; }
+    bool get_stall() { return stall; }
+};
+
+class PreF: public Data_
 {
   private:
     Addr PC;
-    bool is_invalid;
-
   public:
-    PreF(): PC(NO_VAL32), is_invalid(true) {};  
-    /*There should be normal NOP instr somewhere;
-    what default constructor returns isn't actually NOP!*/
-    PreF(Addr _PC): PC(_PC), is_invalid(false) {};
+    PreF(): PC(NO_VAL32), Data_() {};  
+    PreF(Addr _PC): PC(_PC), Data_(true) {};
     PreF operator = (const PreF& other) {
         PreF ret(other.PC);
+        set_stall(other.get_stall());
+        set_flush(other.get_flush());
         return ret;        
-    }
-    void invalidate() {
-      is_invalid = true;
-    }
-    void validate() {
-      is_invalid = false;
     }
 };
 
-class FD
+class FD: public Data_
 {
   private:
     Instruction instr;
-    bool is_invalid;
-
   public:
-    FD(): instr(NOP_BYTES, NO_VAL32), is_invalid(true) {};
-    FD(Instruction& _instr): is_invalid(false), instr(_instr) {};
+    FD(): instr(NOP_BYTES, NO_VAL32), Data_() {};
+    FD(Instruction& _instr): instr(_instr), Data_(true) {};
     FD operator = (const FD& other) {
         FD ret(other.instr);
+        set_stall(other.get_stall());
+        set_flush(other.get_flush());
         return ret;        
-    }
-    void invalidate() {
-      is_invalid = true;
-    }
-    void validate() {
-      is_invalid = false;
     }
 };
 
-class DE
+class DE: public Data_
 {
   private:
-    uint32 reg1;
-    uint32 reg2;
     Instruction instr;
-    bool is_invalid;
-
   public:
-    DE(): reg1(NO_VAL32), reg2(NO_VAL32), instr(NOP_BYTES, NO_VAL32), is_invalid(true) {};
-    DE(uint32 _reg1, uint32 _reg2, Instruction& _instr): reg1(_reg1), reg2(_reg2), instr(_instr), is_invalid(false) {};
+    DE(): instr(NOP_BYTES, NO_VAL32), Data_() {};
+    DE(Instruction& _instr): instr(_instr), Data_(true) {};
     DE operator = (const DE& other) {
-        DE ret(other.reg1, other.reg2, other.instr);
+        DE ret(other.instr);
+        set_stall(other.get_stall());
+        set_flush(other.get_flush());
         return ret;        
-    }
-    void invalidate() {
-      is_invalid = true;
-    }
-    void validate() {
-      is_invalid = false;
     }
 };
 
-class EM
+class EM: public Data_
 {
   private:
-    uint32 reg;
-    uint32 alu_result;
     Instruction instr;
-    bool is_invalid;
-
   public:
-    EM(): reg(NO_VAL32), alu_result(NOP_BYTES), instr(NO_VAL32, NO_VAL32), is_invalid(true) {};
-    EM(uint32 _reg, uint32 _alu, Instruction& _instr): reg(_reg), alu_result(_alu), instr(_instr), is_invalid(false) {};
+    EM(): instr(NO_VAL32, NO_VAL32), Data_() {};
+    EM(Instruction& _instr): instr(_instr), Data_(true) {};
     EM operator = (const EM& other) {
-        EM ret(other.reg, other.alu_result, other.instr);
+        EM ret(other.instr);
+        set_stall(other.get_stall());
+        set_flush(other.get_flush());
         return ret;        
-    }
-    void invalidate() {
-      is_invalid = true;
-    }
-    void validate() {
-      is_invalid = false;
     }
 };
 
-class MWB
+class MWB: public Data_
 {
   private:
-    uint32 to_writeback;
     Instruction instr;
-    bool is_invalid;
-
   public:
-    MWB(): to_writeback(NO_VAL32), instr(NOP_BYTES, NO_VAL32), is_invalid(true) {};
-    MWB(uint32 _to_writeback, Instruction _instr): to_writeback(_to_writeback), instr(_instr), is_invalid(false) {};
+    MWB(): instr(NOP_BYTES, NO_VAL32), Data_() {};
+    MWB(uint32 _to_writeback, Instruction _instr): instr(_instr), Data_(true) {};
     MWB operator = (const MWB& other) {
-        MWB ret(other.to_writeback, other.instr);
+        MWB ret(other.instr);
+        set_stall(other.get_stall());
+        set_flush(other.get_flush());
         return ret;        
-    }
-    void invalidate() {
-      is_invalid = true;
-    }
-    void validate() {
-      is_invalid = false;
     }
 };
 

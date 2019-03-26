@@ -150,6 +150,39 @@ const std::string Instruction::get_disasm() const {
     return oss.str();
 }
 
+Instruction::Instruction(const Instruction& other) :
+    PC(other.PC),
+    new_PC(other.new_PC),
+    complete(other.complete),
+    name(other.name),
+    format(other.format),
+    type(other.type),
+    rs1(other.rs1),
+    rs2(other.rs2),
+    rd(other.rd),
+    rs1_v(other.rs1_v),
+    rs2_v(other.rs2_v),
+    rd_v(other.rd_v),
+    imm_v(other.imm_v),
+    memory_addr(other.memory_addr),
+    memory_size(other.memory_size),
+    function(other.function)
+{
+    ISAEntry entry = find_entry(bytes);
+
+    this->name  = entry.generated_entry.name;
+    this->format = entry.format;
+    this->type = entry.type;
+    this->function  = entry.generated_entry.function;
+    this->memory_size = entry.memory_size;
+
+    Decoder decoder(bytes, this->format);
+    this->rs1   = decoder.get_rs1();
+    this->rs2   = decoder.get_rs2();
+    this->rd    = decoder.get_rd();
+    this->imm_v = decoder.get_immediate();
+}
+
 
 void Instruction::execute() {
     (this->*function)();
