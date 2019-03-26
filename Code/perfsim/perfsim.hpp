@@ -11,11 +11,11 @@ class PerfSim {
         Memory memory;
         RF rf;
         Addr PC = NO_VAL32;
-        PreF pref_port;
-        FD fd_port;
-        DE de_port;
-        EM em_port;
-        MWB mwb_port;
+        Port<PreF> pref_port;
+        Port<FD> fd_port;
+        Port<DE> de_port;
+        Port<EM> em_port;
+        Port<MWB> mwb_port;
     public:
         PerfSim(std::string executable_filename);
         void run(uint32 n);
