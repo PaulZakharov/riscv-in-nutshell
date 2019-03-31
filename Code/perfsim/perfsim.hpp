@@ -10,12 +10,20 @@ class PerfSim {
     private:
         Memory memory;
         RF rf;
-        Addr PC = NO_VAL32;
         Port<PreF> pref_port;
-        Port<FD> fd_port;
-        Port<DE> de_port;
-        Port<EM> em_port;
-        Port<MWB> mwb_port;
+        Port<InstrPort> fd_port;
+        Port<InstrPort> de_port;
+        Port<InstrPort> em_port;
+        Port<InstrPort> mwb_port;
+        // these used for feedback from later stages to fetch
+        //pipeline flushing in case of jumps & branches
+        bool branch;  
+        bool jump;
+        Addr jumpPC;
+        Addr branchPC;
+        //pipeline stalls in case of memory dependencies
+        uint32 E_regs;
+        uint32 M_regs;
     public:
         PerfSim(std::string executable_filename);
         void run(uint32 n);
