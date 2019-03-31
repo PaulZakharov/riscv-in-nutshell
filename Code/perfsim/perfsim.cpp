@@ -10,7 +10,6 @@ PerfSim::PerfSim(std::string executable_filename) :
     mwb_port(),
     branch(false),
     jump(false),
-    branchPC(NO_VAL32),
     jumpPC(NO_VAL32),
     E_regs(0),
     M_regs(0)
@@ -46,25 +45,19 @@ void PerfSim::run(const uint32 n) {
 void PerfSim::fetch() {
     PreF pref_data = pref_port.read();
     InstrPort res;
-    if (this->branch | this->jump) {
+    if (this->jump) {
         fd_port.set_flush(true);
         de_port.set_flush(true);
         em_port.set_flush(true);
-        mwb_port.set_flush(true);
-        if (this->branch) {
-            pref_port.write(PreF(branchPC));
-        } else {
-            pref_port.write(PreF(jumpPC));
-        }
-        fd_port.write(res);
+        pref_port.write(PreF(jumpPC));
     } else {
         if (pref_data.get_PC() != NO_VAL32) {
             uint32 raw_bytes = this->memory.read_word(this->PC);
-            res = FD(Instruction(raw_bytes, pref_data.get_PC()));
+            res = InstrPort(Instruction(raw_bytes, pref_data.get_PC()));
         }
-        fd_port.write(res);
         pref_port.write(PreF(pref_data.get_PC()+4));
     }
+    fd_port.write(res);
 }
 
 void PerfSim::decode() {
@@ -72,16 +65,38 @@ void PerfSim::decode() {
     Instruction cur_instr = data.get_instr();
     uint32 D_regs = ((1 << static_cast<uint32>(cur_instr.get_rs1().id())) | \
                 (1 << static_cast<uint32>(cur_instr.get_rs2().id()))) >> 1; 
-    //stall logic
-    if (((D_regs & E_regs) | (D_regs & M_regs)) == 0) {
+    //stall logic for data hazards
+    if (((D_regs & E_regs) | (D_regs & M_regs)) != 0) {
         pref_port.set_stall(true);
         fd_port.set_stall(true);
         de_port.write(InstrPort());
+    } else {
+        this->rf.read_sources(cur_instr);
+        de_port.write(InstrPort(cur_instr));
     }
 }
 
-void PerfSim::execute() {}
+void PerfSim::execute() {
+    InstrPort data = de_port.read();
+    Instruction cur_instr = data.get_instr();
+    cur_instr.execute();
+    em_port.write(InstrPort(cur_instr));
+}
 
-void PerfSim::memory() {}
+void PerfSim::memory() {
+    InstrPort data = em_port.read();
+    Instruction cur_instr = data.get_instr();
+    // jump & branch logic
+    if (cur_instr.is_jump_branch()) {
+        this->jump = true;
+        this->jumpPC = cur_instr.get_new_PC();
+    }
+    this->memory.load_store(cur_instr);
+    mwb_port.write(InstrPort(cur_instr));
+}
 
-void PerfSim::writeback() {}
+void PerfSim::writeback() {
+    InstrPort data = mwb_port.read();
+    Instruction cur_instr = data.get_instr();
+    this->rf.writeback(cur_instr);
+}

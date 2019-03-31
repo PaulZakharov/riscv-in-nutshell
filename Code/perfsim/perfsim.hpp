@@ -16,14 +16,13 @@ class PerfSim {
         Port<InstrPort> em_port;
         Port<InstrPort> mwb_port;
         // these used for feedback from later stages to fetch
-        //pipeline flushing in case of jumps & branches
-        bool branch;  
+        //pipeline flushing in case of jumps & branches  
         bool jump;
         Addr jumpPC;
-        Addr branchPC;
         //pipeline stalls in case of memory dependencies
         uint32 E_regs;
         uint32 M_regs;
+
     public:
         PerfSim(std::string executable_filename);
         void run(uint32 n);

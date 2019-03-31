@@ -5,7 +5,7 @@
 #include "../instruction/instruction.hpp"
 
 //All classes will be extended for sure
-#define NOP_BYTES 0x13;
+#define NOP_BYTES 0x13
 
 class PreF
 {

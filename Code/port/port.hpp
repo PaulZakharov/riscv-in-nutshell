@@ -14,12 +14,12 @@ class Port {
         bool flush = false;
     public:
         Port(){
-            data_in = new Data();
-            data_out = new Data();
+            data_in = new Data;
+            data_out = new Data;
         }; 
         void clock() {
             if (this->flush) {
-                *data_out = Data(); //contains nop
+                *data_out = Data; //contains nop
                 data_out->validate();
                 data_in->invalidate();
                 this->flush = false;
