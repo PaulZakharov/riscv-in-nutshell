@@ -14,11 +14,14 @@ class PreF
   public:
     PreF(): PC(NO_VAL32){};  
     PreF(Addr _PC): PC(_PC){};
-    PreF operator = (const PreF& other) {
-        PreF ret(other.PC);
-        return ret;        
+    /*PreF& operator = (PreF other) {
+        PC = other.PC;
+        return *this;        
+    }*/
+    Addr get_PC() { return PC; }
+    void dump() {
+      std::cout << "PreF PC: " << std::hex <<  PC << std::endl;
     }
-    Addr get_PC() {return PC;}
 };
 
 class InstrPort
@@ -26,13 +29,15 @@ class InstrPort
   private:
     Instruction instr;
   public:
-    InstrPort(): instr(NOP_BYTES, NO_VAL32){};
-    InstrPort(Instruction& _instr): instr(_instr) {};
-    InstrPort operator = (const InstrPort& other) {
-        InstrPort ret(other.instr);
-        return ret;        
+    InstrPort(): instr(Instruction(NOP_BYTES, NO_VAL32)) {};
+    InstrPort(Instruction _instr): instr(_instr) {};
+    /*InstrPort& operator = (InstrPort other){
+        instr = other.instr;
+        return *this;        
+    }*/
+    Instruction& get_instr(){return instr;}
+    void dump() {
     }
-    Instruction get_instr(){return instr;}
 };
 
 /*class DE

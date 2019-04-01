@@ -167,21 +167,7 @@ Instruction::Instruction(const Instruction& other) :
     memory_addr(other.memory_addr),
     memory_size(other.memory_size),
     function(other.function)
-{
-    ISAEntry entry = find_entry(bytes);
-
-    this->name  = entry.generated_entry.name;
-    this->format = entry.format;
-    this->type = entry.type;
-    this->function  = entry.generated_entry.function;
-    this->memory_size = entry.memory_size;
-
-    Decoder decoder(bytes, this->format);
-    this->rs1   = decoder.get_rs1();
-    this->rs2   = decoder.get_rs2();
-    this->rd    = decoder.get_rd();
-    this->imm_v = decoder.get_immediate();
-}
+{}
 
 
 void Instruction::execute() {

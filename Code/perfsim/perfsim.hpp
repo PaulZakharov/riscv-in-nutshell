@@ -29,11 +29,11 @@ class PerfSim {
         
         void step();
         
-        void fetch();
-        void decode();
-        void execute();
-        void memory();
-        void writeback();
+        void fetch_stage();
+        void decode_stage();
+        void execute_stage();
+        void memory_stage();
+        void writeback_stage();
 };
 
 #endif
