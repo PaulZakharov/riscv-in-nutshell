@@ -4,17 +4,17 @@
 #include "infra/common.hpp"
 #include "rf/rf.hpp"
 #include "memory/memory.hpp"
-#include "port/port.hpp"
+#include "latch/latch.hpp"
 
 class PerfSim {
     private:
         Memory memory;
         RF rf;
-        Latch<PreF> pref_port;
-        Latch<InstrPort> fd_port;
-        Latch<InstrPort> de_port;
-        Latch<InstrPort> em_port;
-        Latch<InstrPort> mwb_port;
+        Latch<Addr> pref_latch;
+        Latch<Instruction> fd_latch;
+        Latch<Instruction> de_latch;
+        Latch<Instruction> em_latch;
+        Latch<Instruction> mwb_latch;
         // these used for feedback from later stages to fetch
         //pipeline flushing in case of jumps & branches  
         struct WireStore{
