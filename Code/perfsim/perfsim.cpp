@@ -182,7 +182,7 @@ void PerfSim::memory_stage() {
         std::cout << "NOP" << std::endl;
         wires.Memory_stage_regs = 0;
     }
-}
+} 
 
 void PerfSim::writeback_stage() {
     std::cout << "Writeback:" << std::endl;
