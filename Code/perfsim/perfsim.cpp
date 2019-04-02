@@ -48,6 +48,8 @@ void PerfSim::step() {
     de_port.clock();
     em_port.clock();
     mwb_port.clock();
+    std::cout << std::endl;
+    rf.dump();
     std::cout << "____________" << std::endl;
 }
 
