@@ -20,7 +20,6 @@ class PerfSim {
         struct WireStore{
             bool FD_latch_flush = false;
             bool DE_latch_flush = false;
-            bool EM_latch_flush = false;
             bool PreF_latch_stall = false;
             bool FD_latch_stall = false;
             bool target_mispredict = false;

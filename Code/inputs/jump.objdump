@@ -1,0 +1,23 @@
+
+inputs/jump:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00010054 <_start>:
+   10054:	fe010113          	addi	sp,sp,-32
+   10058:	00500913          	li	s2,5
+   1005c:	00000013          	nop
+   10060:	00000013          	nop
+   10064:	00000013          	nop
+   10068:	018004ef          	jal	s1,10080 <jump>
+   1006c:	00000013          	nop
+   10070:	00000013          	nop
+   10074:	00000013          	nop
+   10078:	00000013          	nop
+   1007c:	00000013          	nop
+
+00010080 <jump>:
+   10080:	00190913          	addi	s2,s2,1
+   10084:	00600493          	li	s1,6
+   10088:	00990933          	add	s2,s2,s1

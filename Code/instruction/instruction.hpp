@@ -66,7 +66,8 @@ public:
     bool is_zero_extended_load () const { return type == Type::LOADU; }
     bool is_load  () const { return is_sign_extended_load() || is_zero_extended_load(); }
     bool is_store () const { return type == Type::STORE; }
-    bool is_jump_branch () const { return (type == Type::JUMP) || (type == Type::BRANCH); }
+    bool is_jump () const { return (type == Type::JUMP); }
+    bool is_branch () const { return (type == Type::BRANCH); }
     
     void set_rs1_v (uint32 value) { rs1_v = value; }
     void set_rs2_v (uint32 value) { rs2_v = value; }
