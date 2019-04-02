@@ -8,17 +8,17 @@ PerfSim::PerfSim(std::string executable_filename) :
     de_port(),
     em_port(),
     mwb_port(),
-    jump(false),
-    jumpPC(NO_VAL32),
-    E_regs(0),
-    M_regs(0)
+    wires()
 {
     // setup stack
     rf.set_stack_pointer(memory.get_stack_pointer());
     rf.validate(Register::Number::s0);
     rf.validate(Register::Number::ra);
-    PreF res = PreF(memory.get_start_PC());
-    std::cout << "Init: " << std::hex << res.get_PC() << std::endl;
+    rf.validate(Register::Number::s1);
+    rf.validate(Register::Number::s2);
+    rf.validate(Register::Number::s3);
+    PreF* res = new PreF(memory.get_start_PC());
+    std::cout << "Init: " << std::hex << res->get_PC() << std::endl;
     pref_port.write(res);
     pref_port.clock();
     fd_port.clock();
@@ -35,13 +35,21 @@ void PerfSim::step() {
     this->decode_stage();
     this->fetch_stage();
 
-    pref_port.clock();
-    fd_port.clock();
+    if (wires.PreF_latch_stall) {
+        wires.PreF_latch_stall = false;
+    } else {
+        pref_port.clock();
+    }
+    if (wires.FD_latch_stall) {
+        wires.FD_latch_stall = false;
+    } else {
+        fd_port.clock();
+    }
     de_port.clock();
     em_port.clock();
     mwb_port.clock();
+    std::cout << "____________" << std::endl;
 }
-
 
 void PerfSim::run(const uint32 n) {
     for (uint32 i = 0; i < n; ++i)
@@ -49,81 +57,149 @@ void PerfSim::run(const uint32 n) {
 }
 
 void PerfSim::fetch_stage() {
-    PreF data;
-    pref_port.read(data);
-    Addr PC = data.get_PC();
-
-    std::cout << "PC: " << PC <<std::endl;
-    if (this->jump) {
-        fd_port.set_flush(true);
-        de_port.set_flush(true);
-        em_port.set_flush(true);
-        PreF jump_data(jumpPC);
-        pref_port.write(jump_data);
-        InstrPort res;
-        fd_port.write(res);
-    } else {
-        if (PC != NO_VAL32) {
-            uint32 raw_bytes = this->memory.read_word(PC);
-            InstrPort res(Instruction(raw_bytes, PC));
+    std::cout << "F" << std::endl;
+    PreF* data = nullptr;
+    data = pref_port.read();
+    if (data != nullptr) {
+        Addr PC = data->get_PC();
+        std::cout << "PC: " << PC << std::endl;
+        //std::cout << "PC: " << PC <<std::endl;
+        if (wires.target_mispredict) {
+            wires.FD_latch_flush = true;
+            wires.DE_latch_flush = true;
+            wires.EM_latch_flush = true;
+            PreF* true_PC = new PreF(wires.target);
+            pref_port.write(true_PC);
+            fd_port.write(nullptr);
+            std::cout << "NOP" << std::endl;
+            delete data;
+        } else if (!wires.PreF_latch_stall) {
+            uint32 raw_bytes = memory.read_word(PC);
+            InstrPort* res = new InstrPort(Instruction(raw_bytes, PC));
             fd_port.write(res);
+            std::cout << "0x" << std::hex << res->get_instr().get_PC() << ": "
+              << res->get_instr().get_disasm() << " "
+              << std::endl;
+            //PC speculation
+            PreF* next_data = new PreF(PC+4);
+            pref_port.write(next_data);
+            delete data;
         }
-        PreF next_data(jumpPC);
-        pref_port.write(next_data);
     }
 }
 
 void PerfSim::decode_stage() {
-    InstrPort data;
-    if (!fd_port.get_flush()) {
-        fd_port.read(data);
-    }
-    Instruction cur_instr(data.get_instr());
-    uint32 D_regs = ((1 << static_cast<uint32>(cur_instr.get_rs1().id())) | \
-                (1 << static_cast<uint32>(cur_instr.get_rs2().id()))) >> 1; 
-    //stall logic for data hazards
-    if (((D_regs & E_regs) | (D_regs & M_regs)) != 0) {
-        pref_port.set_stall(true);
-        fd_port.set_stall(true);
-        InstrPort res;
-        de_port.write(res);
+    std::cout << "D" << std::endl;
+    InstrPort* data = nullptr;
+    data = fd_port.read();
+    if (data != nullptr) {
+        if (wires.FD_latch_flush) {
+            //generate nop
+            wires.FD_latch_flush = false;
+            de_port.write(nullptr);
+            std::cout << "NOP" << std::endl;
+            delete data;
+        } else {
+            Instruction cur_instr(data->get_instr());
+            std::cout << "0x" << std::hex << data->get_instr().get_PC() << ": "
+              << data->get_instr().get_disasm() << " "
+              << std::endl;
+            // find out which register we have to read from
+            uint32 Decode_stage_regs = ((1 << static_cast<uint32>(cur_instr.get_rs1().id())) | \
+                (1 << static_cast<uint32>(cur_instr.get_rs2().id()))) >> 1;
+            //stall logic
+            if (((Decode_stage_regs & wires.Execute_stage_regs) | \
+                (Decode_stage_regs & wires.Memory_stage_regs)) != 0) {
+                
+                wires.PreF_latch_stall = true;
+                wires.FD_latch_stall = true;
+                de_port.write(nullptr);
+            } else {
+                this->rf.read_sources(data->get_instr());
+                de_port.write(data);
+            }
+            std::cout << Decode_stage_regs << std::endl;
+        }
     } else {
-        this->rf.read_sources(data.get_instr());
-        de_port.write(data);
+        de_port.write(nullptr);
+        std::cout << "NOP" << std::endl;
     }
 }
 
-
 void PerfSim::execute_stage() {
-    InstrPort data;
-    if (!de_port.get_flush()) {
-        de_port.read(data);
-    }
-    data.get_instr().execute();
-    em_port.write(data);
-    //debugging info
-    std::cout << "0x" << std::hex << data.get_instr().get_PC() << ": "
-              << data.get_instr().get_disasm() << " "
+    std::cout << "E" << std::endl;
+    InstrPort* data = nullptr;
+    data = de_port.read();
+    if (data != nullptr) {
+        if (wires.DE_latch_flush) {
+            //generate nop
+            wires.DE_latch_flush = false;
+            em_port.write(nullptr);
+            std::cout << "NOP" << std::endl;
+            wires.Execute_stage_regs = 0;
+            delete data;
+        } else {
+            data->get_instr().execute();
+            wires.Execute_stage_regs = (1 << static_cast<uint32>(data->get_instr().get_rd().id())) >> 1; 
+            em_port.write(data);
+            //debugging info
+            std::cout << "0x" << std::hex << data->get_instr().get_PC() << ": "
+              << data->get_instr().get_disasm() << " "
               << std::endl;
+            std::cout << wires.Execute_stage_regs << std::endl;
+        }
+    } else {
+        em_port.write(nullptr);
+        std::cout << "NOP" << std::endl;
+        wires.Execute_stage_regs = 0;
+    }
 }
 
 void PerfSim::memory_stage() {
-    InstrPort data;
-    if (!em_port.get_flush()) {
-        em_port.read(data);
+    std::cout << "M " << std::endl;
+    InstrPort* data = nullptr;
+    data = em_port.read();
+    if (data != nullptr) {
+        if (wires.EM_latch_flush) {
+            //generate nop
+            wires.EM_latch_flush = false;
+            em_port.write(nullptr);
+            wires.Memory_stage_regs = 0;
+            std::cout << "NOP" << std::endl;
+            delete data;
+        } else {
+            Instruction cur_instr = data->get_instr();
+            wires.Memory_stage_regs = (1 << static_cast<uint32>(cur_instr.get_rd().id())) >> 1; 
+            //target misprediction handling
+            if (cur_instr.is_jump_branch()) {
+                wires.target_mispredict = true;
+                wires.target = cur_instr.get_new_PC();
+            }
+            std::cout << "0x" << std::hex << data->get_instr().get_PC() << ": "
+              << data->get_instr().get_disasm() << " "
+              << std::endl;
+            std::cout << wires.Memory_stage_regs << std::endl;
+            this->memory.load_store(data->get_instr());
+            mwb_port.write(data);
+        }
+    } else {
+        mwb_port.write(nullptr);
+        std::cout << "NOP" << std::endl;
+        wires.Memory_stage_regs = 0;
     }
-    Instruction cur_instr = data.get_instr();
-    // jump & branch logic
-    if (cur_instr.is_jump_branch()) {
-        this->jump = true;
-        this->jumpPC = cur_instr.get_new_PC();
-    }
-    this->memory.load_store(data.get_instr());
-    mwb_port.write(data);
 }
 
 void PerfSim::writeback_stage() {
-    InstrPort data;
-    mwb_port.read(data);
-    this->rf.writeback(data.get_instr());
+    std::cout << "WB" << std::endl;
+    InstrPort* data = nullptr;
+    data = mwb_port.read();
+    if (data != nullptr) {
+        std::cout << "0x" << std::hex << data->get_instr().get_PC() << ": "
+              << data->get_instr().get_disasm() << " "
+              << std::endl;
+        this->rf.writeback(data->get_instr());
+        delete data;
+    } else {
+        std::cout << "NOP" << std::endl;
+    }
 }

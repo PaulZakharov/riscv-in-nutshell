@@ -2,52 +2,55 @@
 #define _PORT_H_
 
 #include "infra/common.hpp"
-#include "containers.hpp"
+#include <cstring>
+#include "../instruction/instruction.hpp"
 
+#define NOP_BYTES 0x13
+
+class PreF
+{
+  private:
+    Addr PC;
+  public:
+    PreF(): PC(NO_VAL32){};  
+    PreF(Addr _PC): PC(_PC){};
+    Addr get_PC() { return PC; }
+    void dump() {
+      std::cout << "PreF PC: " << std::hex <<  PC << std::endl;
+    }
+};
+
+class InstrPort
+{
+  private:
+    Instruction instr;
+  public:
+    InstrPort(): instr(Instruction(NOP_BYTES, NO_VAL32)) {};
+    InstrPort(Instruction _instr): instr(_instr) {};
+    Instruction& get_instr(){return instr;}
+    void dump() {
+      std::cout << instr.get_disasm() << std::endl;
+    }
+};
 
 template <class Data>
-class Port {
+class Latch {
     private:
-        Data& data_in;
-        Data& data_out;
-        bool stall = false;
-        bool flush = false;
-        Data dummy;
+        Data* data_in;
+        Data* data_out;
     public:
-        Port(): dummy() {
-            data_in = dummy;
-            data_out = dummy;
+        Latch(){
+            data_in = nullptr;
+            data_out = nullptr;
         }; 
         void clock() {
-            if (stall) {
-                this->stall = false;
-            } else {
-                std::swap(data_in, data_out);
-            }
-            if (data_in != nullptr) {
-                data_in->dump();
-            } else {
-                std::cout << "NULL" << std::endl;
-            }
-            if (data_out != nullptr) {
-                data_out->dump();
-            } else {
-                std::cout << "NULL" << std::endl;
-            }
+            data_out = data_in;
         }
-        void write(Data& input) {
-            std::swap(input, data_in);
+        void write(Data* input) {
+            data_in = input;
         }
-        void read(Data& output) {
-            std::swap(output, data_out);
+        Data* read() {
+            return data_out;
         }
-        void set_stall(bool _stall) {
-            stall = _stall;
-        }
-        void set_flush(bool _flush) {
-            flush = _flush;
-        }
-        bool get_stall() { return stall; }
-        bool get_flush() { return flush; }
 };
 #endif

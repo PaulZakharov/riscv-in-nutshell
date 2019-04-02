@@ -10,19 +10,26 @@ class PerfSim {
     private:
         Memory memory;
         RF rf;
-        Port<PreF> pref_port;
-        Port<InstrPort> fd_port;
-        Port<InstrPort> de_port;
-        Port<InstrPort> em_port;
-        Port<InstrPort> mwb_port;
+        Latch<PreF> pref_port;
+        Latch<InstrPort> fd_port;
+        Latch<InstrPort> de_port;
+        Latch<InstrPort> em_port;
+        Latch<InstrPort> mwb_port;
         // these used for feedback from later stages to fetch
         //pipeline flushing in case of jumps & branches  
-        bool jump;
-        Addr jumpPC;
-        //pipeline stalls in case of memory dependencies
-        uint32 E_regs;
-        uint32 M_regs;
-
+        struct WireStore{
+            bool FD_latch_flush = false;
+            bool DE_latch_flush = false;
+            bool EM_latch_flush = false;
+            bool PreF_latch_stall = false;
+            bool FD_latch_stall = false;
+            bool target_mispredict = false;
+            Addr target = NO_VAL32;
+            //i-th bit means that stage (i-1)th reg is used
+            //zero excluded
+            uint32 Execute_stage_regs = 0;
+            uint32 Memory_stage_regs = 0;
+        } wires;
     public:
         PerfSim(std::string executable_filename);
         void run(uint32 n);
