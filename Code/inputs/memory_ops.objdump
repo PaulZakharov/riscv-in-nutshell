@@ -7,7 +7,7 @@ Disassembly of section .text:
 00010054 <_start>:
    10054:	fe010113          	addi	sp,sp,-32
    10058:	f000f937          	lui	s2,0xf000f
-   1005c:	0f090913          	addi	s2,s2,240 # f000f0f0 <__global_pointer$+0xefffd868>
+   1005c:	0f090913          	addi	s2,s2,240 # f000f0f0 <__global_pointer$+0xefffd854>
    10060:	01212e23          	sw	s2,28(sp)
    10064:	01211c23          	sh	s2,24(sp)
    10068:	01210a23          	sb	s2,20(sp)
@@ -18,3 +18,8 @@ Disassembly of section .text:
    1007c:	01c14483          	lbu	s1,28(sp)
    10080:	01812483          	lw	s1,24(sp)
    10084:	01412483          	lw	s1,20(sp)
+   10088:	02010113          	addi	sp,sp,32
+   1008c:	00000013          	nop
+   10090:	00000013          	nop
+   10094:	00000013          	nop
+   10098:	00000013          	nop

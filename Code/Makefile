@@ -7,7 +7,7 @@ TARGET   := sim
 INCLUDE  := /usr/local/include/boost /usr/local/include/libelf ./
 
 
-OBJDIRS  := memory infra infra/config infra/elf rf instruction perfsim port
+OBJDIRS  := new_memory infra infra/config infra/elf rf instruction perfsim port
 OBJECTS  := $(wildcard $(addsuffix /*.cpp, $(OBJDIRS)))
 OBJECTS  := $(OBJECTS:.cpp=.o)
 DEPS     := $(OBJECTS:.o=.d)

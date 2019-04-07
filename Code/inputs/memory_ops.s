@@ -14,3 +14,8 @@ _start:
     lw s1, 24(sp)
     lw s1, 20(sp)
     addi sp, sp, 32
+	nop
+	nop
+	nop
+	nop
+

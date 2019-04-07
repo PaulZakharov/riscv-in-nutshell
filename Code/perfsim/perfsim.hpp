@@ -3,14 +3,14 @@
 
 #include "infra/common.hpp"
 #include "rf/rf.hpp"
-#include "memory/memory.hpp"
+#include "new_memory/new_memory.hpp"
 #include "latch/latch.hpp"
 
 class PerfSim {
     private:
         Memory memory;
         RF rf;
-        Latch<Addr> pref_latch;
+        Latch<Addr> pc_latch;
         Latch<Instruction> fd_latch;
         Latch<Instruction> de_latch;
         Latch<Instruction> em_latch;
@@ -20,14 +20,21 @@ class PerfSim {
         struct WireStore{
             bool FD_latch_flush = false;
             bool DE_latch_flush = false;
-            bool PreF_latch_stall = false;
+            bool PC_latch_flush = false;
+            bool PC_latch_stall = false;
             bool FD_latch_stall = false;
-            bool target_mispredict = false;
+            bool DE_latch_stall = false;
+            bool EM_latch_stall = false;
             Addr target = NO_VAL32;
             //i-th bit means that stage (i-1)th reg is used
             //zero excluded
             uint32 Execute_stage_regs = 0;
             uint32 Memory_stage_regs = 0;
+            //memory usage wires
+            int memory_stage_iter = 0;
+            int fetch_stage_iter = 0;
+            uint32 fetch_bytes = NO_VAL32;
+            bool memory_stage_usage = false;
         } wires;
     public:
         PerfSim(std::string executable_filename);

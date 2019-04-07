@@ -40,3 +40,8 @@ jmp1:
 	nop
 	li s2, 2
 	addi sp, sp, 32
+	nop
+	nop
+	nop
+	nop
+	nop

@@ -7,12 +7,12 @@ Disassembly of section .text:
 00010054 <_start>:
    10054:	fe010113          	addi	sp,sp,-32
    10058:	2261e4b7          	lui	s1,0x2261e
-   1005c:	03148493          	addi	s1,s1,49 # 2261e031 <__global_pointer$+0x2260c75d>
+   1005c:	03148493          	addi	s1,s1,49 # 2261e031 <__global_pointer$+0x2260c745>
    10060:	00002917          	auipc	s2,0x2
    10064:	00600913          	li	s2,6
 
 00010068 <loop1>:
-   10068:	00190913          	addi	s2,s2,1 # 12061 <__global_pointer$+0x78d>
+   10068:	00190913          	addi	s2,s2,1 # 12061 <__global_pointer$+0x775>
    1006c:	00900993          	li	s3,9
    10070:	ff394ce3          	blt	s2,s3,10068 <loop1>
    10074:	01390663          	beq	s2,s3,10080 <brnch1>
@@ -51,3 +51,9 @@ Disassembly of section .text:
    100c8:	00000013          	nop
    100cc:	00000013          	nop
    100d0:	00200913          	li	s2,2
+   100d4:	02010113          	addi	sp,sp,32
+   100d8:	00000013          	nop
+   100dc:	00000013          	nop
+   100e0:	00000013          	nop
+   100e4:	00000013          	nop
+   100e8:	00000013          	nop
