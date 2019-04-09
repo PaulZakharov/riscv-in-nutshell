@@ -103,13 +103,13 @@ void PerfSim::fetch_stage() {
             wires.PC_stage_reg_stall = true;
             fd_stage_reg.write(nullptr);
         } else if (wires.fetch_stage_iter == 0) {
-            wires.fetch_bytes = memory.read_word(PC);
+            wires.fetch_bytes = memory.read(PC, 2);
             wires.fetch_stage_iter = 1;
             wires.PC_stage_reg_stall = true;
             fd_stage_reg.write(nullptr);
         } else {
             if (!wires.PC_stage_reg_stall) {
-                //wires.fetch_bytes = (wires.fetch_bytes & 0xffff) | (memory.read_high(PC)<<16);
+                wires.fetch_bytes = (wires.fetch_bytes & 0xffff) | (memory.read(PC+2, 2)<<16);
                 Instruction* res = new Instruction(wires.fetch_bytes, PC);
                 fd_stage_reg.write(res);
                 wires.fetch_stage_iter = 0;
@@ -211,7 +211,21 @@ void PerfSim::memory_stage() {
             mwb_stage_reg.write(data);
         } else if (data->is_load() | data->is_store()) {
             wires.memory_stage_usage = true;
-            memory.load_store(*data);
+            if (wires.memory_stage_iter == 0) {
+                if (data->is_load()) {
+                    uint32 value = memory.read(data->get_memory_addr(), data->get_memory_size()==1 ? 1 : 2);
+                    data->set_rd_v(value);
+                } else {
+                    memory.write(data->get_rs2_v(), data->get_memory_addr(), data->get_memory_size()==1 ? 1 : 2);
+                }
+            } else {
+                if (data->is_load()) {
+                    uint32 value = memory.read(data->get_memory_addr()+2, data->get_memory_size()==1 ? 1 : 2);
+                    data->set_rd_v(data->get_rd_v() | (value << 16));
+                } else {
+                    memory.write((data->get_rs2_v())>>16, data->get_memory_addr()+2, data->get_memory_size()==1 ? 1 : 2);
+                }
+            }
             if ((data->get_memory_size() == 4) & (wires.memory_stage_iter == 0)) {
                 //wires.PC_stage_reg_stall = true;
                 //wires.FD_stage_reg_stall = true;

@@ -3,7 +3,7 @@
 
 #include "infra/common.hpp"
 #include "rf/rf.hpp"
-#include "memory/memory.hpp"
+#include "new_memory/new_memory.hpp"
 #include "stage_reg/stage_reg.hpp"
 
 class PerfSim {
