@@ -6,12 +6,12 @@
 #include "../instruction/instruction.hpp"
 
 template <class Data>
-class Latch {
+class Stage_Reg {
     private:
         Data* data_in;
         Data* data_out;
     public:
-        Latch(){
+        Stage_Reg(){
             data_in = nullptr;
             data_out = nullptr;
         }; 

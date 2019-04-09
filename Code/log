@@ -1,0 +1,1150 @@
+Init: 10054
+Writeback:
+NOP
+Memory: 
+NOP
+Execute:
+NOP
+Decode:
+NOP
+Fetch:
+PC: 10054
+
+	$zero = 0
+	$ra = 0
+	$sp = 1869f
+	$s0 = 0
+	$s1 = 0
+	$s2 = 0
+	$s3 = 0
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 1 
+Stalls: 
+1000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+NOP
+Execute:
+NOP
+Decode:
+NOP
+Fetch:
+PC: 10054
+0x10054: addi $sp, $sp, ffffffe0 
+
+	$zero = 0
+	$ra = 0
+	$sp = 1869f
+	$s0 = 0
+	$s1 = 0
+	$s2 = 0
+	$s3 = 0
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 0 
+Stalls: 
+0000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+NOP
+Execute:
+NOP
+Decode:
+0x10054: addi $sp, $sp, ffffffe0 
+Registers read: $sp $zero
+Fetch:
+PC: 10058
+
+	$zero = 0
+	$ra = 0
+	$sp = 1869f
+	$s0 = 0
+	$s1 = 0
+	$s2 = 0
+	$s3 = 0
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 1 
+Stalls: 
+1000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+NOP
+Execute:
+0x10054: addi $sp, $sp, ffffffe0 
+Registers written to: $sp
+Decode:
+NOP
+Fetch:
+PC: 10058
+0x10058: lui $s1, 2261e000 
+
+	$zero = 0
+	$ra = 0
+	$sp = 1869f
+	$s0 = 0
+	$s1 = 0
+	$s2 = 0
+	$s3 = 0
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 0 
+Stalls: 
+0000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+0x10054: addi $sp, $sp, ffffffe0 
+Registers written to: $sp
+Execute:
+NOP
+Decode:
+0x10058: lui $s1, 2261e000 
+Registers read: $zero $zero
+Fetch:
+PC: 1005c
+
+	$zero = 0
+	$ra = 0
+	$sp = 1869f
+	$s0 = 0
+	$s1 = 0
+	$s2 = 0
+	$s3 = 0
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 1 
+Stalls: 
+1000
+Flushes: 
+000
+____________
+Writeback:
+0x10054: addi $sp, $sp, ffffffe0 
+Memory: 
+NOP
+Execute:
+0x10058: lui $s1, 2261e000 
+Registers written to: $s1
+Decode:
+NOP
+Fetch:
+PC: 1005c
+0x1005c: addi $s1, $s1, 31 
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 0
+	$s2 = 0
+	$s3 = 0
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 0 
+Stalls: 
+0000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+0x10058: lui $s1, 2261e000 
+Registers written to: $s1
+Execute:
+NOP
+Decode:
+0x1005c: addi $s1, $s1, 31 
+Registers read: $s1 $zero
+Fetch:
+PC: 10060
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 0
+	$s2 = 0
+	$s3 = 0
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 1 
+Stalls: 
+1100
+Flushes: 
+000
+____________
+Writeback:
+0x10058: lui $s1, 2261e000 
+Memory: 
+NOP
+Execute:
+NOP
+Decode:
+0x1005c: addi $s1, $s1, 31 
+Registers read: $s1 $zero
+Fetch:
+PC: 10060
+0x10060: auipc $s2, 2000 
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e000
+	$s2 = 0
+	$s3 = 0
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 0 
+Stalls: 
+0000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+NOP
+Execute:
+0x1005c: addi $s1, $s1, 31 
+Registers written to: $s1
+Decode:
+0x10060: auipc $s2, 2000 
+Registers read: $zero $zero
+Fetch:
+PC: 10064
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e000
+	$s2 = 0
+	$s3 = 0
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 1 
+Stalls: 
+1000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+0x1005c: addi $s1, $s1, 31 
+Registers written to: $s1
+Execute:
+0x10060: auipc $s2, 2000 
+Registers written to: $s2
+Decode:
+NOP
+Fetch:
+PC: 10064
+0x10064: addi $zero, $s2, 6 
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e000
+	$s2 = 0
+	$s3 = 0
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 0 
+Stalls: 
+0000
+Flushes: 
+000
+____________
+Writeback:
+0x1005c: addi $s1, $s1, 31 
+Memory: 
+0x10060: auipc $s2, 2000 
+Registers written to: $s2
+Execute:
+NOP
+Decode:
+0x10064: addi $zero, $s2, 6 
+Registers read: $zero $zero
+Fetch:
+PC: 10068
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 0
+	$s3 = 0
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 1 
+Stalls: 
+1000
+Flushes: 
+000
+____________
+Writeback:
+0x10060: auipc $s2, 2000 
+Memory: 
+NOP
+Execute:
+0x10064: addi $zero, $s2, 6 
+Registers written to: $s2
+Decode:
+NOP
+Fetch:
+PC: 10068
+0x10068: addi $s2, $s2, 1 
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 12060
+	$s3 = 0
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 0 
+Stalls: 
+0000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+0x10064: addi $zero, $s2, 6 
+Registers written to: $s2
+Execute:
+NOP
+Decode:
+0x10068: addi $s2, $s2, 1 
+Registers read: $s2 $zero
+Fetch:
+PC: 1006c
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 12060
+	$s3 = 0
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 1 
+Stalls: 
+1100
+Flushes: 
+000
+____________
+Writeback:
+0x10064: addi $zero, $s2, 6 
+Memory: 
+NOP
+Execute:
+NOP
+Decode:
+0x10068: addi $s2, $s2, 1 
+Registers read: $s2 $zero
+Fetch:
+PC: 1006c
+0x1006c: addi $zero, $s3, 9 
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 6
+	$s3 = 0
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 0 
+Stalls: 
+0000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+NOP
+Execute:
+0x10068: addi $s2, $s2, 1 
+Registers written to: $s2
+Decode:
+0x1006c: addi $zero, $s3, 9 
+Registers read: $zero $zero
+Fetch:
+PC: 10070
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 6
+	$s3 = 0
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 1 
+Stalls: 
+1000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+0x10068: addi $s2, $s2, 1 
+Registers written to: $s2
+Execute:
+0x1006c: addi $zero, $s3, 9 
+Registers written to: $s3
+Decode:
+NOP
+Fetch:
+PC: 10070
+0x10070: blt $s2, $s3, fffffff8 
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 6
+	$s3 = 0
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 0 
+Stalls: 
+0000
+Flushes: 
+000
+____________
+Writeback:
+0x10068: addi $s2, $s2, 1 
+Memory: 
+0x1006c: addi $zero, $s3, 9 
+Registers written to: $s3
+Execute:
+NOP
+Decode:
+0x10070: blt $s2, $s3, fffffff8 
+Registers read: $s2 $s3
+Fetch:
+PC: 10074
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 7
+	$s3 = 0
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 1 
+Stalls: 
+1100
+Flushes: 
+000
+____________
+Writeback:
+0x1006c: addi $zero, $s3, 9 
+Memory: 
+NOP
+Execute:
+NOP
+Decode:
+0x10070: blt $s2, $s3, fffffff8 
+Registers read: $s2 $s3
+Fetch:
+PC: 10074
+0x10074: beq $s2, $s3, c 
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 7
+	$s3 = 9
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 0 
+Stalls: 
+0000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+NOP
+Execute:
+0x10070: blt $s2, $s3, fffffff8 
+Registers written to: $zero
+Decode:
+0x10074: beq $s2, $s3, c 
+Registers read: $s2 $s3
+Fetch:
+PC: 10078
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 7
+	$s3 = 9
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 1 
+Stalls: 
+1000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+0x10070: blt $s2, $s3, fffffff8 
+Registers written to: $zero
+Execute:
+NOP
+Decode:
+NOP
+Fetch:
+NOP
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 7
+	$s3 = 9
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 0 
+Stalls: 
+0000
+Flushes: 
+000
+____________
+Writeback:
+0x10070: blt $s2, $s3, fffffff8 
+Memory: 
+NOP
+Execute:
+NOP
+Decode:
+NOP
+Fetch:
+PC: 10068
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 7
+	$s3 = 9
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 1 
+Stalls: 
+1000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+NOP
+Execute:
+NOP
+Decode:
+NOP
+Fetch:
+PC: 10068
+0x10068: addi $s2, $s2, 1 
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 7
+	$s3 = 9
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 0 
+Stalls: 
+0000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+NOP
+Execute:
+NOP
+Decode:
+0x10068: addi $s2, $s2, 1 
+Registers read: $s2 $zero
+Fetch:
+PC: 1006c
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 7
+	$s3 = 9
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 1 
+Stalls: 
+1000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+NOP
+Execute:
+0x10068: addi $s2, $s2, 1 
+Registers written to: $s2
+Decode:
+NOP
+Fetch:
+PC: 1006c
+0x1006c: addi $zero, $s3, 9 
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 7
+	$s3 = 9
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 0 
+Stalls: 
+0000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+0x10068: addi $s2, $s2, 1 
+Registers written to: $s2
+Execute:
+NOP
+Decode:
+0x1006c: addi $zero, $s3, 9 
+Registers read: $zero $zero
+Fetch:
+PC: 10070
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 7
+	$s3 = 9
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 1 
+Stalls: 
+1000
+Flushes: 
+000
+____________
+Writeback:
+0x10068: addi $s2, $s2, 1 
+Memory: 
+NOP
+Execute:
+0x1006c: addi $zero, $s3, 9 
+Registers written to: $s3
+Decode:
+NOP
+Fetch:
+PC: 10070
+0x10070: blt $s2, $s3, fffffff8 
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 8
+	$s3 = 9
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 0 
+Stalls: 
+0000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+0x1006c: addi $zero, $s3, 9 
+Registers written to: $s3
+Execute:
+NOP
+Decode:
+0x10070: blt $s2, $s3, fffffff8 
+Registers read: $s2 $s3
+Fetch:
+PC: 10074
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 8
+	$s3 = 9
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 1 
+Stalls: 
+1100
+Flushes: 
+000
+____________
+Writeback:
+0x1006c: addi $zero, $s3, 9 
+Memory: 
+NOP
+Execute:
+NOP
+Decode:
+0x10070: blt $s2, $s3, fffffff8 
+Registers read: $s2 $s3
+Fetch:
+PC: 10074
+0x10074: beq $s2, $s3, c 
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 8
+	$s3 = 9
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 0 
+Stalls: 
+0000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+NOP
+Execute:
+0x10070: blt $s2, $s3, fffffff8 
+Registers written to: $zero
+Decode:
+0x10074: beq $s2, $s3, c 
+Registers read: $s2 $s3
+Fetch:
+PC: 10078
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 8
+	$s3 = 9
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 1 
+Stalls: 
+1000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+0x10070: blt $s2, $s3, fffffff8 
+Registers written to: $zero
+Execute:
+NOP
+Decode:
+NOP
+Fetch:
+NOP
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 8
+	$s3 = 9
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 0 
+Stalls: 
+0000
+Flushes: 
+000
+____________
+Writeback:
+0x10070: blt $s2, $s3, fffffff8 
+Memory: 
+NOP
+Execute:
+NOP
+Decode:
+NOP
+Fetch:
+PC: 10068
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 8
+	$s3 = 9
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 1 
+Stalls: 
+1000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+NOP
+Execute:
+NOP
+Decode:
+NOP
+Fetch:
+PC: 10068
+0x10068: addi $s2, $s2, 1 
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 8
+	$s3 = 9
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 0 
+Stalls: 
+0000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+NOP
+Execute:
+NOP
+Decode:
+0x10068: addi $s2, $s2, 1 
+Registers read: $s2 $zero
+Fetch:
+PC: 1006c
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 8
+	$s3 = 9
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 1 
+Stalls: 
+1000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+NOP
+Execute:
+0x10068: addi $s2, $s2, 1 
+Registers written to: $s2
+Decode:
+NOP
+Fetch:
+PC: 1006c
+0x1006c: addi $zero, $s3, 9 
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 8
+	$s3 = 9
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 0 
+Stalls: 
+0000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+0x10068: addi $s2, $s2, 1 
+Registers written to: $s2
+Execute:
+NOP
+Decode:
+0x1006c: addi $zero, $s3, 9 
+Registers read: $zero $zero
+Fetch:
+PC: 10070
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 8
+	$s3 = 9
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 1 
+Stalls: 
+1000
+Flushes: 
+000
+____________
+Writeback:
+0x10068: addi $s2, $s2, 1 
+Memory: 
+NOP
+Execute:
+0x1006c: addi $zero, $s3, 9 
+Registers written to: $s3
+Decode:
+NOP
+Fetch:
+PC: 10070
+0x10070: blt $s2, $s3, fffffff8 
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 9
+	$s3 = 9
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 0 
+Stalls: 
+0000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+0x1006c: addi $zero, $s3, 9 
+Registers written to: $s3
+Execute:
+NOP
+Decode:
+0x10070: blt $s2, $s3, fffffff8 
+Registers read: $s2 $s3
+Fetch:
+PC: 10074
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 9
+	$s3 = 9
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 1 
+Stalls: 
+1100
+Flushes: 
+000
+____________
+Writeback:
+0x1006c: addi $zero, $s3, 9 
+Memory: 
+NOP
+Execute:
+NOP
+Decode:
+0x10070: blt $s2, $s3, fffffff8 
+Registers read: $s2 $s3
+Fetch:
+PC: 10074
+0x10074: beq $s2, $s3, c 
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 9
+	$s3 = 9
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 0 
+Stalls: 
+0000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+NOP
+Execute:
+0x10070: blt $s2, $s3, fffffff8 
+Registers written to: $zero
+Decode:
+0x10074: beq $s2, $s3, c 
+Registers read: $s2 $s3
+Fetch:
+PC: 10078
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 9
+	$s3 = 9
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 1 
+Stalls: 
+1000
+Flushes: 
+000
+____________
+Writeback:
+NOP
+Memory: 
+0x10070: blt $s2, $s3, fffffff8 
+Registers written to: $zero
+Execute:
+0x10074: beq $s2, $s3, c 
+Registers written to: $zero
+Decode:
+NOP
+Fetch:
+PC: 10078
+0x10078: addi $zero, $zero, 0 
+
+	$zero = 0
+	$ra = 0
+	$sp = 1867f
+	$s0 = 0
+	$s1 = 2261e031
+	$s2 = 9
+	$s3 = 9
+
+
+Memory usage iteration: 
+Memory stage: 0,  Fetch stage: 0 
+Stalls: 
+0000
+Flushes: 
+000
+____________

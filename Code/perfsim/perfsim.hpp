@@ -3,28 +3,28 @@
 
 #include "infra/common.hpp"
 #include "rf/rf.hpp"
-#include "new_memory/new_memory.hpp"
-#include "latch/latch.hpp"
+#include "memory/memory.hpp"
+#include "stage_reg/stage_reg.hpp"
 
 class PerfSim {
     private:
         Memory memory;
         RF rf;
-        Latch<Addr> pc_latch;
-        Latch<Instruction> fd_latch;
-        Latch<Instruction> de_latch;
-        Latch<Instruction> em_latch;
-        Latch<Instruction> mwb_latch;
+        Stage_Reg<Addr> pc_stage_reg;
+        Stage_Reg<Instruction> fd_stage_reg;
+        Stage_Reg<Instruction> de_stage_reg;
+        Stage_Reg<Instruction> em_stage_reg;
+        Stage_Reg<Instruction> mwb_stage_reg;
         // these used for feedback from later stages to fetch
         //pipeline flushing in case of jumps & branches  
         struct WireStore{
-            bool FD_latch_flush = false;
-            bool DE_latch_flush = false;
-            bool PC_latch_flush = false;
-            bool PC_latch_stall = false;
-            bool FD_latch_stall = false;
-            bool DE_latch_stall = false;
-            bool EM_latch_stall = false;
+            bool FD_stage_reg_flush = false;
+            bool DE_stage_reg_flush = false;
+            bool PC_stage_reg_flush = false;
+            bool PC_stage_reg_stall = false;
+            bool FD_stage_reg_stall = false;
+            bool DE_stage_reg_stall = false;
+            bool EM_stage_reg_stall = false;
             Addr target = NO_VAL32;
             //i-th bit means that stage (i-1)th reg is used
             //zero excluded
