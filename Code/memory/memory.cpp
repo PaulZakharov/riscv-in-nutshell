@@ -1,5 +1,5 @@
 #include "memory.hpp"
-#include "../infra/elf/elf.hpp"
+#include "infra/elf/elf.hpp"
 
 
 Memory::Memory(std::string executable_filename):
