@@ -16,7 +16,12 @@ public:
     ~ElfLoader();
 
     std::vector<uint8> load_data();
-    Addr get_start_PC() { return entry_point; }
+    Addr get_start_PC() {
+        std::cout << "START PC: "
+                  << std::hex << entry_point
+                  << std::endl << std::endl;
+        return entry_point;
+    }
 };
 
 #endif

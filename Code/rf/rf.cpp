@@ -48,6 +48,8 @@ void RF::set_stack_pointer(uint32 value) {
 }
 
 void RF::dump() const {
+    std::cout << "Register file dump:" << std::endl;
+    
     for(uint8 i = 0; i < (Register::MAX_NUMBER); ++i) {
         if (!this->is_valid(i))
             continue;
