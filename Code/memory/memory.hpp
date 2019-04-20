@@ -16,12 +16,12 @@ private:
         this->data[addr] = value;
     }
     
-protected:
+public: // BUG: replace with protected
     uint32 read(Addr addr, size_t num_bytes) const;
     void write(uint32 value, Addr addr, size_t num_bytes);
 
 public:
-    Memory(std::vector<uint8>& data);
+    Memory(std::vector<uint8> data);
     Addr get_stack_pointer() const { return data.size() - 1; }
 };
 
@@ -38,7 +38,9 @@ private:
     }     
 
 public:
-    FuncMemory(std::vector<uint8>& data) : Memory(data) { }
+    FuncMemory(std::vector<uint8> data) : Memory(data) { }
+
+    uint32 read_word(Addr addr) { return this->read(addr, 4); }
     void load_store(Instruction& instr) {
         if (instr.is_load())
             this->load(instr);
@@ -53,7 +55,7 @@ public:
     struct RequestResult {
         bool is_ready = false;
         uint32 data = NO_VAL32;
-    }
+    };
 
 private:
     struct Request {
@@ -69,9 +71,9 @@ private:
     Cycles latency_in_cycles = 0;
 
 public:
-    PerfMemory(std::vector<uint8>& data,
+    PerfMemory(std::vector<uint8> data,
                Cycles latency_in_cycles)
-    : Memory(data),
+    : Memory(data)
     , latency_in_cycles(latency_in_cycles)
     { }
 

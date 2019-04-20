@@ -2,8 +2,8 @@
 #include "infra/elf/elf.hpp"
 
 
-Memory::Memory(std::vector<uint8>& data):
-    data(data)
+Memory::Memory(std::vector<uint8> data):
+    data(std::move(data))
 { }
 
 
@@ -46,10 +46,11 @@ void PerfMemory::clock() {
     }
 }
 
-RequestResult PerfMemory::get_request_status() {
+PerfMemory::RequestResult PerfMemory::get_request_status() {
     auto& r = this->request;  // alias
+
     if (r.complete)
-        return RequestResult {.is_ready = true, .data = r.data};
+        return RequestResult {true, r.data};
     else
-        return RequestResult {.is_ready = false, .data = NO_VAL32};
+        return RequestResult {false, NO_VAL32};
 }

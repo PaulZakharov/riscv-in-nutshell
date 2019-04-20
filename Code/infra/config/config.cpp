@@ -40,6 +40,8 @@ namespace config {
 
     template class RequiredValue<std::string>;
     template class RequiredValue<uint64>;
+    template class Value<uint64>;
+    template class Value<bool>;
 
     void parse_args(int argc, char** argv) {
         po::variables_map vm;

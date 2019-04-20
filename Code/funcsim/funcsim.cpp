@@ -3,8 +3,8 @@
 FuncSim::FuncSim(std::string executable_filename)
     : loader(executable_filename)
     , memory(loader.load_data())
-    , PC(loader.get_start_PC())
     , rf()
+    , PC(loader.get_start_PC())
 {
     // setup stack
     rf.set_stack_pointer(memory.get_stack_pointer());
@@ -34,7 +34,7 @@ void FuncSim::step() {
     this->PC = instr.get_new_PC();
 }
 
-void FuncSim::run(const uint32 n) {
+void FuncSim::run(uint32 n) {
     for (uint32 i = 0; i < n; ++i)
         this->step();
 }

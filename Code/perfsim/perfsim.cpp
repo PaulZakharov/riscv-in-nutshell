@@ -71,7 +71,7 @@ void PerfSim::step() {
     
 }
 
-void PerfSim::run(const uint32 n) {
+void PerfSim::run(uint32 n) {
     for (uint32 i = 0; i < n; ++i)
         this->step();
 }

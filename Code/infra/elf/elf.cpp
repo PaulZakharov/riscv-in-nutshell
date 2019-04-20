@@ -58,7 +58,6 @@ std::vector<uint8> ElfLoader::load_data() {
     GElf_Phdr* temp_phdr, phdr;
     unsigned long offset = 0;
     ssize_t bytes_read = 0;
-    std::bitset<8> to_out;
 
     for (unsigned int i = 0; i < phdrnum; i++) {
         temp_phdr = gelf_getphdr(elf_inst, i, &phdr);

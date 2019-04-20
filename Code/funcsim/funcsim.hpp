@@ -8,7 +8,7 @@
 
 class FuncSim {
     private:
-    	ElfLoader loader;
+        ElfLoader loader;
         FuncMemory memory;
         RF rf;
         Addr PC = NO_VAL32;
