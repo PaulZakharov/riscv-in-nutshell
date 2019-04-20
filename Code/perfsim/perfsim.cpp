@@ -2,15 +2,9 @@
 
 //#define NOP_BYTES 0x13
 
-PerfSim::PerfSim(std::string executable_filename) :
-    memory(executable_filename),
-    rf(),
-    pc_stage_reg(),
-    fd_stage_reg(),
-    de_stage_reg(),
-    em_stage_reg(),
-    mwb_stage_reg(),
-    wires()
+PerfSim::PerfSim(std::string executable_filename)
+    : loader(executable_filename)
+    , memory(loader.load_data(), 2)
 {
     // setup stack
     rf.set_stack_pointer(memory.get_stack_pointer());
@@ -19,8 +13,9 @@ PerfSim::PerfSim(std::string executable_filename) :
     rf.validate(Register::Number::s1);
     rf.validate(Register::Number::s2);
     rf.validate(Register::Number::s3);
-    Addr* res = new Addr(memory.get_start_PC());
-    std::cout << "Init: " << std::hex << *res << std::endl;
+
+    Addr* res = new Addr(loader.get_start_PC());
+    std::cout << "Start PC: " << std::hex << *res << std::endl;
     pc_stage_reg.write(res);
     pc_stage_reg.clock();
     fd_stage_reg.clock();

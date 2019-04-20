@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <bitset>
+#include <algorithm>
 
 // TODO: replace std::cerr and exit()
 // with Exceptions / use C++ ELF library
@@ -51,7 +52,9 @@ ElfLoader::~ElfLoader() {
     close(fd);
 }
 
-void ElfLoader::load_data(std::vector<uint8>& buf) {
+std::vector<uint8> ElfLoader::load_data() {
+    std::vector<uint8> data;
+
     GElf_Phdr* temp_phdr, phdr;
     unsigned long offset = 0;
     ssize_t bytes_read = 0;
@@ -79,12 +82,14 @@ void ElfLoader::load_data(std::vector<uint8>& buf) {
                 exit(0);
             }
 
-            for (unsigned int i = 0; i < phdr.p_filesz; ++i) {
-                buf[i+phdr.p_vaddr] = temp_buf[i];
-                to_out = temp_buf[i];
-                //std::cout << to_out << " " << std::hex << i+phdr.p_vaddr << std::endl;
-            }
+            if (data.size() < phdr.p_vaddr + phdr.p_filesz)
+                data.resize(phdr.p_vaddr + phdr.p_filesz, 0);
+
+            std::copy(temp_buf.begin(), temp_buf.end(),
+                      data.begin() + phdr.p_vaddr);
         }
     }
+
+    return data;
 }
 

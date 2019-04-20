@@ -2,14 +2,10 @@
 #include "infra/elf/elf.hpp"
 
 
-Memory::Memory(std::string executable_filename):
-    size(100000),
-    data(size, 0)
-{
-    ElfLoader elf_loader(executable_filename);
-    elf_loader.load_data(this->data);
-    this->start_PC = elf_loader.get_start_PC();
-}
+Memory::Memory(std::vector<uint8>& data):
+    data(data)
+{ }
+
 
 uint32 Memory::read(Addr addr, size_t num_bytes) const {
     assert(num_bytes <= 4);
@@ -33,3 +29,27 @@ void Memory::write(uint32 value, Addr addr, size_t num_bytes) {
     }
 }
 
+void PerfMemory::clock() {
+    auto& r = this->request;  // alias
+
+    if (r.complete)
+        return;
+
+    r.cycles_left_to_complete -= 1;
+    if (r.cycles_left_to_complete == 0) {
+        if (r.is_read)
+            r.data = this->read(r.addr, r.num_bytes);
+        else
+            this->write(r.data, r.addr, r.num_bytes);
+
+        r.complete = true;
+    }
+}
+
+RequestResult PerfMemory::get_request_status() {
+    auto& r = this->request;  // alias
+    if (r.complete)
+        return RequestResult {.is_ready = true, .data = r.data};
+    else
+        return RequestResult {.is_ready = false, .data = NO_VAL32};
+}

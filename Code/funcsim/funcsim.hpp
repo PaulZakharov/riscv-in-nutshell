@@ -4,10 +4,12 @@
 #include "infra/common.hpp"
 #include "rf/rf.hpp"
 #include "memory/memory.hpp"
+#include "infra/elf/elf.hpp"
 
 class FuncSim {
     private:
-        Memory memory;
+    	ElfLoader loader;
+        FuncMemory memory;
         RF rf;
         Addr PC = NO_VAL32;
     public:
