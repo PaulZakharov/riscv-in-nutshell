@@ -31,8 +31,6 @@ void PerfSim::step() {
     this->fetch_stage();
 
     std::cout << "\nEXTRA INFO:\n";
-    std::cout << "\tMemory stage iteration: "
-              << wires.memory_stage_iter  << std::endl;
     std::cout << "\tFetch stage iteration: "
               << wires.fetch_stage_iter  << std::endl;
 
@@ -42,10 +40,6 @@ void PerfSim::step() {
               << wires.DE_stage_reg_stall
               << wires.EM_stage_reg_stall
               << std::endl;
-
-    std::cout << "\tFlushes: "
-              << wires.PC_stage_reg_flush << wires.FD_stage_reg_flush
-              << wires.DE_stage_reg_flush << std::endl;
 
     rf.dump();
     std::cout << std::string(80, '-') << std::endl << std::endl;
@@ -85,18 +79,23 @@ void PerfSim::fetch_stage() {
 
     Addr* data = nullptr;
     data = pc_stage_reg.read();
+
     if (wires.FD_stage_reg_stall & (fd_stage_reg.read() != nullptr))
         wires.PC_stage_reg_stall = true;
-    if (wires.PC_stage_reg_flush) {
-        wires.PC_stage_reg_flush = false;
+
+    // branch mispredctiion handling
+    if (wires.memory_to_all_flush) {
         wires.fetch_bytes = 0;
         wires.fetch_stage_iter = 0;
-        Addr* true_PC = new Addr(wires.target);
+        Addr* true_PC = new Addr(wires.memory_to_fetch_target);
         pc_stage_reg.write(true_PC);
         fd_stage_reg.write(nullptr);
         std::cout << "NOP" << std::endl;
         if (data != nullptr) delete data;
-    } else if (data != nullptr) {
+        return;
+    }
+
+    if (data != nullptr) {
         Addr PC = *data;
         std::cout << "PC: " << PC << std::endl;
         if (wires.memory_stage_usage) {
@@ -131,15 +130,20 @@ void PerfSim::decode_stage() {
 
     Instruction* data = nullptr;
     data = fd_stage_reg.read();
+
+
     if (wires.DE_stage_reg_stall & (data != nullptr))
         wires.FD_stage_reg_stall = true;
-    if (wires.FD_stage_reg_flush) {
-        //generate nop
-        wires.FD_stage_reg_flush = false;
+
+    // branch mispredctiion handling
+    if (wires.memory_to_all_flush) {
         de_stage_reg.write(nullptr);
         std::cout << "NOP" << std::endl;
         if (data != nullptr) delete data;
-    } else if (data != nullptr) {
+        return;
+    }
+    
+    if (data != nullptr) {
         std::cout << "0x" << std::hex << data->get_PC() << ": "
             << data->get_disasm() << " "
             << std::endl;
@@ -147,8 +151,8 @@ void PerfSim::decode_stage() {
         uint32 Decode_stage_regs = ((1 << static_cast<uint32>(data->get_rs1().id())) | \
             (1 << static_cast<uint32>(data->get_rs2().id()))) >> 1;
         //stall logic due to data dependencies
-        if (((Decode_stage_regs & wires.Execute_stage_regs) | \
-            (Decode_stage_regs & wires.Memory_stage_regs)) != 0) {
+        if (((Decode_stage_regs & wires.execute_stage_regs) | \
+            (Decode_stage_regs & wires.memory_stage_regs)) != 0) {
                 
             //wires.PC_stage_reg_stall = true;
             wires.FD_stage_reg_stall = true;
@@ -163,7 +167,6 @@ void PerfSim::decode_stage() {
         de_stage_reg.write(nullptr);
         std::cout << "NOP" << std::endl;
     }
-    //stall logic due to stalls further in the pipeline
 }
 
 void PerfSim::execute_stage() {
@@ -171,18 +174,22 @@ void PerfSim::execute_stage() {
 
     Instruction* data = nullptr;
     data = de_stage_reg.read();
+
     if (wires.EM_stage_reg_stall & (data != nullptr))
         wires.DE_stage_reg_stall = true;
-    if (wires.DE_stage_reg_flush) {
-            //generate nop
-            wires.DE_stage_reg_flush = false;
-            em_stage_reg.write(nullptr);
-            std::cout << "NOP" << std::endl;
-            wires.Execute_stage_regs = 0;
-            if (data!= nullptr) delete data;
-    } else if (data != nullptr) {
+
+    // branch mispredctiion handling
+    if (wires.memory_to_all_flush) {
+        em_stage_reg.write(nullptr);
+        std::cout << "NOP" << std::endl;
+        wires.execute_stage_regs = 0;
+        if (data!= nullptr) delete data;
+        return;
+    }
+
+    if (data != nullptr) {
         data->execute();
-        wires.Execute_stage_regs = (1 << static_cast<uint32>(data->get_rd().id())) >> 1; 
+        wires.execute_stage_regs = (1 << static_cast<uint32>(data->get_rd().id())) >> 1; 
         em_stage_reg.write(data);
         //debugging info
         std::cout << "0x" << std::hex << data->get_PC() << ": "
@@ -192,66 +199,74 @@ void PerfSim::execute_stage() {
     } else {
         em_stage_reg.write(nullptr);
         std::cout << "NOP" << std::endl;
-        wires.Execute_stage_regs = 0;
+        wires.execute_stage_regs = 0;
     }
 }
 
 void PerfSim::memory_stage() {
     std::cout << "MEM:    ";
+    static uint memory_stage_iteration = 0;
 
     Instruction* data = nullptr;
     data = em_stage_reg.read();
-    if (data != nullptr) {
-        wires.Memory_stage_regs = (1 << static_cast<uint32>(data->get_rd().id())) >> 1; 
-        //target misprediction handling
-        if (data->is_jump() | data->is_branch()) {
-            if (data->get_new_PC() != data->get_PC() + 4) {
-                wires.PC_stage_reg_flush = true;
-                wires.FD_stage_reg_flush = true;
-                wires.DE_stage_reg_flush = true;
-                wires.target = data->get_new_PC();
-            }
-            mwb_stage_reg.write(data);
-        } else if (data->is_load() | data->is_store()) {
-            wires.memory_stage_usage = true;
-            if (wires.memory_stage_iter == 0) {
-                if (data->is_load()) {
-                    uint32 value = memory.read(data->get_memory_addr(), data->get_memory_size()==1 ? 1 : 2);
-                    data->set_rd_v(value);
-                } else {
-                    memory.write(data->get_rs2_v(), data->get_memory_addr(), data->get_memory_size()==1 ? 1 : 2);
-                }
-            } else {
-                if (data->is_load()) {
-                    uint32 value = memory.read(data->get_memory_addr()+2, data->get_memory_size()==1 ? 1 : 2);
-                    data->set_rd_v(data->get_rd_v() | (value << 16));
-                } else {
-                    memory.write((data->get_rs2_v())>>16, data->get_memory_addr()+2, data->get_memory_size()==1 ? 1 : 2);
-                }
-            }
-            if ((data->get_memory_size() == 4) & (wires.memory_stage_iter == 0)) {
-                //wires.PC_stage_reg_stall = true;
-                //wires.FD_stage_reg_stall = true;
-                //wires.DE_stage_reg_stall = true;
-                wires.EM_stage_reg_stall = true;
-                wires.memory_stage_iter = 1;
-                mwb_stage_reg.write(nullptr);
-            } else {
-                mwb_stage_reg.write(data);
-                wires.memory_stage_iter = 0;
-            }
-        } else {
-            mwb_stage_reg.write(data);
-        }
-        std::cout << "0x" << std::hex << data->get_PC() << ": "
-              << data->get_disasm() << " "
-              << std::endl;
-        std::cout << "\tRegisters written to: " << data->get_rd() << std::endl;
-    } else {
+
+    if (data == nullptr) {
         mwb_stage_reg.write(nullptr);
         std::cout << "NOP" << std::endl;
-        wires.Memory_stage_regs = 0;
+        wires.memory_stage_regs = 0;
+        return;
     }
+
+    wires.memory_stage_regs = (1 << static_cast<uint32>(data->get_rd().id())) >> 1; 
+
+    // jump operations
+    if (data->is_jump() | data->is_branch()) {
+        if (data->get_new_PC() != data->get_PC() + 4) {
+            // target misprediction handling
+            wires.memory_to_all_flush = true;
+            wires.memory_to_fetch_target = data->get_new_PC();
+        }
+    }
+
+    // memory operations
+    if (data->is_load() | data->is_store()) {
+        wires.memory_stage_usage = true;
+        if (memory_stage_iteration == 0) {
+            if (data->is_load()) {
+                uint32 value = memory.read(data->get_memory_addr(), data->get_memory_size()==1 ? 1 : 2);
+                data->set_rd_v(value);
+            } else {
+                memory.write(data->get_rs2_v(), data->get_memory_addr(), data->get_memory_size()==1 ? 1 : 2);
+            }
+        } else {
+            if (data->is_load()) {
+                uint32 value = memory.read(data->get_memory_addr()+2, data->get_memory_size()==1 ? 1 : 2);
+                data->set_rd_v(data->get_rd_v() | (value << 16));
+            } else {
+                memory.write((data->get_rs2_v())>>16, data->get_memory_addr()+2, data->get_memory_size()==1 ? 1 : 2);
+            }
+        }
+        if ((data->get_memory_size() == 4) & (memory_stage_iteration == 0)) {
+            wires.EM_stage_reg_stall = true;
+            memory_stage_iteration = 1;
+            mwb_stage_reg.write(nullptr);
+        } else {
+            memory_stage_iteration = 0;
+        }
+    }
+
+    // pass data to writeback stage
+    mwb_stage_reg.write(data);
+
+    std::cout << "0x" << std::hex << data->get_PC() << ": "
+              << data->get_disasm() << " "
+              << std::endl;
+
+    if (wires.memory_to_all_flush)
+        std::cout << "\tbranch mispredction, flush" << std::endl;
+
+    std::cout << "\tmemory_stage_iteration: " << memory_stage_iteration << std::endl;
+    std::cout << "\tregisters written to: " << data->get_rd() << std::endl;
 } 
 
 void PerfSim::writeback_stage() {
