@@ -154,7 +154,6 @@ void PerfSim::decode_stage() {
         if (((Decode_stage_regs & wires.execute_stage_regs) | \
             (Decode_stage_regs & wires.memory_stage_regs)) != 0) {
                 
-            //wires.PC_stage_reg_stall = true;
             wires.FD_stage_reg_stall = true;
             de_stage_reg.write(nullptr);
         } else {
@@ -272,6 +271,7 @@ void PerfSim::memory_stage() {
 void PerfSim::writeback_stage() {
     std::cout << "WB:     ";
     Instruction* data = nullptr;
+    
     data = mwb_stage_reg.read();
     if (data != nullptr) {
         std::cout << "0x" << std::hex << data->get_PC() << ": "

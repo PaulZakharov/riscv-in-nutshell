@@ -4,7 +4,7 @@
 #include "infra/common.hpp"
 #include "rf/rf.hpp"
 #include "memory/memory.hpp"
-#include "stage_reg/stage_reg.hpp"
+#include "stage_register/stage_register.hpp"
 #include "infra/elf/elf.hpp"
 
 class PerfSim {
@@ -14,18 +14,18 @@ private:
     RF rf;
 
     // inter-stage regsiters
-    Stage_Reg<Addr> pc_stage_reg;
-    Stage_Reg<Instruction> fd_stage_reg;
-    Stage_Reg<Instruction> de_stage_reg;
-    Stage_Reg<Instruction> em_stage_reg;
-    Stage_Reg<Instruction> mwb_stage_reg;
+    StageRegister<Addr> pc_stage_reg;
+    StageRegister<Instruction> fd_stage_reg;
+    StageRegister<Instruction> de_stage_reg;
+    StageRegister<Instruction> em_stage_reg;
+    StageRegister<Instruction> mwb_stage_reg;
 
     // used for feedback from later stages to fetch
     // pipeline flushing in case of jumps & branches  
     struct WireStore {
         Addr memory_to_fetch_target = NO_VAL32;
         bool memory_to_all_flush = false;
-        
+
         bool PC_stage_reg_stall = false;
         bool FD_stage_reg_stall = false;
         bool DE_stage_reg_stall = false;
