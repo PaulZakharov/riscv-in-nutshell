@@ -32,8 +32,7 @@ private:
         bool DE_stage_reg_stall = false;
         bool EM_stage_reg_stall = false;
 
-        // i-th bit means that stage (i-1)th RF register is used
-        // zero excluded
+        // masks of RF registers used at EXE/MEM stages
         uint32 execute_stage_regs = 0;
         uint32 memory_stage_regs = 0;
 
