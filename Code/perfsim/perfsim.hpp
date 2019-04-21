@@ -13,16 +13,17 @@ private:
     PerfMemory memory;
     RF rf;
 
-    // inter-stage regsiters
-    StageRegister<Addr> pc_stage_reg;
-    StageRegister<Instruction> fd_stage_reg;
-    StageRegister<Instruction> de_stage_reg;
-    StageRegister<Instruction> em_stage_reg;
-    StageRegister<Instruction> mwb_stage_reg;
+    struct StageRegisterStore {
+        StageRegister<Addr> PC;
+        StageRegister<Instruction> FETCH_DECODE;
+        StageRegister<Instruction> DECODE_EXE;
+        StageRegister<Instruction> EXE_MEM;
+        StageRegister<Instruction> MEM_WB;
+    } stage_registers;
 
-    // used for feedback from later stages to fetch
-    // pipeline flushing in case of jumps & branches  
+    // used for feedback from later stages to earlier stages 
     struct WireStore {
+        // branch misprediction flush
         Addr memory_to_fetch_target = NO_VAL32;
         bool memory_to_all_flush = false;
 
@@ -31,7 +32,7 @@ private:
         bool DE_stage_reg_stall = false;
         bool EM_stage_reg_stall = false;
 
-        // i-th bit means that stage (i-1)th reg is used
+        // i-th bit means that stage (i-1)th RF register is used
         // zero excluded
         uint32 execute_stage_regs = 0;
         uint32 memory_stage_regs = 0;
