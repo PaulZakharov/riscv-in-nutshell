@@ -30,11 +30,7 @@ void PerfSim::step() {
     this->decode_stage();
     this->fetch_stage();
 
-    std::cout << "\nEXTRA INFO:\n";
-    std::cout << "\tFetch stage iteration: "
-              << wires.fetch_stage_iter  << std::endl;
-
-    std::cout << "\tStalls:  "
+    std::cout << "STALLS:  "
               << wires.PC_stage_reg_stall
               << wires.FD_stage_reg_stall
               << wires.DE_stage_reg_stall
@@ -76,6 +72,8 @@ void PerfSim::run(uint32 n) {
 
 void PerfSim::fetch_stage() {
     std::cout << "FETCH:  ";
+    static uint fetch_stage_iteration = 0;
+    static uint32 fetch_bytes = NO_VAL32;
 
     Addr* data = nullptr;
     data = stage_registers.PC.read();
@@ -85,8 +83,8 @@ void PerfSim::fetch_stage() {
 
     // branch mispredctiion handling
     if (wires.memory_to_all_flush) {
-        wires.fetch_bytes = 0;
-        wires.fetch_stage_iter = 0;
+        fetch_bytes = 0;
+        fetch_stage_iteration = 0;
         Addr* true_PC = new Addr(wires.memory_to_fetch_target);
         stage_registers.PC.write(true_PC);
         stage_registers.FETCH_DECODE.write(nullptr);
@@ -101,17 +99,17 @@ void PerfSim::fetch_stage() {
         if (wires.memory_stage_usage) {
             wires.PC_stage_reg_stall = true;
             stage_registers.FETCH_DECODE.write(nullptr);
-        } else if (wires.fetch_stage_iter == 0) {
-            wires.fetch_bytes = memory.read(PC, 2);
-            wires.fetch_stage_iter = 1;
+        } else if (fetch_stage_iteration == 0) {
+            fetch_bytes = memory.read(PC, 2);
+            fetch_stage_iteration = 1;
             wires.PC_stage_reg_stall = true;
             stage_registers.FETCH_DECODE.write(nullptr);
         } else {
             if (!wires.PC_stage_reg_stall) {
-                wires.fetch_bytes = (wires.fetch_bytes & 0xffff) | (memory.read(PC+2, 2)<<16);
-                Instruction* res = new Instruction(wires.fetch_bytes, PC);
+                fetch_bytes = (fetch_bytes & 0xffff) | (memory.read(PC+2, 2)<<16);
+                Instruction* res = new Instruction(fetch_bytes, PC);
                 stage_registers.FETCH_DECODE.write(res);
-                wires.fetch_stage_iter = 0;
+                fetch_stage_iteration = 0;
                 Addr* next_data = new Addr(PC+4);
                 stage_registers.PC.write(next_data);
                 std::cout << "\t0x" << std::hex << res->get_PC() << ": "
@@ -123,6 +121,9 @@ void PerfSim::fetch_stage() {
             } 
         }
     }
+
+    std::cout << "\tfetch_stage_iteration: "
+          << fetch_stage_iteration  << std::endl;
 }
 
 void PerfSim::decode_stage() {

@@ -38,8 +38,6 @@ private:
         uint32 memory_stage_regs = 0;
 
         // memory usage wires
-        int fetch_stage_iter = 0;
-        uint32 fetch_bytes = NO_VAL32;
         bool memory_stage_usage = false;
     } wires;
 
