@@ -209,6 +209,9 @@ void PerfSim::memory_stage() {
     Instruction* data = nullptr;
     data = stage_registers.EXE_MEM.read();
 
+    wires.memory_to_all_flush = false;
+    wires.memory_to_fetch_target = NO_VAL32;
+
     if (data == nullptr) {
         stage_registers.MEM_WB.write(nullptr);
         std::cout << "NOP" << std::endl;
