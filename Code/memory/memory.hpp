@@ -64,11 +64,12 @@ private:
         Addr addr = NO_VAL32;
         uint32 data = NO_VAL32;
         size_t num_bytes = NO_VAL32;
-        Cycles cycles_left_to_complete = NO_VAL32;
+        Cycles cycles_left_to_complete = 0;
     };
 
     Request request;
     Cycles latency_in_cycles = 0;
+    void process();
 
 public:
     PerfMemory(std::vector<uint8> data,
@@ -78,6 +79,7 @@ public:
     { }
 
     void clock();
+    bool is_busy() { return !request.complete; }
     void send_read_request(Addr addr, size_t num_bytes);
     void send_write_request(uint32 value, Addr addr, size_t num_bytes);
     RequestResult get_request_status();

@@ -12,9 +12,9 @@ private:
     ElfLoader loader;
     PerfMemory memory;
     RF rf;
+    Addr PC;
 
     struct StageRegisterStore {
-        StageRegister<Addr> PC;
         StageRegister<Instruction> FETCH_DECODE;
         StageRegister<Instruction> DECODE_EXE;
         StageRegister<Instruction> EXE_MEM;
@@ -35,9 +35,6 @@ private:
         // masks of RF registers used at EXE/MEM stages
         uint32 execute_stage_regs = 0;
         uint32 memory_stage_regs = 0;
-
-        // memory usage wires
-        bool memory_stage_usage = false;
     } wires;
 
 public:

@@ -29,13 +29,9 @@ void Memory::write(uint32 value, Addr addr, size_t num_bytes) {
     }
 }
 
-void PerfMemory::clock() {
+void PerfMemory::process() {
     auto& r = this->request;  // alias
 
-    if (r.complete)
-        return;
-
-    r.cycles_left_to_complete -= 1;
     if (r.cycles_left_to_complete == 0) {
         if (r.is_read)
             r.data = this->read(r.addr, r.num_bytes);
@@ -44,6 +40,48 @@ void PerfMemory::clock() {
 
         r.complete = true;
     }
+}
+
+void PerfMemory::send_read_request(Addr addr, size_t num_bytes) {
+    auto& r = this->request;  // alias
+
+    if (!r.complete)
+        throw std::invalid_argument("Cannot send second request!");
+
+    r.is_read = true;
+    r.complete = false;
+    r.cycles_left_to_complete = this->latency_in_cycles;
+    r.num_bytes = num_bytes;
+    r.addr = addr;
+
+    this->process();
+}
+
+void PerfMemory::send_write_request(uint32 value, Addr addr, size_t num_bytes) {
+    auto& r = this->request;  // alias
+
+    if (!r.complete)
+        throw std::invalid_argument("Cannot send second request!");
+
+    r.is_read = false;
+    r.complete = false;
+    r.cycles_left_to_complete = this->latency_in_cycles;
+    r.num_bytes = num_bytes;
+    r.addr = addr;
+    r.data = value;
+
+    this->process();
+}
+
+void PerfMemory::clock() {
+    auto& r = this->request;  // alias
+
+    if (r.complete)
+        return;
+
+    r.cycles_left_to_complete -= 1;
+    
+    this->process();
 }
 
 PerfMemory::RequestResult PerfMemory::get_request_status() {
