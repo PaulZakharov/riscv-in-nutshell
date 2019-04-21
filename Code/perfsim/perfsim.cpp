@@ -148,11 +148,11 @@ void PerfSim::decode_stage() {
             << data->get_disasm() << " "
             << std::endl;
         // find out which register we have to read from
-        uint32 Decode_stage_regs = ((1 << static_cast<uint32>(data->get_rs1().id())) | \
+        uint32 decode_stage_regs = ((1 << static_cast<uint32>(data->get_rs1().id())) | \
             (1 << static_cast<uint32>(data->get_rs2().id()))) >> 1;
-        //stall logic due to data dependencies
-        if (((Decode_stage_regs & wires.execute_stage_regs) | \
-            (Decode_stage_regs & wires.memory_stage_regs)) != 0) {
+        // stall logic due to data dependencies
+        if (((decode_stage_regs & wires.execute_stage_regs) | \
+            (decode_stage_regs & wires.memory_stage_regs)) != 0) {
                 
             wires.FD_stage_reg_stall = true;
             stage_registers.DECODE_EXE.write(nullptr);
