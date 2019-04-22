@@ -46,6 +46,14 @@ private:
 
     LRUInfo lru_info;
 
+    uint get_set(Addr addr) const {
+        return (addr / line_size) & (num_sets - 1);
+    }
+
+    Addr get_tag(Addr addr) const {
+        return addr / line_size;
+    }
+
 public:
     Cache(Memory& memory, uint num_ways, uint num_sets, uint line_size_in_bytes = 32);
     void clock();
