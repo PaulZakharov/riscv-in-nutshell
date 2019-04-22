@@ -2,7 +2,7 @@
 #include "infra/elf/elf.hpp"
 
 
-Memory::Memory(std::vector<uint8> data):
+Memory::Memory(std::vector<uint8> data) :
     data(std::move(data))
 { }
 

@@ -1,6 +1,15 @@
 #include "infra/config/config.hpp"
 #include "infra/common/common.h"
 
+class LRUInfo {
+private:
+    std::vector<std::list<uint>> lru;
+
+public:
+    LRUInfo(size_t ways, size_t sets);
+    void touch(uint set, uint way);
+    uint get_LRU_way(uint set);
+};
 
 class Cache {
 public:
@@ -13,6 +22,7 @@ private:
     struct Request {
         bool complete = true;
         bool is_read = false;
+        bool awaiting_memory_request = false;
         Addr addr = NO_VAL32;
         uint32 data = NO_VAL32;
         size_t num_bytes = NO_VAL32;
@@ -35,7 +45,7 @@ private:
     void process();
 
     LRUInfo lru_info;
-    
+
 public:
     Cache(Memory& memory, uint num_ways, uint num_sets, uint line_size_in_bytes = 32);
     void clock();
