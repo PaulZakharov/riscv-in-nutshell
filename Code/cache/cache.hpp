@@ -30,6 +30,7 @@ private:
 
     struct Line {
         std::vector<uint8> data;
+        Addr tag = NO_VAL32;
         bool is_valid = false;
         bool is_dirty = false;
     }
@@ -39,7 +40,18 @@ private:
         Line
     >> array;
 
-    Line lookup(set, tag);
+    std::pair<bool, Line> lookup(Addr addr) {
+        const auto set = get_set(addr);
+        const auto tag = get_tag(Addr);
+
+        for (uint way = 0; way < array->size(); ++way) {
+            if (array[way][set].tag == tag) {
+                lru_info.touch(set, way);
+                return {true, array[way][set]};
+            }
+        }
+        return {false, Line()};
+    }
 
     Request request;
     void process();
@@ -55,7 +67,7 @@ private:
     }
 
 public:
-    Cache(Memory& memory, uint num_ways, uint num_sets, uint line_size_in_bytes = 32);
+    Cache(Memory& memory, size_t num_ways, size_t num_sets, uint line_size_in_bytes = 32);
     void clock();
     void send_read_request(Addr addr, size_t num_bytes);
     void send_write_request(uint32 value, Addr addr, size_t num_bytes);
