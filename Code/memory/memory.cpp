@@ -32,6 +32,8 @@ void Memory::write(uint32 value, Addr addr, size_t num_bytes) {
 void PerfMemory::process() {
     auto& r = this->request;  // alias
 
+    assert(!r.complete);
+
     if (r.cycles_left_to_complete == 0) {
         if (r.is_read)
             r.data = this->read(r.addr, r.num_bytes);
@@ -57,7 +59,7 @@ void PerfMemory::send_read_request(Addr addr, size_t num_bytes) {
     r.addr = addr;
     r.data = NO_VAL32;
 
-    this->process();
+    this->process();  // WA for 0-latency memory
 }
 
 void PerfMemory::send_write_request(uint32 value, Addr addr, size_t num_bytes) {
@@ -75,7 +77,7 @@ void PerfMemory::send_write_request(uint32 value, Addr addr, size_t num_bytes) {
     r.addr = addr;
     r.data = value;
 
-    this->process();
+    this->process();  // WA for 0-latency memory
 }
 
 void PerfMemory::clock() {
