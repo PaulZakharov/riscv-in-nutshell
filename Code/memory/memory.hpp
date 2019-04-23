@@ -16,7 +16,7 @@ private:
         this->data[addr] = value;
     }
     
-public: // BUG: replace with protected
+protected:
     uint32 read(Addr addr, size_t num_bytes) const;
     void write(uint32 value, Addr addr, size_t num_bytes);
 

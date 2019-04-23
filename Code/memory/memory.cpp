@@ -8,7 +8,8 @@ Memory::Memory(std::vector<uint8> data) :
 
 
 uint32 Memory::read(Addr addr, size_t num_bytes) const {
-    assert(num_bytes <= 4);
+    if (addr + num_bytes > this->data.size())
+        throw std::invalid_argument("Exceeded memory size");
 
     uint32 value = 0;
     for (uint i = 0; i < num_bytes; ++i) {
@@ -21,7 +22,8 @@ uint32 Memory::read(Addr addr, size_t num_bytes) const {
 
 
 void Memory::write(uint32 value, Addr addr, size_t num_bytes) {
-    assert(num_bytes <= 4);
+    if (addr + num_bytes > this->data.size())
+        throw std::invalid_argument("Exceeded memory size");
 
     for (uint i = 0; i < num_bytes; ++i) {
         uint8 byte = static_cast<uint8>(value >> 8*i); 
@@ -83,9 +85,12 @@ void PerfMemory::send_write_request(uint32 value, Addr addr, size_t num_bytes) {
 void PerfMemory::clock() {
     auto& r = this->request;  // alias
 
-    if (r.complete)
+    if (r.complete) {
+        assert (r.cycles_left_to_complete == 0);
         return;
+    }
 
+    assert (r.cycles_left_to_complete > 0);
     r.cycles_left_to_complete -= 1;
     
     this->process();
