@@ -23,16 +23,26 @@ uint LRUInfo::get_LRU_way(uint set) {
     return list.front();
 }
 
+void Cache::process() {
+    auto& r = this->request;  // alias
+
+
+}
+
 void Cache::send_read_request(Addr addr, size_t num_bytes) {
     auto& r = this->request;  // alias
 
     if (!r.complete)
         throw std::invalid_argument("Cannot send second request!");
+    if (num_bytes > 2)
+        throw std::invalid_argument("Cache can't handle > 2 bytes per request")
 
     r.is_read = true;
     r.complete = false;
+    r.awaiting_memory_request = false;
     r.num_bytes = num_bytes;
     r.addr = addr;
+    r.data = NO_VAL32;
 
     this->process();
 }
@@ -42,10 +52,13 @@ void Cache::send_write_request(uint32 value, Addr addr, size_t num_bytes) {
 
     if (!r.complete)
         throw std::invalid_argument("Cannot send second request!");
+    if (num_bytes > 2)
+        throw std::invalid_argument("Cache can't handle > 2 bytes per request")
 
     r.is_read = false;
     r.complete = false;
     r.num_bytes = num_bytes;
+    r.awaiting_memory_request = false;
     r.addr = addr;
     r.data = value;
 

@@ -40,7 +40,7 @@ private:
         Line
     >> array;
 
-    std::pair<bool, Line> lookup(Addr addr) {
+    std::pair<bool, Line&> lookup(Addr addr) {
         const auto set = get_set(addr);
         const auto tag = get_tag(Addr);
 
@@ -53,10 +53,10 @@ private:
         return {false, Line()};
     }
 
-    Request request;
-    void process();
-
     LRUInfo lru_info;
+    Request request;
+    
+    void process();
 
     uint get_set(Addr addr) const {
         return (addr / line_size) & (num_sets - 1);
@@ -69,6 +69,7 @@ private:
 public:
     Cache(Memory& memory, size_t num_ways, size_t num_sets, uint line_size_in_bytes = 32);
     void clock();
+    bool is_busy() { return !request.complete; }
     void send_read_request(Addr addr, size_t num_bytes);
     void send_write_request(uint32 value, Addr addr, size_t num_bytes);
     RequestResult get_request_status();

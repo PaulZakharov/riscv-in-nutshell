@@ -1,4 +1,9 @@
 #include "rf.hpp"
+#include "infra/config/config.hpp"
+
+namespace config {
+    static         Value<uint64>      dump_rf     = { "dump_rf", "whether to dump RF state", false };
+}
 
 uint32 RF::read(Register num) const {
     if (this->is_valid(num))
@@ -48,6 +53,9 @@ void RF::set_stack_pointer(uint32 value) {
 }
 
 void RF::dump() const {
+    if (!config::dump_rf)
+        return;
+
     std::cout << "Register file dump:" << std::endl;
     
     for(uint8 i = 0; i < (Register::MAX_NUMBER); ++i) {

@@ -47,12 +47,15 @@ void PerfMemory::send_read_request(Addr addr, size_t num_bytes) {
 
     if (!r.complete)
         throw std::invalid_argument("Cannot send second request!");
+    if (num_bytes > 2)
+        throw std::invalid_argument("Memory can't handle > 2 bytes per request");
 
     r.is_read = true;
     r.complete = false;
     r.cycles_left_to_complete = this->latency_in_cycles;
     r.num_bytes = num_bytes;
     r.addr = addr;
+    r.data = NO_VAL32;
 
     this->process();
 }
@@ -62,6 +65,8 @@ void PerfMemory::send_write_request(uint32 value, Addr addr, size_t num_bytes) {
 
     if (!r.complete)
         throw std::invalid_argument("Cannot send second request!");
+    if (num_bytes > 2)
+        throw std::invalid_argument("Memory can't handle > 2 bytes per request");
 
     r.is_read = false;
     r.complete = false;
