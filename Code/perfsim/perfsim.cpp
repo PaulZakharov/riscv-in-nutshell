@@ -1,10 +1,19 @@
+#include "infra/config/config.hpp"
 #include "perfsim.hpp"
 
-//#define NOP_BYTES 0x13
+namespace config {
+    static         Value<bool>      use_icache     = { "icache", "use instruction cache", false };
+    static         Value<bool>      use_dcache     = { "dcache", "use instruction cache", false };
+    static         Value<uint64>      cache_ways     = { "cache_ways", "cache ways", 4 };
+    static         Value<uint64>      cache_sets     = { "cache_sets", "cache sets", 16 };
+    static         Value<uint64>      cache_line     = { "cache_line", "cache line size in bytes", 8 };
+}
 
 PerfSim::PerfSim(std::string executable_filename)
     : loader(executable_filename)
     , memory(loader.load_data(), 2)
+    , icache(memory, config::cache_ways, config::cache_sets, config::cache_sets)
+    , dcache(memory, config::cache_ways, config::cache_sets, config::cache_sets)
     , PC(loader.get_start_PC())
 {
     // setup stack
@@ -18,6 +27,8 @@ PerfSim::PerfSim(std::string executable_filename)
 
 void PerfSim::step() {
     memory.clock();
+    icache.clock();
+    dcache.clock();
 
     this->writeback_stage();
     this->memory_stage();
@@ -79,7 +90,9 @@ void PerfSim::fetch_stage() {
 
     std::cout << "PC: " << PC << std::endl;
 
-    if (memory.is_busy()) {
+    bool memory_busy = config::use_icache ? icache.is_busy() : memory.is_busy();
+
+    if (memory_busy) {
         std::cout << "\tWAITING MEMORY" << std::endl;
         stage_registers.FETCH_DECODE.write(nullptr);
         return;
@@ -88,19 +101,33 @@ void PerfSim::fetch_stage() {
     if (!awaiting_memory_request) {
         // send requests to memory
         Addr addr = PC + (fetch_stage_iterations_complete * 2);
-        memory.send_read_request(addr, 2);
+        if (config::use_icache)
+            icache.send_read_request(addr, 2);
+        else
+            memory.send_read_request(addr, 2);
 
         awaiting_memory_request = true;
         std::cout << "\tSENT request to memory" << std::endl;
     }
 
-    auto request = memory.get_request_status();
+    bool is_request_ready;
+    uint32 request_data;
 
-    if (request.is_ready) {
+    if (config::use_icache) {
+        auto request = icache.get_request_status();
+        is_request_ready = request.is_ready;
+        request_data = request.data;
+    } else {
+        auto request = memory.get_request_status();
+        is_request_ready = request.is_ready;
+        request_data = request.data;
+    }
+
+    if (is_request_ready) {
         if (fetch_stage_iterations_complete == 0)
-            fetch_data = request.data;
+            fetch_data = request_data;
         else
-            fetch_data = (fetch_data & 0xffff) | (request.data << 16);
+            fetch_data = (fetch_data & 0xffff) | (request_data << 16);
 
         std::cout << "\tGOT request from memory" << std::endl;
         

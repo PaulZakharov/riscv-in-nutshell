@@ -1,5 +1,9 @@
+#ifndef CACHE_H
+#define CACHE_H
+
 #include "infra/common.hpp"
 #include "memory/memory.hpp"
+
 #include <list>
 #include <queue>
 #include <numeric>
@@ -126,3 +130,5 @@ public:
     void send_write_request(uint32 value, Addr addr, Size num_bytes);
     RequestResult get_request_status();
 };
+
+#endif

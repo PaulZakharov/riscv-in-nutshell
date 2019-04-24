@@ -4,6 +4,7 @@
 #include "infra/common.hpp"
 #include "rf/rf.hpp"
 #include "memory/memory.hpp"
+#include "cache/cache.hpp"
 #include "stage_register/stage_register.hpp"
 #include "infra/elf/elf.hpp"
 
@@ -11,6 +12,8 @@ class PerfSim {
 private:
     ElfLoader loader;
     PerfMemory memory;
+    Cache icache;
+    Cache dcache;
     RF rf;
     Addr PC;
 
