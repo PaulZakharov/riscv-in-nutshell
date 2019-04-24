@@ -46,6 +46,8 @@ void PerfMemory::process() {
             this->write(r.data, r.addr, r.num_bytes);
 
         r.complete = true;
+        this->request_result.is_ready = true;
+        this->request_result.data = r.data;
     }
 }
 
@@ -63,8 +65,6 @@ void PerfMemory::send_read_request(Addr addr, size_t num_bytes) {
     r.num_bytes = num_bytes;
     r.addr = addr;
     r.data = NO_VAL32;
-
-    this->process();  // WA for 0-latency memory
 }
 
 void PerfMemory::send_write_request(uint32 value, Addr addr, size_t num_bytes) {
@@ -81,11 +81,12 @@ void PerfMemory::send_write_request(uint32 value, Addr addr, size_t num_bytes) {
     r.num_bytes = num_bytes;
     r.addr = addr;
     r.data = value;
-
-    this->process();  // WA for 0-latency memory
 }
 
 void PerfMemory::clock() {
+    this->request_result.is_ready = false;
+    this->request_result.data = NO_VAL32;
+    
     auto& r = this->request;  // alias
 
     if (r.complete) {
@@ -97,13 +98,4 @@ void PerfMemory::clock() {
     r.cycles_left_to_complete -= 1;
     
     this->process();
-}
-
-PerfMemory::RequestResult PerfMemory::get_request_status() {
-    auto& r = this->request;  // alias
-
-    if (r.complete)
-        return RequestResult {true, r.data};
-    else
-        return RequestResult {false, NO_VAL32};
 }

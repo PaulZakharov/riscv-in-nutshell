@@ -16,13 +16,13 @@ private:
         this->data[addr] = value;
     }
     
-protected:
+public:
     uint32 read(Addr addr, size_t num_bytes) const;
     void write(uint32 value, Addr addr, size_t num_bytes);
 
 public:
     Memory(std::vector<uint8> data);
-    Addr get_stack_pointer() const { return data.size() - 1; }
+    Addr get_stack_pointer() const { return (data.size() - 1) & ~(32 - 1); }
 };
 
 
@@ -70,6 +70,7 @@ private:
 
     // active request to memory (single-port memory)
     Request request;
+    RequestResult request_result;
 
     // fixed memory latency
     Cycles latency_in_cycles = 0;
@@ -88,7 +89,7 @@ public:
     bool is_busy() { return !request.complete; }
     void send_read_request(Addr addr, size_t num_bytes);
     void send_write_request(uint32 value, Addr addr, size_t num_bytes);
-    RequestResult get_request_status();
+    RequestResult get_request_status() { return request_result; }
 };
 
 #endif

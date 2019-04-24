@@ -1,4 +1,5 @@
 #include "cache.hpp"
+#include <sstream>
 
 LRUInfo::LRUInfo(Size num_ways, Size num_sets) :
     lru(num_sets)
@@ -57,6 +58,7 @@ Cache::Cache(PerfMemory& memory,
     { }
 
 void Cache::process_hit(Way way) {
+    std::cout << "\thit" << std::endl;
     auto& r = this->request;  // alias
 
     Set set = this->get_set(r.addr);
@@ -76,6 +78,7 @@ void Cache::process_hit(Way way) {
 }
 
 void Cache::process_miss() {
+    std::cout << "\tmiss" << std::endl;
     auto& r = this->request;  // alias
 
     Set set = this->get_set(r.addr);
@@ -86,19 +89,20 @@ void Cache::process_miss() {
         this->line_requests.push(
             LineRequest(this->get_line_addr(line.addr), set, way, false)
         );
+        std::cout << "\tcreated write line request" << std::endl;
     }
 
-    if (r.is_read) {
-        this->line_requests.push(
-            LineRequest(this->get_line_addr(r.addr), set, way, true)
-        );
-    }
+    this->line_requests.push(
+        LineRequest(this->get_line_addr(r.addr), set, way, true)
+    );
+    std::cout << "\tcreated read line request" << std::endl;
 }
 
 void Cache::process_line_requests() {
     if (this->line_requests.empty())
         return;
 
+    std::cout << "\tprocessing requests" << std::endl;
     if (this->memory.is_busy())
         return;
 
@@ -118,30 +122,21 @@ void Cache::process_line_requests() {
         assert(line.addr == lr.addr);
     }
 
-    if (!lr.awaiting_memory_request) {
-        // send requests to memory
-        if (lr.is_read)
-            this->memory.send_read_request(lr.addr + lr.bytes_processed, 2);
-        else
-            this->memory.send_write_request(line.read_bytes(lr.bytes_processed, 2),
-                                            lr.addr + lr.bytes_processed, 2);
-        lr.awaiting_memory_request = true;
-    }
-
     if (lr.awaiting_memory_request) {
         auto mr = this->memory.get_request_status();
-        if (!mr.is_ready)
-            return;
+        assert (mr.is_ready);
         
         if (lr.is_read)
             line.write_bytes(mr.data, lr.bytes_processed, 2);
 
         lr.awaiting_memory_request = false;
         lr.bytes_processed += 2;
+        std::cout << "\tgot request from memory" << std::endl;
     }
 
     // all bytes are read/written, line request to memory is complete
     if (lr.bytes_processed == line.data.size()) {
+        std::cout << "\tcompleted line request" << std::endl;
         if (lr.is_read) {
             line.is_valid = true;
             line.addr = lr.addr;
@@ -158,9 +153,20 @@ void Cache::process_line_requests() {
         // check other line requests
         this->process_line_requests(); 
     }
+    else if (!lr.awaiting_memory_request) {
+        // send requests to memory
+        if (lr.is_read)
+            this->memory.send_read_request(lr.addr + lr.bytes_processed, 2);
+        else
+            this->memory.send_write_request(line.read_bytes(lr.bytes_processed, 2),
+                                            lr.addr + lr.bytes_processed, 2);
+        lr.awaiting_memory_request = true;
+        std::cout << "\tsent request to memory" << std::endl;
+    }
 }
 
 void Cache::process() {
+    std::cout << "CACHE: " << std::endl;
     auto& r = this->request;  // alias
 
     assert(!r.complete);
@@ -217,8 +223,12 @@ void Cache::send_write_request(uint32 value, Addr addr, Size num_bytes) {
         throw std::invalid_argument("Cannot send second request!");
     if (num_bytes > 2)
         throw std::invalid_argument("Cache can't handle > 2 bytes per request");
-    if ((addr % num_bytes) != 0)
-        throw std::invalid_argument("Unaligned cache access");
+    if ((addr % num_bytes) != 0) {
+        std::stringstream stream;
+        stream << "Unaligned cache access at addr " << std::hex << addr
+               << " with num_bytes " << num_bytes;
+        throw std::invalid_argument(stream.str());
+    }
 
     r.is_read = false;
     r.complete = false;

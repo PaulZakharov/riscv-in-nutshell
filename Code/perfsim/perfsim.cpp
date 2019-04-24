@@ -2,16 +2,14 @@
 #include "perfsim.hpp"
 
 namespace config {
-    static         Value<bool>      use_icache     = { "icache", "use instruction cache", false };
-    static         Value<bool>      use_dcache     = { "dcache", "use instruction cache", false };
-    static         Value<uint64>      cache_ways     = { "cache_ways", "cache ways", 4 };
-    static         Value<uint64>      cache_sets     = { "cache_sets", "cache sets", 16 };
-    static         Value<uint64>      cache_line     = { "cache_line", "cache line size in bytes", 8 };
+    static         Value<uint64>      cache_ways     = { "cache_ways", "cache ways",                4 };
+    static         Value<uint64>      cache_sets     = { "cache_sets", "cache sets",               64 };
+    static         Value<uint64>      cache_line     = { "cache_line", "cache line size in bytes", 16 };
 }
 
 PerfSim::PerfSim(std::string executable_filename)
     : loader(executable_filename)
-    , memory(loader.load_data(), 2)
+    , memory(loader.load_data(), 3)
     , icache(memory, config::cache_ways, config::cache_sets, config::cache_sets)
     , dcache(memory, config::cache_ways, config::cache_sets, config::cache_sets)
     , PC(loader.get_start_PC())
@@ -90,10 +88,8 @@ void PerfSim::fetch_stage() {
 
     std::cout << "PC: " << PC << std::endl;
 
-    bool memory_busy = config::use_icache ? icache.is_busy() : memory.is_busy();
-
-    if (memory_busy) {
-        std::cout << "\tWAITING MEMORY" << std::endl;
+    if (icache.is_busy()) {
+        std::cout << "\tWAITING ICACHE" << std::endl;
         stage_registers.FETCH_DECODE.write(nullptr);
         return;
     }
@@ -101,35 +97,20 @@ void PerfSim::fetch_stage() {
     if (!awaiting_memory_request) {
         // send requests to memory
         Addr addr = PC + (fetch_stage_iterations_complete * 2);
-        if (config::use_icache)
-            icache.send_read_request(addr, 2);
-        else
-            memory.send_read_request(addr, 2);
-
+        icache.send_read_request(addr, 2);
         awaiting_memory_request = true;
-        std::cout << "\tSENT request to memory" << std::endl;
+        std::cout << "\tsent request to icache" << std::endl;
     }
 
-    bool is_request_ready;
-    uint32 request_data;
+    auto request = icache.get_request_status();
 
-    if (config::use_icache) {
-        auto request = icache.get_request_status();
-        is_request_ready = request.is_ready;
-        request_data = request.data;
-    } else {
-        auto request = memory.get_request_status();
-        is_request_ready = request.is_ready;
-        request_data = request.data;
-    }
-
-    if (is_request_ready) {
+    if (request.is_ready) {
         if (fetch_stage_iterations_complete == 0)
-            fetch_data = request_data;
+            fetch_data = request.data;
         else
-            fetch_data = (fetch_data & 0xffff) | (request_data << 16);
+            fetch_data = (fetch_data & 0xffff) | (request.data << 16);
 
-        std::cout << "\tGOT request from memory" << std::endl;
+        std::cout << "\tgot request from icache" << std::endl;
         
         awaiting_memory_request = false;
         fetch_stage_iterations_complete++;
@@ -265,8 +246,8 @@ void PerfSim::memory_stage() {
 
     // memory operations
     if (data->is_load() | data->is_store()) {
-        if (memory.is_busy()) {
-            std::cout << "WAITING MEMORY" << std::endl;
+        if (dcache.is_busy()) {
+            std::cout << "WAITING DCACHE" << std::endl;
             wires.EM_stage_reg_stall = true;
             stage_registers.MEM_WB.write(nullptr);
             return;
@@ -277,22 +258,25 @@ void PerfSim::memory_stage() {
             Addr addr = data->get_memory_addr() + (memory_stage_iterations_complete * 2);
             size_t num_bytes = (data->get_memory_size() == 1) ? 1 : 2;
 
-            if (data->is_load())
-                memory.send_read_request(addr, num_bytes);
+            if (data->is_load()) {
+                std::cout << "READING at " << std::hex << addr << std::endl;
+                dcache.send_read_request(addr, num_bytes);
+            }
 
             if (data->is_store()) {
                 memory_data = data->get_rs2_v();
+                std::cout << "WRITING " << std::hex << memory_data << " at " << std::hex << addr << std::endl;
                 if (memory_stage_iterations_complete == 0)
-                    memory.send_write_request(memory_data, addr, num_bytes);
+                    dcache.send_write_request(memory_data, addr, num_bytes);
                 else
-                    memory.send_write_request(memory_data >> 16, addr, num_bytes);
+                    dcache.send_write_request(memory_data >> 16, addr, num_bytes);
             }
 
             awaiting_memory_request = true;
-            std::cout << "SENT request to memory" << std::endl;
+            std::cout << "\tsent request to dcache" << std::endl;
         }
 
-        auto request = memory.get_request_status();
+        auto request = dcache.get_request_status();
 
         if (request.is_ready) {
             if (data->is_load()) {
@@ -304,7 +288,7 @@ void PerfSim::memory_stage() {
 
             awaiting_memory_request = false;
             memory_stage_iterations_complete++;
-            std::cout << "GOT request from memory" << std::endl;
+            std::cout << "GOT request from dcache" << std::endl;
         }
 
         bool memory_operation_complete = \
