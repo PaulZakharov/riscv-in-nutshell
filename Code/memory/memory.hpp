@@ -58,6 +58,7 @@ public:
     };
 
 private:
+    // read/write request to memory
     struct Request {
         bool complete = true;
         bool is_read = false;
@@ -67,8 +68,13 @@ private:
         Cycles cycles_left_to_complete = 0;
     };
 
+    // active request to memory (single-port memory)
     Request request;
+
+    // fixed memory latency
     Cycles latency_in_cycles = 0;
+
+    // process active request to memory
     void process();
 
 public:
