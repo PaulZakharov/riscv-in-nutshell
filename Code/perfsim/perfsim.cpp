@@ -5,7 +5,7 @@ namespace config {
     static         Value<uint64>      cache_ways     = { "cache_ways",     "cache ways",                4 };
     static         Value<uint64>      cache_sets     = { "cache_sets",     "cache sets",               64 };
     static         Value<uint64>      cache_line     = { "cache_line",     "cache line size in bytes", 16 };
-    static         Value<uint64>      memory_latency = { "memory_latency", "memory latency in cycles",   3};
+    static         Value<uint64>      memory_latency = { "memory_latency", "memory latency in cycles",  3 };
 }
 
 PerfSim::PerfSim(std::string executable_filename)
