@@ -2,14 +2,15 @@
 #include "perfsim.hpp"
 
 namespace config {
-    static         Value<uint64>      cache_ways     = { "cache_ways", "cache ways",                4 };
-    static         Value<uint64>      cache_sets     = { "cache_sets", "cache sets",               64 };
-    static         Value<uint64>      cache_line     = { "cache_line", "cache line size in bytes", 16 };
+    static         Value<uint64>      cache_ways     = { "cache_ways",     "cache ways",                4 };
+    static         Value<uint64>      cache_sets     = { "cache_sets",     "cache sets",               64 };
+    static         Value<uint64>      cache_line     = { "cache_line",     "cache line size in bytes", 16 };
+    static         Value<uint64>      memory_latency = { "memory_latency", "memory latency in cycles",   3};
 }
 
 PerfSim::PerfSim(std::string executable_filename)
     : loader(executable_filename)
-    , memory(loader.load_data(), 3)
+    , memory(loader.load_data(), config::memory_latency)
     , icache(memory, config::cache_ways, config::cache_sets, config::cache_sets)
     , dcache(memory, config::cache_ways, config::cache_sets, config::cache_sets)
     , PC(loader.get_start_PC())
