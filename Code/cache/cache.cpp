@@ -1,14 +1,14 @@
 #include "cache.hpp"
 
-LRUInfo::LRUInfo(size_t num_ways, size_t num_sets) :
+LRUInfo::LRUInfo(Size num_ways, Size num_sets) :
     lru(num_sets)
 {
-    std::list<uint> l(num_ways);
+    std::list<Way> l(num_ways);
     std::iota(l.begin(), l.end(), 0);
     std::fill(lru.begin(), lru.end(), l);
 }
 
-void LRUInfo::touch(uint set, uint way) {
+void LRUInfo::touch(Set set, Way way) {
     auto& list = this->lru[set];
 
     for (auto it = list.begin(); it != list.end(); ++it) {
@@ -19,7 +19,7 @@ void LRUInfo::touch(uint set, uint way) {
     }
 }
 
-uint LRUInfo::get_LRU_way(uint set) {
+Way LRUInfo::get_LRU_way(Set set) {
     auto& list = lru[set];
     return list.back();
 }
@@ -45,18 +45,18 @@ void Cache::Line::write_bytes(uint32 value, Addr offset, Size num_bytes) {
     }
 }
 
-Cache::Cache(Memory& memory,
+Cache::Cache(PerfMemory& memory,
              Size num_ways,
              Size num_sets,
              Size line_size_in_bytes)
     : memory(memory)
-    , num_ways(num_ways)
     , num_sets(num_sets)
     , line_size_in_bytes(line_size_in_bytes)
     , array(num_ways, std::vector<Line>(num_sets, Line(line_size_in_bytes)))
+    , lru_info(num_ways, num_sets)
     { }
 
-void Cache::process_hit(way) {
+void Cache::process_hit(Way way) {
     auto& r = this->request;  // alias
 
     Set set = this->get_set(r.addr);
@@ -83,14 +83,14 @@ void Cache::process_miss() {
     Line& line = this->array[way][set];
 
     if (line.is_valid && line.is_dirty) {
-        this->line_requests.push_back(
-            LineRequest(line.addr, way, false)
+        this->line_requests.push(
+            LineRequest(this->get_line_addr(line.addr), set, way, false)
         );
     }
 
     if (r.is_read) {
-        this->line_requests.push_back(
-            LineRequest(addr, way, true)
+        this->line_requests.push(
+            LineRequest(this->get_line_addr(r.addr), set, way, true)
         );
     }
 }
@@ -102,14 +102,15 @@ void Cache::process_line_requests() {
     if (this->memory.is_busy())
         return;
 
-    auto& lr = *(this->line_requests.front());
+    auto& lr = this->line_requests.front();
     Line& line = this->array[lr.way][lr.set];
 
 
-    if (lr.is_read)
+    if (lr.is_read) {
         // read request is used to bring new line to cache from memory
         assert(!(line.is_valid && line.is_dirty));
         assert(!(line.is_valid && line.addr != lr.addr));
+    }
     else {
         // write request is used to store line in memory
         assert(line.is_valid);
@@ -143,7 +144,7 @@ void Cache::process_line_requests() {
     if (lr.bytes_processed == line.data.size()) {
         if (lr.is_read) {
             line.is_valid = true;
-            line.addr = addr;
+            line.addr = lr.addr;
             line.is_dirty = false;
         }
         else {
@@ -153,7 +154,7 @@ void Cache::process_line_requests() {
         }
 
         // drop currrent line requests
-        this->line_requests.pop_front();
+        this->line_requests.pop();
         // check other line requests
         this->process_line_requests(); 
     }
@@ -178,10 +179,10 @@ void Cache::process() {
 
 std::pair<bool, Way> Cache::lookup(Addr addr) {
     const auto set = this->get_set(addr);
-    const auto tag = this->get_tag(Addr);
+    const auto tag = this->get_tag(addr);
 
-    for (uint way = 0; way < this->array->size(); ++way) {
-        auto& line = this->array[way][set]
+    for (uint way = 0; way < this->array.size(); ++way) {
+        auto& line = this->array[way][set];
         if (this->get_tag(line.addr) == tag && line.is_valid) {
             return {true, way};
         }
@@ -189,19 +190,18 @@ std::pair<bool, Way> Cache::lookup(Addr addr) {
     return {false, NO_VAL32};
 }
 
-void Cache::send_read_request(Addr addr, size_t num_bytes) {
+void Cache::send_read_request(Addr addr, Size num_bytes) {
     auto& r = this->request;  // alias
 
     if (!r.complete)
         throw std::invalid_argument("Cannot send second request!");
     if (num_bytes > 2)
-        throw std::invalid_argument("Cache can't handle > 2 bytes per request")
+        throw std::invalid_argument("Cache can't handle > 2 bytes per request");
     if ((addr % num_bytes) != 0)
-        throw std::invalid_argument("Unaligned cache access")
+        throw std::invalid_argument("Unaligned cache access");
 
     r.is_read = true;
     r.complete = false;
-    r.awaiting_memory_request = false;
     r.num_bytes = num_bytes;
     r.addr = addr;
     r.data = NO_VAL32;
@@ -210,20 +210,19 @@ void Cache::send_read_request(Addr addr, size_t num_bytes) {
     this->process_called_this_cycle = true;
 }
 
-void Cache::send_write_request(uint32 value, Addr addr, size_t num_bytes) {
+void Cache::send_write_request(uint32 value, Addr addr, Size num_bytes) {
     auto& r = this->request;  // alias
 
     if (!r.complete)
         throw std::invalid_argument("Cannot send second request!");
     if (num_bytes > 2)
-        throw std::invalid_argument("Cache can't handle > 2 bytes per request")
+        throw std::invalid_argument("Cache can't handle > 2 bytes per request");
     if ((addr % num_bytes) != 0)
-        throw std::invalid_argument("Unaligned cache access")
+        throw std::invalid_argument("Unaligned cache access");
 
     r.is_read = false;
     r.complete = false;
     r.num_bytes = num_bytes;
-    r.awaiting_memory_request = false;
     r.addr = addr;
     r.data = value;
 
@@ -244,7 +243,7 @@ void Cache::clock() {
     this->process_called_this_cycle = false;
 }
 
-Cache::RequestResult PerfMemory::get_request_status() {
+Cache::RequestResult Cache::get_request_status() {
     auto& r = this->request;  // alias
 
     if (r.complete)

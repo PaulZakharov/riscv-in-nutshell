@@ -1,5 +1,8 @@
-#include "infra/config/config.hpp"
-#include "infra/common/common.h"
+#include "infra/common.hpp"
+#include "memory/memory.hpp"
+#include <list>
+#include <queue>
+#include <numeric>
 
 using Set = uint32;
 using Way = uint32;
@@ -8,7 +11,7 @@ class LRUInfo {
 private:
     std::vector<  // set
         std::list<  // list of ways ordered by usage time
-            uint  // way
+            Way  // way
         >
     > lru;
 
@@ -19,7 +22,7 @@ public:
     void touch(Set set, Way way);
 
     // get least recently used way in a set
-    uint get_LRU_way(Set set);
+    Way get_LRU_way(Set set);
 };
 
 class Cache {
@@ -43,14 +46,13 @@ private:
         { }
 
         uint32 read_bytes(Addr offset, Size num_bytes);
-        uint32 write_bytes(uint32 value, Addr offset, Size num_bytes);
-    }
+        void write_bytes(uint32 value, Addr offset, Size num_bytes);
+    };
 
     // underlying memory (or next-level cache)
-    Memory& memory;
-
+    PerfMemory& memory;
+    
     // cache params
-    Size num_ways;
     Size num_sets;
     Size line_size_in_bytes;
 
@@ -76,18 +78,19 @@ private:
     // line read/write request to memory
     struct LineRequest {
         bool is_read = false;
+        bool awaiting_memory_request = false;
         Addr addr = NO_VAL32;
         Set set = NO_VAL32;
         Way way = NO_VAL32;
         Size bytes_processed = 0;
 
-        LineRequest(Addr addr, Way way, bool is_read)
+        LineRequest(Addr addr, Set set, Way way, bool is_read)
             : is_read(is_read)
-            , addr(Cache::get_line_addr(addr))
-            , set(Cache::get_set(addr))
+            , addr(addr)
+            , set(set)
             , way(way)
         { }
-    }
+    };
 
     // active request to cache (single-port cache)
     Request request;
@@ -100,20 +103,20 @@ private:
     void process();
     bool process_called_this_cycle = false;
     void process_miss();
-    void process_hit();
+    void process_hit(Way way);
     void process_line_requests();
 
     // helper functions
-    static uint get_set(Addr addr) const { return (addr / line_size_in_bytes) & (num_sets - 1); }
-    static Addr get_tag(Addr addr) const { return (addr / line_size_in_bytes); }
-    static Addr get_line_addr(Addr addr) const { return addr & ~(this->line_size_in_bytes - 1); }
-    static Addr get_line_offset(Addr addr) const { return addr & (this->line_size_in_bytes - 1); }
+    uint get_set(Addr addr) const { return (addr / line_size_in_bytes) & (num_sets - 1); }
+    Addr get_tag(Addr addr) const { return (addr / line_size_in_bytes); }
+    Addr get_line_addr(Addr addr) const { return addr & ~(this->line_size_in_bytes - 1); }
+    Addr get_line_offset(Addr addr) const { return addr & (this->line_size_in_bytes - 1); }
 
     // check whether particular address is present in cache
     std::pair<bool, Way> lookup(Addr addr);
 
 public:
-    Cache(Memory& memory,
+    Cache(PerfMemory& memory,
           Size num_ways,
           Size num_sets,
           Size line_size_in_bytes);
