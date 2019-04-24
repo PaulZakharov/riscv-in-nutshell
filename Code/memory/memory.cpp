@@ -4,13 +4,16 @@
 
 Memory::Memory(std::vector<uint8> data) :
     data(std::move(data))
-{ }
+{ 
+    this->data.resize(100000, 0);
+}
 
 
 uint32 Memory::read(Addr addr, size_t num_bytes) const {
-    if (addr + num_bytes > this->data.size())
+    if (addr + num_bytes > this->data.size()){
+        std::cout << "ADDR" << std::dec << addr+num_bytes << " " << std::endl;
         throw std::invalid_argument("Exceeded memory size");
-
+    }
     uint32 value = 0;
     for (uint i = 0; i < num_bytes; ++i) {
         uint8 byte = this->read_byte(addr + i);

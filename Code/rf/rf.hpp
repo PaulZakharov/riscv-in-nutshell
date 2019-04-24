@@ -12,7 +12,7 @@ private:
 
     struct RegisterState {
         uint32 value = 0;
-        bool is_valid = false; 
+        bool is_valid = true; 
     };
     
     std::array<RegisterState, Register::MAX_NUMBER> register_table;
