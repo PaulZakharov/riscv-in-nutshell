@@ -153,7 +153,7 @@ void Cache::process_line_requests() {
             assert(line.addr == lr.addr);
         }
 
-        // drop currrent line requests
+        // drop currrent line request
         this->line_requests.pop();
         // check other line requests
         this->process_line_requests(); 
@@ -236,10 +236,9 @@ void Cache::clock() {
     if (r.complete)
         return;
 
-    if (this->process_called_this_cycle)
-        return;
+    if (!this->process_called_this_cycle)
+        this->process();
 
-    this->process();
     this->process_called_this_cycle = false;
 }
 
