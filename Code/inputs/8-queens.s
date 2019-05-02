@@ -131,9 +131,9 @@ construct_candidates:
 	jr	ra
 	.size	construct_candidates, .-construct_candidates
 	.align	2
-	.globl	_start
-	.type	_start, @function
-_start:
+	.globl	main
+	.type	main, @function
+main:
 	addi	sp,sp,-432
 	sw	ra,428(sp)
 	sw	s0,424(sp)
@@ -153,15 +153,14 @@ _start:
 	addi	a5,a5,1
 	sw	a5,-20(s0)
 .L13:
-	lw	a4,-20(s0)
-	li	a5,10
-	ble	a4,a5,.L14
+	lw	a5,-20(s0)
+	blez	a5,.L14
 	li	a5,0
 	mv	a0,a5
 	lw	ra,428(sp)
 	lw	s0,424(sp)
 	addi	sp,sp,432
 	jr	ra
-	.size	_start, .-_start
+	.size	main, .-main
 	.ident	"GCC: (GNU) 8.2.0"
 	.section	.note.GNU-stack,"",@progbits

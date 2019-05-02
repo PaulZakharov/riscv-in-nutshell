@@ -16,6 +16,8 @@ private:
     Cache dcache;
     RF rf;
     Addr PC;
+    uint32 clocks;
+    uint32 ops;
 
     struct StageRegisterStore {
         StageRegister<Instruction> FETCH_DECODE;

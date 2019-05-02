@@ -11,9 +11,12 @@ namespace config {
 PerfSim::PerfSim(std::string executable_filename)
     : loader(executable_filename)
     , memory(loader.load_data(), config::memory_latency)
-    , icache(memory, config::cache_ways, config::cache_sets, config::cache_sets)
-    , dcache(memory, config::cache_ways, config::cache_sets, config::cache_sets)
+    , icache(memory, config::cache_ways, config::cache_sets, config::cache_line)
+    , dcache(memory, config::cache_ways, config::cache_sets, config::cache_line)
+    , rf()
     , PC(loader.get_start_PC())
+    , clocks(0)
+    , ops(0)
 {
     // setup stack
     rf.set_stack_pointer(memory.get_stack_pointer());
@@ -42,6 +45,9 @@ void PerfSim::step() {
               << std::endl;
 
     rf.dump();
+    clocks++;
+    if (ops > 0)
+        std::cout << "CPI: " << clocks*1.0/ops << std::endl;
     std::cout << std::string(50, '-') << std::endl << std::endl;
 
     if (!wires.FD_stage_reg_stall)
@@ -295,9 +301,10 @@ void PerfSim::memory_stage() {
         bool memory_operation_complete = \
             (memory_stage_iterations_complete * 2) >= data->get_memory_size();
 
-        if (memory_operation_complete)
+        if (memory_operation_complete) {
             memory_stage_iterations_complete = 0;
-        else {
+            data->set_rd_v(memory_data);
+        } else {
             std::cout << "\tmemory_stage_iterations_complete: "
                       << memory_stage_iterations_complete << std::endl;
             wires.EM_stage_reg_stall = true;
@@ -344,5 +351,6 @@ void PerfSim::writeback_stage() {
           << data->get_disasm() << " "
           << std::endl;
     this->rf.writeback(*data);
+    ops++;
     delete data;
 }

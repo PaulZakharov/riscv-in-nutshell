@@ -33,7 +33,6 @@ uint32 Cache::Line::read_bytes(Addr offset, Size num_bytes) {
         uint8 byte = this->data[offset + i];
         value |= static_cast<uint32>(byte) << (8*i);
     }
-
     return value;
 }
 
@@ -178,7 +177,6 @@ void Cache::process() {
         else
             this->process_miss();
     }
-
     this->process_line_requests();
 }
 
