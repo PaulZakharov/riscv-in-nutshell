@@ -94,7 +94,7 @@ void Cache::process_miss() {
     this->line_requests.push(
         LineRequest(this->get_line_addr(r.addr), set, way, true)
     );
-    std::cout << "\tcreated read line request" << set << std::endl;
+    std::cout << "\tcreated read line request" << std::endl;
 }
 
 void Cache::process_line_requests() {
@@ -184,10 +184,8 @@ void Cache::process() {
 std::pair<bool, Way> Cache::lookup(Addr addr) {
     const auto set = this->get_set(addr);
     const auto tag = this->get_tag(addr);
-    std::cout << "TAG " << tag << std::endl;
     for (uint way = 0; way < this->array.size(); ++way) {
         auto& line = this->array[way][set];
-        std::cout << "addr " << line.addr << "tag " << this->get_tag(line.addr) << std::endl;
         if (this->get_tag(line.addr) == tag && line.is_valid) {
             return {true, way};
         }
