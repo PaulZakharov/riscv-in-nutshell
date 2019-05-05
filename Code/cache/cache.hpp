@@ -113,9 +113,10 @@ private:
     // helper functions
     uint get_set(Addr addr) const { return (addr / line_size_in_bytes) & (num_sets - 1); }
     Addr get_tag(Addr addr) const { return (addr / line_size_in_bytes); }
-    Addr get_line_addr(Addr addr) const { return addr & ~(this->line_size_in_bytes - 1); }
-    Addr get_line_offset(Addr addr) const { return addr & (this->line_size_in_bytes - 1); }
-
+    /*Addr get_line_addr(Addr addr) const { return addr & ~(this->line_size_in_bytes - 1); }
+    Addr get_line_offset(Addr addr) const { return addr & (this->line_size_in_bytes - 1); }*/
+    Addr get_line_addr(Addr addr) const { return addr - get_line_offset(addr); }
+    Addr get_line_offset(Addr addr) const { return addr % this->line_size_in_bytes; }
     // check whether particular address is present in cache
     std::pair<bool, Way> lookup(Addr addr);
 

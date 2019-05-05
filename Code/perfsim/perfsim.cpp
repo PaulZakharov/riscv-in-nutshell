@@ -25,6 +25,7 @@ PerfSim::PerfSim(std::string executable_filename)
     rf.validate(Register::Number::s1);
     rf.validate(Register::Number::s2);
     rf.validate(Register::Number::s3);
+    std::cout << config::cache_line << std::endl;
 }
 
 void PerfSim::step() {
