@@ -18,6 +18,16 @@ private:
     Addr PC;
     uint32 clocks;
     uint32 ops;
+    uint32 branch_penalties = 0;
+    uint32 data_stalls = 0;
+    uint32 memory_stalls = 0;
+    uint32 multiple_stalls = 0;
+
+    bool branch_mispredict = false;
+    bool fetch_stall = false;
+    bool memory_stall = false;
+    bool data_stall = false;
+    bool multiple_stall = false;
 
     struct StageRegisterStore {
         StageRegister<Instruction> FETCH_DECODE;

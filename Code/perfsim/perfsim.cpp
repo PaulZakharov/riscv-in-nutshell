@@ -46,8 +46,31 @@ void PerfSim::step() {
 
     rf.dump();
     clocks++;
+
+    multiple_stall = static_cast<int>(branch_mispredict) + \
+                    static_cast<int>(fetch_stall) + \
+                    static_cast<int>(memory_stall) + \
+                    static_cast<int>(data_stall) > 1;
+    if (multiple_stall) {
+        multiple_stalls++;
+        if (branch_mispredict) branch_penalties+=2;
+    } else {
+        if (fetch_stall || memory_stall) {
+            memory_stalls++;
+        }
+        if (data_stall)
+            data_stalls++;
+        if (branch_mispredict)
+            branch_penalties+=3;
+    }
     if (ops > 0)
         std::cout << "CPI: " << clocks*1.0/ops << std::endl;
+    std::cout << std::dec << "Clocks: " << clocks << std::endl;
+    std::cout << "Ops: " << ops << std::endl;
+    std::cout << "Data stalls: " << data_stalls << std::endl;
+    std::cout << "Memory_stalls: " << memory_stalls << std::endl;
+    std::cout << "Branch penalties: " << branch_penalties << std::endl;
+    std::cout << "Multiple stalls: " << multiple_stalls << std::endl;
     std::cout << std::string(50, '-') << std::endl << std::endl;
 
     if (!wires.FD_stage_reg_stall)
@@ -65,6 +88,12 @@ void PerfSim::step() {
     wires.FD_stage_reg_stall = \
     wires.DE_stage_reg_stall = \
     wires.EM_stage_reg_stall = false;
+
+    branch_mispredict = \
+    data_stall = \
+    fetch_stall = \
+    memory_stall = \
+    multiple_stall = false;
 }
 
 void PerfSim::run(uint32 n) {
@@ -74,7 +103,6 @@ void PerfSim::run(uint32 n) {
 
 void PerfSim::fetch_stage() {
     std::cout << "FETCH:  ";
-    static uint fetch_stage_iterations_complete = 0;
     static bool awaiting_memory_request = false;
     static uint32 fetch_data = NO_VAL32;
 
@@ -88,7 +116,6 @@ void PerfSim::fetch_stage() {
     if (wires.memory_to_all_flush) {
         fetch_data = NO_VAL32;
         awaiting_memory_request = false;
-        fetch_stage_iterations_complete = 0;
         PC = wires.memory_to_fetch_target;
         std::cout << "FLUSH, ";
     }
@@ -103,30 +130,24 @@ void PerfSim::fetch_stage() {
 
     if (!awaiting_memory_request) {
         // send requests to memory
-        Addr addr = PC + (fetch_stage_iterations_complete * 2);
-        icache.send_read_request(addr, 2);
+        Addr addr = PC;
+        icache.send_read_request(addr, 4);
         awaiting_memory_request = true;
         std::cout << "\tsent request to icache" << std::endl;
     }
 
     auto request = icache.get_request_status();
-
+    bool fetch_complete = false;
     if (request.is_ready) {
-        if (fetch_stage_iterations_complete == 0)
-            fetch_data = request.data;
-        else
-            fetch_data = (fetch_data & 0xffff) | (request.data << 16);
+        fetch_data = request.data;
 
         std::cout << "\tgot request from icache" << std::endl;
         
         awaiting_memory_request = false;
-        fetch_stage_iterations_complete++;
+        fetch_complete = true;
     }
 
-    bool fetch_complete = fetch_stage_iterations_complete == 2;
-
     if (fetch_complete) {
-        fetch_stage_iterations_complete = 0;
         Instruction* data = new Instruction(fetch_data, PC);
 
         std::cout << "\t0x" << std::hex << data->get_PC() << ": "
@@ -136,9 +157,8 @@ void PerfSim::fetch_stage() {
         stage_registers.FETCH_DECODE.write(data);
         PC = PC + 4;
     } else {
-        std::cout << "\tfetch_stage_iterations_complete: "
-                  << fetch_stage_iterations_complete << std::endl;
         stage_registers.FETCH_DECODE.write(nullptr);
+        this->fetch_stall = true;
         return;
     }
 }
@@ -183,6 +203,7 @@ void PerfSim::decode_stage() {
       | (decode_stage_regs & wires.memory_stage_regs);
 
     if ((hazards >> 1) != 0) {
+        this->data_stall = true;
         wires.FD_stage_reg_stall = true;
         stage_registers.DECODE_EXE.write(nullptr);
     } else {
@@ -257,6 +278,7 @@ void PerfSim::memory_stage() {
             std::cout << "WAITING DCACHE" << std::endl;
             wires.EM_stage_reg_stall = true;
             stage_registers.MEM_WB.write(nullptr);
+            this->memory_stall = true;
             return;
         }
 
@@ -309,6 +331,7 @@ void PerfSim::memory_stage() {
                       << memory_stage_iterations_complete << std::endl;
             wires.EM_stage_reg_stall = true;
             stage_registers.MEM_WB.write(nullptr);
+            this->memory_stall = true;
             return;
         }
     } else {
@@ -321,6 +344,7 @@ void PerfSim::memory_stage() {
             // target misprediction handling
             wires.memory_to_all_flush = true;
             wires.memory_to_fetch_target = data->get_new_PC();
+            this->branch_mispredict = true;
         }
     }
 

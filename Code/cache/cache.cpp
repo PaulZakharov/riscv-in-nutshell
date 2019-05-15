@@ -198,8 +198,6 @@ void Cache::send_read_request(Addr addr, Size num_bytes) {
 
     if (!r.complete)
         throw std::invalid_argument("Cannot send second request!");
-    if (num_bytes > 2)
-        throw std::invalid_argument("Cache can't handle > 2 bytes per request");
     if ((addr % num_bytes) != 0) {
         std::stringstream stream;
         stream << "Unaligned cache access at addr " << std::hex << addr
