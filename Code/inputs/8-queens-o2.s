@@ -68,12 +68,33 @@ construct_candidates:
 	.size	construct_candidates, .-construct_candidates
 	.section	.text.startup,"ax",@progbits
 	.align	2
-	.globl	main
-	.type	main, @function
-main:
+	.globl	_start
+	.type	_start, @function
+_start:
+	addi	sp,sp,-416
+	sw	s0,408(sp)
+	sw	s1,404(sp)
+	sw	s2,400(sp)
+	sw	ra,412(sp)
+	li	s0,1
+	lui	s2,%hi(solution_count)
+	li	s1,11
+.L17:
+	mv	a2,s0
+	li	a1,0
+	addi	s0,s0,1
+	mv	a0,sp
+	sw	zero,%lo(solution_count)(s2)
+	call	backtrack
+	bne	s0,s1,.L17
+	lw	ra,412(sp)
+	lw	s0,408(sp)
+	lw	s1,404(sp)
+	lw	s2,400(sp)
 	li	a0,0
-	ret
-	.size	main, .-main
+	addi	sp,sp,416
+	jr	ra
+	.size	_start, .-_start
 	.comm	solution_count,4,4
 	.ident	"GCC: (GNU) 8.2.0"
 	.section	.note.GNU-stack,"",@progbits

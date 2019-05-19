@@ -22,6 +22,7 @@ private:
     uint32 data_stalls = 0;
     uint32 memory_stalls = 0;
     uint32 multiple_stalls = 0;
+    bool pipeline_not_empty = true;
 
     bool branch_mispredict = false;
     bool fetch_stall = false;

@@ -77,7 +77,7 @@ main()
 	int a[NMAX];			/* solution vector */
 	int i;				/* counter */
 
-	for (i=1; i<=0; i++) {
+	for (i=1; i<=10; i++) {
 		solution_count = 0;
 		backtrack(a,0,i);
 		//printf("n=%d  solution_count=%d\n",i,solution_count);

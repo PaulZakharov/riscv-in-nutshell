@@ -1,0 +1,142 @@
+
+8-queens-o2-o2:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00010094 <_start>:
+   10094:	e6010113          	addi	sp,sp,-416
+   10098:	18812c23          	sw	s0,408(sp)
+   1009c:	18912a23          	sw	s1,404(sp)
+   100a0:	19212823          	sw	s2,400(sp)
+   100a4:	18112e23          	sw	ra,412(sp)
+   100a8:	00100413          	li	s0,1
+   100ac:	00011937          	lui	s2,0x11
+   100b0:	00b00493          	li	s1,11
+   100b4:	00040613          	mv	a2,s0
+   100b8:	00000593          	li	a1,0
+   100bc:	00140413          	addi	s0,s0,1
+   100c0:	00010513          	mv	a0,sp
+   100c4:	28092a23          	sw	zero,660(s2) # 11294 <solution_count>
+   100c8:	0d8000ef          	jal	ra,101a0 <backtrack>
+   100cc:	fe9414e3          	bne	s0,s1,100b4 <_start+0x20>
+   100d0:	19c12083          	lw	ra,412(sp)
+   100d4:	19812403          	lw	s0,408(sp)
+   100d8:	19412483          	lw	s1,404(sp)
+   100dc:	19012903          	lw	s2,400(sp)
+   100e0:	00000513          	li	a0,0
+   100e4:	1a010113          	addi	sp,sp,416
+   100e8:	00008067          	ret
+
+000100ec <process_solution>:
+   100ec:	00011737          	lui	a4,0x11
+   100f0:	29472783          	lw	a5,660(a4) # 11294 <solution_count>
+   100f4:	00178793          	addi	a5,a5,1
+   100f8:	28f72a23          	sw	a5,660(a4)
+   100fc:	00008067          	ret
+
+00010100 <is_a_solution>:
+   10100:	40c58633          	sub	a2,a1,a2
+   10104:	00163513          	seqz	a0,a2
+   10108:	00008067          	ret
+
+0001010c <construct_candidates>:
+   1010c:	00072023          	sw	zero,0(a4)
+   10110:	06c05663          	blez	a2,1017c <construct_candidates+0x70>
+   10114:	00160f93          	addi	t6,a2,1
+   10118:	00100e93          	li	t4,1
+   1011c:	00100f13          	li	t5,1
+   10120:	00450313          	addi	t1,a0,4
+   10124:	fff58893          	addi	a7,a1,-1
+   10128:	00100813          	li	a6,1
+   1012c:	04bf5a63          	bge	t5,a1,10180 <construct_candidates+0x74>
+   10130:	00032603          	lw	a2,0(t1)
+   10134:	00430313          	addi	t1,t1,4
+   10138:	40ce87b3          	sub	a5,t4,a2
+   1013c:	41f7de13          	srai	t3,a5,0x1f
+   10140:	00fe47b3          	xor	a5,t3,a5
+   10144:	41c787b3          	sub	a5,a5,t3
+   10148:	411787b3          	sub	a5,a5,a7
+   1014c:	00f037b3          	snez	a5,a5
+   10150:	41d60633          	sub	a2,a2,t4
+   10154:	40f007b3          	neg	a5,a5
+   10158:	00c03633          	snez	a2,a2
+   1015c:	00f87833          	and	a6,a6,a5
+   10160:	40c00633          	neg	a2,a2
+   10164:	fff88893          	addi	a7,a7,-1
+   10168:	00c87833          	and	a6,a6,a2
+   1016c:	fc0892e3          	bnez	a7,10130 <construct_candidates+0x24>
+   10170:	01e80863          	beq	a6,t5,10180 <construct_candidates+0x74>
+   10174:	001e8e93          	addi	t4,t4,1
+   10178:	fbfe94e3          	bne	t4,t6,10120 <construct_candidates+0x14>
+   1017c:	00008067          	ret
+   10180:	00072783          	lw	a5,0(a4)
+   10184:	00279793          	slli	a5,a5,0x2
+   10188:	00f687b3          	add	a5,a3,a5
+   1018c:	01d7a023          	sw	t4,0(a5)
+   10190:	00072783          	lw	a5,0(a4)
+   10194:	00178793          	addi	a5,a5,1
+   10198:	00f72023          	sw	a5,0(a4)
+   1019c:	fd9ff06f          	j	10174 <construct_candidates+0x68>
+
+000101a0 <backtrack>:
+   101a0:	e4010113          	addi	sp,sp,-448
+   101a4:	1a112e23          	sw	ra,444(sp)
+   101a8:	1a812c23          	sw	s0,440(sp)
+   101ac:	1c010413          	addi	s0,sp,448
+   101b0:	e4a42623          	sw	a0,-436(s0)
+   101b4:	e4b42423          	sw	a1,-440(s0)
+   101b8:	e4c42223          	sw	a2,-444(s0)
+   101bc:	e4442603          	lw	a2,-444(s0)
+   101c0:	e4842583          	lw	a1,-440(s0)
+   101c4:	e4c42503          	lw	a0,-436(s0)
+   101c8:	f39ff0ef          	jal	ra,10100 <is_a_solution>
+   101cc:	00050793          	mv	a5,a0
+   101d0:	00078c63          	beqz	a5,101e8 <backtrack+0x48>
+   101d4:	e4442603          	lw	a2,-444(s0)
+   101d8:	e4842583          	lw	a1,-440(s0)
+   101dc:	e4c42503          	lw	a0,-436(s0)
+   101e0:	f0dff0ef          	jal	ra,100ec <process_solution>
+   101e4:	0980006f          	j	1027c <backtrack+0xdc>
+   101e8:	e4842783          	lw	a5,-440(s0)
+   101ec:	00178793          	addi	a5,a5,1
+   101f0:	e4f42423          	sw	a5,-440(s0)
+   101f4:	e5840713          	addi	a4,s0,-424
+   101f8:	e5c40793          	addi	a5,s0,-420
+   101fc:	00078693          	mv	a3,a5
+   10200:	e4442603          	lw	a2,-444(s0)
+   10204:	e4842583          	lw	a1,-440(s0)
+   10208:	e4c42503          	lw	a0,-436(s0)
+   1020c:	f01ff0ef          	jal	ra,1010c <construct_candidates>
+   10210:	fe042623          	sw	zero,-20(s0)
+   10214:	0540006f          	j	10268 <backtrack+0xc8>
+   10218:	e4842783          	lw	a5,-440(s0)
+   1021c:	00279793          	slli	a5,a5,0x2
+   10220:	e4c42703          	lw	a4,-436(s0)
+   10224:	00f70733          	add	a4,a4,a5
+   10228:	fec42783          	lw	a5,-20(s0)
+   1022c:	00279793          	slli	a5,a5,0x2
+   10230:	ff040693          	addi	a3,s0,-16
+   10234:	00f687b3          	add	a5,a3,a5
+   10238:	e6c7a783          	lw	a5,-404(a5)
+   1023c:	00f72023          	sw	a5,0(a4)
+   10240:	e4442603          	lw	a2,-444(s0)
+   10244:	e4842583          	lw	a1,-440(s0)
+   10248:	e4c42503          	lw	a0,-436(s0)
+   1024c:	f55ff0ef          	jal	ra,101a0 <backtrack>
+   10250:	000117b7          	lui	a5,0x11
+   10254:	2907a783          	lw	a5,656(a5) # 11290 <__DATA_BEGIN__>
+   10258:	02079063          	bnez	a5,10278 <backtrack+0xd8>
+   1025c:	fec42783          	lw	a5,-20(s0)
+   10260:	00178793          	addi	a5,a5,1
+   10264:	fef42623          	sw	a5,-20(s0)
+   10268:	e5842783          	lw	a5,-424(s0)
+   1026c:	fec42703          	lw	a4,-20(s0)
+   10270:	faf744e3          	blt	a4,a5,10218 <backtrack+0x78>
+   10274:	0080006f          	j	1027c <backtrack+0xdc>
+   10278:	00000013          	nop
+   1027c:	00078513          	mv	a0,a5
+   10280:	1bc12083          	lw	ra,444(sp)
+   10284:	1b812403          	lw	s0,440(sp)
+   10288:	1c010113          	addi	sp,sp,448
+   1028c:	00008067          	ret

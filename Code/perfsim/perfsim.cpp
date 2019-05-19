@@ -94,6 +94,9 @@ void PerfSim::step() {
     fetch_stall = \
     memory_stall = \
     multiple_stall = false;
+
+    if (!pipeline_not_empty) return;
+    pipeline_not_empty = false;
 }
 
 void PerfSim::run(uint32 n) {
@@ -120,7 +123,7 @@ void PerfSim::fetch_stage() {
         std::cout << "FLUSH, ";
     }
 
-    std::cout << "PC: " << PC << std::endl;
+    std::cout << std::hex << "PC: " << PC << std::endl;
 
     if (icache.is_busy()) {
         std::cout << "\tWAITING ICACHE" << std::endl;
@@ -148,14 +151,19 @@ void PerfSim::fetch_stage() {
     }
 
     if (fetch_complete) {
-        Instruction* data = new Instruction(fetch_data, PC);
+        if ((fetch_data == 0 )| (fetch_data == NO_VAL32)) {
+            stage_registers.FETCH_DECODE.write(nullptr);
+            std::cout << "Empty" << std::endl;
+        } else {
+            pipeline_not_empty = true;
+            Instruction* data = new Instruction(fetch_data, PC);
+            std::cout << "\t0x" << std::hex << data->get_PC() << ": "
+                      << data->get_disasm() << " "
+                      << std::endl;
 
-        std::cout << "\t0x" << std::hex << data->get_PC() << ": "
-                  << data->get_disasm() << " "
-                  << std::endl;
-
-        stage_registers.FETCH_DECODE.write(data);
-        PC = PC + 4;
+            stage_registers.FETCH_DECODE.write(data);
+            PC = PC + 4;
+        }
     } else {
         stage_registers.FETCH_DECODE.write(nullptr);
         this->fetch_stall = true;
@@ -188,7 +196,7 @@ void PerfSim::decode_stage() {
         std::cout << "BUBBLE" << std::endl;
         return;
     }
-
+    pipeline_not_empty = true;
     std::cout << "0x" << std::hex << data->get_PC() << ": "
               << data->get_disasm() << " "
               << std::endl;
@@ -240,7 +248,7 @@ void PerfSim::execute_stage() {
         std::cout << "BUBBLE" << std::endl;
         return;
     }
-
+    pipeline_not_empty = true;
     // actual execution takes place here
     data->execute();
     wires.execute_stage_regs = (1 << static_cast<uint32>(data->get_rd())); 
@@ -269,7 +277,7 @@ void PerfSim::memory_stage() {
         std::cout << "BUBBLE" << std::endl;
         return;
     }
-
+    pipeline_not_empty = true;
     wires.memory_stage_regs = (1 << static_cast<uint32>(data->get_rd())); 
 
     // memory operations
@@ -370,7 +378,7 @@ void PerfSim::writeback_stage() {
         std::cout << "BUBBLE" << std::endl;
         return;
     }
-
+    pipeline_not_empty = true;
     std::cout << "0x" << std::hex << data->get_PC() << ": "
           << data->get_disasm() << " "
           << std::endl;
